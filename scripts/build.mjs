@@ -19,6 +19,11 @@ const dist = (...p) => path.join(root, 'dist', ...p);
 function validateCopy() {
   const errors = [];
   for (const p of projects) if (!copy.projects.items[p.id]) errors.push(`no copy for project "${p.id}"`);
+  for (const p of projects) {
+    const n = p.gallery?.length ?? 0;
+    const m = copy.projects.items[p.id]?.gallery?.length ?? 0;
+    if (n !== m) errors.push(`"${p.id}": ${n} gallery images in data.mjs but ${m} captions in copy.mjs`);
+  }
   for (const id of Object.keys(copy.projects.items)) {
     if (!projects.some((p) => p.id === id)) errors.push(`copy for unknown project "${id}"`);
   }

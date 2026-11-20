@@ -140,10 +140,39 @@ function dialog(p, c, studioStepTitles) {
               <p class="sheet__source"><span class="sheet__h sheet__h--inline">${L.sourceLabel}</span> ${repoNote(p, c)}</p>
             </aside>
           </div>
+          ${gallery(p, c, t)}
         </div>
         </div>
       </div>
     </dialog>`;
+}
+
+/** The project's README screenshots. Thumbnails load lazily (a closed dialog is display:none, so nothing is fetched until it opens). */
+function gallery(p, c, t) {
+  if (!p.gallery?.length) return '';
+  const L = c.projects;
+  const figures = p.gallery
+    .map((g, i) => {
+      const caption = t.gallery[i];
+      if (g.kind === 'svg') {
+        return `<figure class="shot shot--svg"><img src="${A}gallery/${g.name}.svg" width="${g.w}" height="${g.h}" alt="${esc(caption)}" loading="lazy" decoding="async"><figcaption>${caption}</figcaption></figure>`;
+      }
+      const thumb = `${A}gallery/${g.name}-${g.thumb}.webp`;
+      const full = `${A}gallery/${g.name}-${g.full}.webp`;
+      const sizes = g.kind === 'wide' ? '(min-width: 820px) 460px, 92vw' : '(min-width: 820px) 220px, 46vw';
+      return `<figure class="shot shot--${g.kind}">
+            <button class="shot__open" type="button" data-zoom="${full}" data-zoom-alt="${esc(caption)}" data-zoom-w="${g.w}" data-zoom-h="${g.h}" aria-haspopup="dialog" aria-label="${esc(caption)} (${L.enlarge})">
+              <img src="${thumb}" srcset="${thumb} ${g.thumb}w, ${full} ${g.full}w" sizes="${sizes}" width="${g.w}" height="${g.h}" alt="" loading="lazy" decoding="async">
+            </button>
+            <figcaption aria-hidden="true">${caption}</figcaption>
+          </figure>`;
+    })
+    .join('');
+  const label = t.galleryLabel || L.screenshots;
+  return `<section class="sheet__gallery" aria-label="${esc(label)}">
+            <h4 class="sheet__h">${label}</h4>
+            <div class="gallery">${figures}</div>
+          </section>`;
 }
 
 // ---------------------------------------------------------------- page
@@ -256,6 +285,10 @@ export function renderPage(c, hashes) {
       </div>
     </div>
     ${dialogsHtml}
+    <dialog class="lightbox" id="lightbox" aria-label="${esc(c.projects.screenshots)}">
+      <button class="lightbox__close btn btn--icon" type="button" data-close-lightbox aria-label="${c.a11y.close}">${icon('close')}</button>
+      <img class="lightbox__img" alt="" decoding="async">
+    </dialog>
   </section>
 
   <section class="section section--last" id="promises" aria-labelledby="promises-title">

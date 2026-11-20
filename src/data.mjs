@@ -36,10 +36,21 @@ export const projects = [
     repo: 'claude-ai-supervisor',
     public: true,
     accent: '#6fb0f2',
-    chips: ['Python', 'macOS 14+', 'CLI + menu bar'],
-    code: ['Python'],
+    chips: ['Swift + Python', 'macOS 14+', 'Menu bar + CLI'], // the app's own About window credits Swift, SwiftUI and Python
+    code: ['Python', 'Swift'],
     layout: 'narrow',
     art: { kind: 'img', name: 'supervisor-cockpit', w: 1400, h: 984, small: 760, pos: '0% 0%', ratio: '3 / 2' },
+    // the screenshots from the project's README (wide = windows, tall = the menu-bar panel); captions live in copy.mjs
+    gallery: [
+      { name: 'sup-first-launch', kind: 'wide', thumb: 900, full: 1800, w: 1800, h: 1265 },
+      { name: 'sup-cockpit-lower', kind: 'wide', thumb: 900, full: 1800, w: 1800, h: 1265 },
+      { name: 'sup-stats', kind: 'wide', thumb: 900, full: 1800, w: 1800, h: 1265 },
+      { name: 'sup-tuning', kind: 'wide', thumb: 900, full: 1800, w: 1800, h: 1265 },
+      { name: 'sup-panel0', kind: 'tall', thumb: 480, full: 952, w: 952, h: 1392 },
+      { name: 'sup-panel1', kind: 'tall', thumb: 480, full: 952, w: 952, h: 1392 },
+      { name: 'sup-panel2', kind: 'tall', thumb: 480, full: 952, w: 952, h: 1392 },
+      { name: 'sup-about', kind: 'tall', thumb: 480, full: 960, w: 960, h: 1274 },
+    ],
   },
   {
     id: 'dock',
@@ -54,6 +65,7 @@ export const projects = [
     interfaceLanguages: 7,
     layout: 'wide',
     art: { kind: 'img', name: 'dock-banner', w: 1400, h: 467, small: 760, pos: '50% 50%', ratio: '3 / 1' },
+    gallery: [{ name: 'dock-screens', kind: 'svg', w: 960, h: 410 }],
   },
   {
     id: 'mobimount',

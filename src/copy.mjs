@@ -57,6 +57,8 @@ export default {
       lab: 'In the lab',
     },
     labels: { version: 'Version', status: 'Status' },
+    screenshots: 'Screenshots',
+    enlarge: 'enlarge',
     items: {
       castlebomb: {
         name: 'CastleBomb',
@@ -87,6 +89,16 @@ export default {
           'Claude AI Supervisor keeps an eye on every Claude Code project running on your Mac. It shows how much of your weekly quota each one is using, which agents are busy right now and when the quota resets, and it lets you change settings project by project. It’s a menu-bar app, the cockpit, sitting on top of a small command-line tool called <code>sup</code>.',
         artAlt:
           'The cockpit window: the weekly usage curve, the list of what Claude is doing right now, and the project controls, on a glass window over a purple wallpaper.',
+        gallery: [
+          'First launch: an assumed weekly window, clearly flagged as assumed, and a getting-started card.',
+          'The lower half of the cockpit: projects with their controls inline, and models with bulk actions.',
+          'The statistics tab.',
+          'One project’s AI settings, with the autopilot profiles.',
+          'The menu-bar panel, Projects tab.',
+          'The Running tab.',
+          'The Advice tab.',
+          'The About window.',
+        ],
         highlights: [
           ['See it all', 'The week and the 5-hour session, as <code>/usage</code> shows them, with a live countdown. Every session and sub-agent too: its task, model, tokens, speed and how full its context is.'],
           ['Split the week', 'Give each project a share of the quota with a draggable bar, and spot the ones that will run dry before the reset.'],
@@ -108,6 +120,8 @@ export default {
         summary:
           'macOS only shows its Dock on one display at a time. MacOS Dock puts a Dock-style bar on every other display, so your apps stay one click away wherever you’re working. The real Dock is left alone.',
         artAlt: 'MacOS Dock: a navy app icon with a silver gear, beside the chrome name, over a miniature of the bar.',
+        galleryLabel: 'How it works',
+        gallery: ['The real Dock stays on your main display. MacOS Dock keeps one on each of the others.'],
         highlights: [
           ['Liquid Glass', 'The same material as the macOS 26 Dock, with adjustable transparency (a plain blur on older systems) and a tint of your choice.'],
           ['Your apps are already there', 'Whatever is pinned in your Dock on first launch, plus everything that’s running, with a dot under the running ones.'],
