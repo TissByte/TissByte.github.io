@@ -167,6 +167,7 @@ export function renderPage(c, hashes) {
     slogan: c.footer.tagline,
     description: c.meta.description,
     sameAs: [site.orgUrl],
+    email: site.email,
     address: { '@type': 'PostalAddress', addressCountry: 'FR' },
     inLanguage: lang,
   };
@@ -325,6 +326,7 @@ export function renderPage(c, hashes) {
           <p class="eyebrow">${c.contact.eyebrow}</p>
           <h2 id="contact-title">${c.contact.title}</h2>
           <p>${c.contact.text}</p>
+          <p class="cta-panel__mail">${c.contact.mail} <a href="mailto:${site.email}">${site.email}</a></p>
         </div>
         <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.contact.cta}</span>${icon('out', 'icon--sm')}</a>
       </div>
