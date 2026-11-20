@@ -36,7 +36,8 @@ http
     try {
       const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
       let file = path.join(dist, p);
-      if (!file.startsWith(dist)) throw new Error('outside dist');
+      // stay strictly inside dist/ ("/a/dist-other" also starts with "/a/dist", so compare with a separator)
+      if (file !== dist && !file.startsWith(dist + path.sep)) throw new Error('outside dist');
       if ((await stat(file).catch(() => null))?.isDirectory()) file = path.join(file, 'index.html');
       const body = await readFile(file);
       res.writeHead(200, { 'content-type': types[path.extname(file)] || 'application/octet-stream', 'cache-control': 'no-store' });
@@ -47,7 +48,7 @@ http
       res.end(body);
     }
   })
-  .listen(port, () => console.log(`http://localhost:${port}`));
+  .listen(port, '127.0.0.1', () => console.log(`http://localhost:${port}`)); // this machine only, never the local network
 
 let timer;
 watch(path.join(root, 'src'), { recursive: true }, () => {

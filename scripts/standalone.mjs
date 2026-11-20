@@ -27,6 +27,7 @@ for (const rel of new Set(html.match(IMG) ?? [])) {
 html = html.replace(IMG, (rel) => uris.get(rel));
 
 html = html
+  .replace(/<meta http-equiv="Content-Security-Policy"[^>]*>\n?/, '') // this copy is inline by design, so the site's policy cannot apply
   .replace(/<link rel="preload"[^>]*>\n?/g, '') // preloading a data URI is pointless
   .replace(/<link rel="stylesheet" href="styles\.css[^"]*">/, () => `<style>${css}</style>`)
   .replace(/<script src="main\.js[^"]*" defer><\/script>/, () => `<script>${js}</script>`);

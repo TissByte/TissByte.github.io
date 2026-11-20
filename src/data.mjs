@@ -8,7 +8,10 @@ export const site = {
   url: 'https://tissbyte.github.io',
   org: 'TissByte',
   orgUrl: 'https://github.com/TissByte',
-  email: 'tissbyte@gmail.com', // the public contact address (shown in the "Find us" block and in the page metadata)
+  // The public contact address, kept in two halves on purpose: the page joins them in the browser, so neither the
+  // generated HTML nor this file contains a ready-made "name@domain" string for address harvesters to match.
+  emailUser: 'tissbyte',
+  emailDomain: 'gmail.com',
   year: 2026,
 };
 

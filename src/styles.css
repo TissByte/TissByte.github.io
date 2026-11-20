@@ -316,7 +316,7 @@ p, li { text-wrap: pretty; }
   position: relative; display: flex; justify-content: center; width: 100%;
   /* 3:1 when the width is the limit, shorter on short screens. The monogram is never cropped. */
   height: clamp(200px, min(33.34vw, 46vh), 620px);
-  /* the artwork's black melts into the living backdrop; only the chrome and the circuits stay opaque */
+  /* the artwork's black melts into the living backdrop; only the chrome monogram stays opaque */
   mix-blend-mode: lighten;
   /* scroll-driven (main.js): the banner recedes like an Apple product hero */
   transform: translate3d(calc(var(--px, 0) * 1px), calc(var(--sy, 0) * 1px + var(--py, 0) * 1px), 0) scale(var(--bs, 1));

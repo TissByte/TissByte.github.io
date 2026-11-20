@@ -69,6 +69,20 @@ The target is WCAG 2.2 AAA.
 - It works without JavaScript (the details show inline) and without `backdrop-filter` (opaque fallback).
 - One theme on purpose: dark, like the banner.
 
+## Security
+
+A static page with no backend, no accounts, no forms and no third-party code, so the attack surface is small. What is in place:
+
+- **Content-Security-Policy** (as a `<meta>`, since GitHub Pages can't set headers): only this site's own script and stylesheet, one inline script allowed by hash, images from this site and `data:`, no network requests, no fonts, no frames, no plugins, no forms, no `<base>`. Verified in a browser: an injected inline script, an external image and an iframe are all refused.
+- **No third-party requests at all**, no analytics, no cookies, no storage. The only outbound navigations are links the visitor clicks (GitHub, and "Open in Gmail", which carries `noopener noreferrer`).
+- **No injection paths.** All copy is written in this repository and escaped where it enters an attribute; the page's JavaScript never reads the URL, cookies or storage, never uses `eval`, and builds DOM from constants.
+- **Contact address.** Not present as a ready-made `name@domain` string in the HTML or in the source, so address harvesters find nothing. (It is of course public once the page runs.)
+- **CI.** The workflow has no secrets and no dependencies to install; third-party actions are pinned to commit SHAs (Dependabot keeps them current); permissions are none by default, the build job is read-only so a pull request can never publish, and a pull-request run can't cancel a production deploy.
+- **Dev server** listens on `127.0.0.1` only and refuses paths outside `dist/`.
+- **Repository hygiene.** The history carries one identity (the GitHub no-reply address) and no secrets or personal data; images are re-encoded to strip metadata; `.claude/` and the standalone export are git-ignored.
+
+Not possible on GitHub Pages: response headers such as `X-Frame-Options` / `frame-ancestors` (so the page can be framed by another site), HSTS (GitHub enforces HTTPS, and a custom domain can use a CDN to add headers).
+
 ## Deploy
 
 Pushing to `main` deploys. The repository is `TissByte/TissByte.github.io` (that name is what makes it the organisation site), with **Settings, Pages, Source: GitHub Actions**.

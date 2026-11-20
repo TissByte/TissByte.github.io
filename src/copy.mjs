@@ -31,7 +31,7 @@ export default {
     lead: 'We make Mac tools and games for the fun of it, and to make our own days a bit easier.',
     ctaGithub: 'Find us on GitHub',
     ctaContact: 'Contact us',
-    bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background traced with fine circuit lines.',
+    bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background.',
     stats: [
       { value: '{projects}', label: 'projects on the bench' },
       { value: '{languages}', label: 'programming languages: {languageList}' },
