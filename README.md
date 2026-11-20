@@ -89,7 +89,7 @@ Pushing to `main` deploys. The repository is `TissByte/TissByte.github.io` (that
 
 ## Image sources
 
-All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. The CastleBomb picture is the one in that project's README.
+All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. The CastleBomb picture is the one in that project's README. MacOS Dock and MobiMount have no screenshots in their repositories, so their sheets carry **illustrations** (labelled as such): the Dock bar and the MobiMount flow are drawn for this site as SVG, and the two-display schematic is the Dock project's own. Real screenshots can replace them: add the files to `src/assets/gallery/`, list them under `gallery` in `data.mjs` and give each a caption in `copy.mjs`.
 
 Project facts were checked against each repository, its release tags and its changelog. Where a README lags behind, the tag and the changelog win.
 

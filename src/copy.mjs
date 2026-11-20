@@ -120,8 +120,11 @@ export default {
         summary:
           'macOS only shows its Dock on one display at a time. MacOS Dock puts a Dock-style bar on every other display, so your apps stay one click away wherever you’re working. The real Dock is left alone.',
         artAlt: 'MacOS Dock: a navy app icon with a silver gear, beside the chrome name, over a miniature of the bar.',
-        galleryLabel: 'How it works',
-        gallery: ['The real Dock stays on your main display. MacOS Dock keeps one on each of the others.'],
+        galleryLabel: 'Illustrations',
+        gallery: [
+          'The bar: icons grow under the pointer, a dot marks the running apps, badges show up, a folder fans out as a stack, and the gear opens every setting.',
+          'The real Dock stays on your main display. MacOS Dock keeps one on each of the others.',
+        ],
         highlights: [
           ['Liquid Glass', 'The same material as the macOS 26 Dock, with adjustable transparency (a plain blur on older systems) and a tint of your choice.'],
           ['Your apps are already there', 'Whatever is pinned in your Dock on first launch, plus everything that’s running, with a dot under the running ones.'],
@@ -143,6 +146,8 @@ export default {
         summary:
           'macOS can’t talk to an Android phone out of the box. Phones share files over MTP (a file-transfer protocol) rather than as a plain disk, and mounting one in Finder normally takes a FUSE kernel extension, which is a real security trade-off. MobiMount skips that. It installs OpenMTP, an open-source app that speaks MTP in plain user space, and you drag files between two panes, a bit like a small Finder.',
         artAlt: 'The MobiMount icon: a blue phone connected by a cable to a blue folder with a drive symbol.',
+        galleryLabel: 'Illustration',
+        gallery: ['How it works: the phone talks MTP to OpenMTP, which lists the phone and your Mac side by side. Drag a file from one pane to the other.'],
         highlights: [
           ['One command in, one out', '<code>install.sh</code> installs OpenMTP. <code>uninstall.sh</code> removes it along with its saved preferences.'],
           ['No admin password', 'OpenMTP is a regular signed app installed with Homebrew. Nothing needs <code>sudo</code>.'],
