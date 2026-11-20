@@ -206,7 +206,7 @@ function contactMenu(c) {
   const L = c.contact;
   const labels = { label: L.label, write: L.write, copy: L.copy, copied: L.copied, gmail: L.gmail, subject: L.subject };
   return `<span class="contact" data-contact data-u="${user}" data-d="${domain}" data-labels="${esc(JSON.stringify(labels))}">
-          <button class="btn btn--glass contact__btn" type="button" data-lens aria-expanded="false" aria-controls="contact-panel" aria-haspopup="true">${icon('mail')}<span>${c.hero.ctaContact}</span></button>
+          <button class="btn btn--tint contact__btn" type="button" data-lens aria-expanded="false" aria-controls="contact-panel" aria-haspopup="true">${icon('mail')}<span>${c.hero.ctaContact}</span></button>
           <span class="contact__plain">${L.plain} ${user} [at] ${domain.replace(/\./g, ' [dot] ')}</span>
           <div class="contact__panel glass glass--strong" id="contact-panel" role="group" aria-label="${esc(L.label)}" hidden></div>
         </span>`;
