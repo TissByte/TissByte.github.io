@@ -16,17 +16,14 @@ export function fmt(str, vars) {
 const A = '/assets/';
 
 const ICONS = {
+  arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="m4 8 8 5.8L20 8"/>',
   chip: '<rect x="7" y="7" width="10" height="10" rx="2.2"/><path d="M9.5 3v2.5M14.5 3v2.5M9.5 18.5V21M14.5 18.5V21M3 9.5h2.5M3 14.5h2.5M18.5 9.5H21M18.5 14.5H21"/>',
   lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/><path d="M12 14.5v2"/>',
   check: '<circle cx="12" cy="12" r="9"/><path d="m8.2 12.4 2.6 2.6 5-5.4"/>',
   flask: '<path d="M9.5 3h5M10.5 3v5.6L5 18.2A1.8 1.8 0 0 0 6.6 21h10.8a1.8 1.8 0 0 0 1.6-2.8l-5.5-9.6V3"/><path d="M7.8 15h8.4"/>',
-  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.8 3.9 5.8 3.9 9S14.600 18.200 12 21c-2.600-2.800-3.900-5.800-3.900-9S9.400 5.800 12 3Z"/>',
-  people:
-    '<circle cx="9" cy="8.500" r="3.200"/><path d="M3.200 19.500c.5-3.400 2.800-5.300 5.800-5.300s5.300 1.900 5.800 5.300"/><circle cx="17.200" cy="9.500" r="2.300"/><path d="M16.400 14.400c2.700-.4 4.700 1.200 5.200 4.200"/>',
-  arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
   out: '<path d="M7 17 17 7"/><path d="M8.500 7H17v8.500"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
-  menu: '<path d="M4 8h16M4 16h16"/>',
   lockSm: '<rect x="5" y="10.500" width="14" height="10" rx="2.400"/><path d="M8.500 10.500V8a3.500 3.500 0 0 1 7 0v2.500"/>',
 };
 const icon = (name, cls = '') =>
@@ -106,10 +103,9 @@ function card(p, c, studioStepTitles) {
 
 function specRows(p, c, t, vars) {
   const L = c.projects;
-  const rows = [[L.labels.status, L.statuses[p.status]]];
-  if (p.version) {
-    rows.push([t.versionLabel || L.labels.version, `v${p.version}${t.versionNote ? ` · ${t.versionNote}` : ''}`]);
-  }
+  // Status and version are already in the chips above the title: only repeat the version when it needs a note.
+  const rows = [];
+  if (p.version && t.versionNote) rows.push([t.versionLabel || L.labels.version, `v${p.version}, ${t.versionNote}`]);
   for (const [k, v] of t.specs) rows.push([k, fmt(v, vars)]);
   return rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
 }
@@ -155,7 +151,7 @@ export function renderPage(c, hashes) {
   const lang = c.lang;
   const vars = { ...derived };
   const canonical = site.url + '/';
-  const studioTitles = c.studio.steps.map((s) => s.title);
+  const studioTitles = c.projects.items.studio.pipeline; // labels of the studio's pipeline diagram
   const ogImage = `${site.url}${A}og-image.jpg`;
 
   const jsonLd = {
@@ -164,7 +160,7 @@ export function renderPage(c, hashes) {
     name: site.org,
     url: site.url + '/',
     logo: `${site.url}${A}icon-192.png`,
-    slogan: c.footer.tagline,
+    slogan: `${c.hero.title1} ${c.hero.title2}`,
     description: c.meta.description,
     sameAs: [site.orgUrl],
     email: site.email,
@@ -199,7 +195,6 @@ export function renderPage(c, hashes) {
 <link rel="icon" type="image/png" sizes="32x32" href="${A}favicon-32.png">
 <link rel="apple-touch-icon" href="${A}apple-touch-icon.png">
 <link rel="preload" as="image" href="${A}banner-1800.webp" type="image/webp" fetchpriority="high">
-<link rel="preload" as="font" type="font/woff2" href="${A}fonts/pinyon-script-latin-400.woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -214,14 +209,10 @@ export function renderPage(c, hashes) {
 
 <header class="nav-wrap">
   <nav class="nav" aria-label="${c.a11y.mainNav}" data-nav>
-    <a class="wordmark" href="#top" aria-label="${esc(c.a11y.home)}">
-      <span class="wordmark__text" aria-hidden="true">${site.org}</span>
-      <svg class="wordmark__swash" viewBox="0 0 172 16" aria-hidden="true" focusable="false"><defs><linearGradient id="tb-swash" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#dcb878" stop-opacity=".15"/><stop offset=".4" stop-color="#fff3d4"/><stop offset="1" stop-color="#f7e2b4" stop-opacity=".9"/></linearGradient></defs><path fill="url(#tb-swash)" d="M2 11C20 6 52 3.4 92 4.2c32 .6 56 2 76-2-18 7-44 8.2-76 8.4C54 10.8 24 12.6 2 11Z"/></svg>
-    </a>
     <ul class="nav__links">
+      <li><a href="#top">${c.nav.home}</a></li>
       <li><a href="#projects">${c.nav.projects}</a></li>
-      <li><a href="#approach">${c.nav.approach}</a></li>
-      <li><a href="#studio">${c.nav.studio}</a></li>
+      <li><a href="#promises">${c.nav.principles}</a></li>
     </ul>
     <span class="nav__dot" aria-hidden="true"></span>
   </nav>
@@ -234,10 +225,6 @@ export function renderPage(c, hashes) {
       <div class="hero__banner" data-parallax>
         <div class="hero__art">
           <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
-          <div class="hero__traces" aria-hidden="true">
-            <img src="${A}banner-traces.webp" width="1800" height="600" alt="" decoding="async">
-            <img class="pulse" src="${A}banner-traces.webp" width="1800" height="600" alt="" decoding="async">
-          </div>
           <span class="hero__sheen" aria-hidden="true"></span>
         </div>
       </div>
@@ -247,8 +234,8 @@ export function renderPage(c, hashes) {
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
-        <a class="btn btn--metal" href="#projects"><span>${c.hero.ctaPrimary}</span>${icon('arrow')}</a>
-        <a class="btn btn--glass" data-lens href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaSecondary}</span></a>
+        <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
+        <a class="btn btn--glass" data-lens href="mailto:${site.email}" title="${site.email}">${icon('mail')}<span>${c.hero.ctaContact}</span></a>
       </div>
     </div>
     <div class="container">
@@ -271,65 +258,20 @@ export function renderPage(c, hashes) {
     ${dialogsHtml}
   </section>
 
-  <section class="section" id="approach" aria-labelledby="approach-title">
+  <section class="section section--last" id="promises" aria-labelledby="promises-title">
     <div class="container">
-      <header class="section-head reveal">
-        <p class="eyebrow">${c.approach.eyebrow}</p>
-        <h2 id="approach-title">${c.approach.title}</h2>
-        <p class="section-intro">${c.approach.intro}</p>
-      </header>
-      <ul class="tiles">
-        ${c.approach.items
+      <h2 id="promises-title" class="sr-only">${c.promises.title}</h2>
+      <ul class="promises glass reveal">
+        ${c.promises.items
           .map(
-            (it, i) => `<li class="tile glass reveal" style="--d:${(i % 3) * 80}ms">
+            (it) => `<li>
           <span class="roundel">${icon(it.icon)}</span>
           <h3>${it.title}</h3>
           <p>${fmt(it.text, vars)}</p>
-          ${it.link ? `<a class="tile__link" href="${it.link.href}"><span>${it.link.label}</span>${icon('arrow', 'icon--sm')}</a>` : ''}
         </li>`,
           )
           .join('')}
       </ul>
-    </div>
-  </section>
-
-  <section class="section" id="studio" aria-labelledby="studio-title">
-    <div class="container">
-      <header class="section-head reveal">
-        <p class="eyebrow">${c.studio.eyebrow}</p>
-        <h2 id="studio-title">${c.studio.title}</h2>
-        <p class="section-intro">${c.studio.intro}</p>
-      </header>
-      <ul class="stats stats--studio glass reveal">
-        ${c.studio.stats.map((s) => `<li><strong>${s.value}</strong><span>${s.label}</span></li>`).join('')}
-      </ul>
-      <ol class="steps" aria-label="${esc(c.studio.stepsLabel)}">
-        ${c.studio.steps
-          .map(
-            (s, i) => `<li class="step glass reveal" style="--d:${i * 70}ms">
-          <span class="step__num" aria-hidden="true">${i + 1}</span>
-          <h3>${s.title}</h3>
-          <p>${s.text}</p>
-        </li>`,
-          )
-          .join('')}
-      </ol>
-      <p class="studio__note reveal">${c.studio.note}</p>
-    </div>
-  </section>
-
-  <section class="section section--last" id="contact" aria-labelledby="contact-title">
-    <div class="container">
-      <div class="cta-panel glass glass--strong reveal">
-        <img class="cta-panel__mark" src="${A}mark-480.webp" width="240" height="160" alt="" loading="lazy" decoding="async">
-        <div class="cta-panel__copy">
-          <p class="eyebrow">${c.contact.eyebrow}</p>
-          <h2 id="contact-title">${c.contact.title}</h2>
-          <p>${c.contact.text}</p>
-          <p class="cta-panel__mail">${c.contact.mail} <a href="mailto:${site.email}">${site.email}</a></p>
-        </div>
-        <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.contact.cta}</span>${icon('out', 'icon--sm')}</a>
-      </div>
     </div>
   </section>
 
@@ -337,21 +279,8 @@ export function renderPage(c, hashes) {
 
 <footer class="footer">
   <div class="tricolor-line" aria-hidden="true"></div>
-  <div class="container footer__grid">
-    <div class="footer__brand">
-      <img src="${A}mark-160.webp" width="81" height="54" alt="" loading="lazy" decoding="async">
-      <p>${c.footer.tagline}</p>
-    </div>
-    <p class="footer__privacy">${c.footer.privacy}</p>
-    <ul class="footer__links">
-      <li><a href="#projects">${c.nav.projects}</a></li>
-      <li><a href="#approach">${c.nav.approach}</a></li>
-      <li><a href="#studio">${c.nav.studio}</a></li>
-      <li><a href="${site.orgUrl}">${c.nav.github}</a></li>
-    </ul>
-  </div>
   <div class="container footer__base">
-    <span>${fmt(c.footer.rights, vars)}</span>
+    <span class="footer__mark"><img src="${A}mark-160.webp" width="54" height="36" alt="" loading="lazy" decoding="async"><span>${fmt(c.footer.rights, vars)}</span></span>
     <span class="madein">${tricolor}<span>${c.footer.madeIn}</span></span>
     <a href="#top">${c.footer.top}</a>
   </div>

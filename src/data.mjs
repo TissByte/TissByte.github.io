@@ -32,7 +32,7 @@ export const projects = [
     id: 'supervisor',
     kind: 'app',
     status: 'released',
-    version: '0.2.0',
+    version: '0.2.1',
     repo: 'claude-ai-supervisor',
     public: true,
     accent: '#6fb0f2',

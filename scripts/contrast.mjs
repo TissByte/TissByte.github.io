@@ -96,6 +96,18 @@ const onGlassStrong = (b) => {
   return over([255, 255, 255], WHITE_IN_TEXT_AREA, base);
 };
 
+// Section surfaces (#projects, #approach, #studio, #contact): a dark wash of >= .22 alpha under a texture whose
+// brightest line is <= .085 white alpha. Text on bare page inside those sections, and glass above them.
+const WASH = 0.22;
+const TEXTURE = 0.085;
+const onSection = (b) => over([255, 255, 255], TEXTURE, over([0, 0, 0], WASH, b));
+const onSectionGlass = (b) => onGlass(over([0, 0, 0], WASH, b));
+add('ink on a textured section', T.ink, onSection, 7);
+add('ink-2 on a textured section', T.ink2, onSection, 7);
+add('champagne on a textured section', T.champagne, onSection, 7);
+add('ink-2 on glass over a textured section', T.ink2, onSectionGlass, 7);
+add('headline (large) on a textured section', T.heroLow, onSection, 4.5);
+
 add('ink on page', T.ink, onPage, 7);
 add('ink-2 on page', T.ink2, onPage, 7);
 add('champagne (eyebrows, links) on page', T.champagne, onPage, 7);

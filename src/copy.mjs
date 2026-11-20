@@ -11,7 +11,7 @@ export default {
   meta: {
     title: 'TissByte — Hand-woven software. Built for fun.',
     description:
-      'TissByte is a small software workshop in France. We make Mac tools and games: CastleBomb, Claude AI Supervisor, MacOS Dock and MobiMount.',
+      'TissByte is a small software initiative from France. We make Mac tools and games: CastleBomb, Claude AI Supervisor, MacOS Dock and MobiMount.',
     ogAlt: 'TissByte: a chrome italic “TB” monogram on a black background.',
   },
 
@@ -19,19 +19,18 @@ export default {
     skip: 'Skip to content',
     mainNav: 'Main navigation',
     close: 'Close',
-    home: 'TissByte, back to the top',
     details: 'More about {name}',
   },
 
-  nav: { projects: 'Projects', approach: 'How we work', studio: 'Studio', github: 'GitHub' },
+  nav: { home: 'Home', projects: 'Projects', principles: 'Principles' },
 
   hero: {
-    eyebrow: 'A small workshop in France',
+    eyebrow: 'A small software initiative',
     title1: 'Hand-woven software.',
     title2: 'Built for fun.',
     lead: 'We make Mac tools and games for the fun of it, and to make our own days a bit easier.',
-    ctaPrimary: 'See what we make',
-    ctaSecondary: 'Find us on GitHub',
+    ctaGithub: 'Find us on GitHub',
+    ctaContact: 'Contact us',
     bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background traced with fine circuit lines.',
     stats: [
       { value: '{projects}', label: 'projects on the bench' },
@@ -41,7 +40,7 @@ export default {
   },
 
   projects: {
-    eyebrow: 'The workshop',
+    eyebrow: 'Projects',
     title: 'What’s on the bench.',
     intro: 'Two apps, a game, a small utility and an experiment. All of it starts from the Mac.',
     more: 'More',
@@ -148,6 +147,7 @@ export default {
         summary:
           'A set of specialised agent roles with one shared process and a quality bar, making games under the direction of a human. It lives inside CastleBomb for now, and will get its own repository once a second project needs it.',
         artAlt: 'A diagram of the studio pipeline in six steps: direct, build, review, gate, sign off and merge.',
+        pipeline: ['Direct', 'Build', 'Review', 'Gate', 'Sign off', 'Merge'],
         highlights: [
           ['The owner decides', 'A human sets the direction and picks between rendered options. The studio challenges, designs, builds, reviews and ships.'],
           ['Lots of roles', 'Around sixty: directors, designers, artists, programmers, reviewers, <abbr title="quality assurance">QA</abbr> and judges, each with its own instructions, tools and model.'],
@@ -163,78 +163,34 @@ export default {
     },
   },
 
-  approach: {
-    eyebrow: 'How we work',
-    title: 'A few habits.',
-    intro: 'They show up in every project, whether we planned it or not.',
+  // The closing strip: what you can count on. Privacy first, on purpose.
+  promises: {
+    title: 'How our software behaves',
     items: [
+      {
+        icon: 'lock',
+        title: 'Nothing phones home',
+        text: 'Our apps never open a network connection. If they change something on your Mac they tell you first, and uninstalling removes everything.',
+      },
       {
         icon: 'chip',
         title: 'Native, and light',
         text: 'Swift and AppKit, built with Apple’s Command Line Tools, so there’s no Xcode to install. When a script will do, it’s plain Python with no dependencies.',
       },
       {
-        icon: 'lock',
-        title: 'Nothing phones home',
-        text: 'MacOS Dock and Claude AI Supervisor never open a network connection. If they change something on your Mac, they show you first. Uninstalling removes everything.',
-      },
-      {
         icon: 'check',
         title: 'We say what doesn’t work',
-        text: 'Every README has a section on limits. Our builds are signed ad hoc rather than notarized, and we tell you so up front, with the exact steps to open them.',
+        text: 'Every README has a section on limits. Our builds are signed ad hoc rather than notarized, and we tell you so up front, with the steps to open them.',
       },
       {
         icon: 'flask',
         title: 'Tested before we show it',
-        text: 'The game’s rules sit in a plain, deterministic engine with headless unit tests and computer-versus-computer balance runs. In the game’s code, a warning counts as an error.',
-      },
-      {
-        icon: 'globe',
-        title: 'Your language, if we can',
-        text: 'MacOS Dock speaks {dockLanguages} languages. Claude AI Supervisor speaks English and French.',
-      },
-      {
-        icon: 'people',
-        title: 'A human in charge',
-        text: 'A person sets the direction. A studio of specialised <abbr title="artificial intelligence">AI</abbr> agents does the building, the reviewing and the gatekeeping.',
-        link: { href: '#studio', label: 'Meet the studio' },
+        text: 'The game’s rules sit in a deterministic engine with unit tests and computer-versus-computer balance runs. In the game’s code, a warning counts as an error.',
       },
     ],
-  },
-
-  studio: {
-    eyebrow: 'The studio',
-    title: 'Lots of agents, one human.',
-    intro:
-      'Our game studio is a set of specialised AI roles, one shared process and a visual quality bar. It’s being worked out inside CastleBomb, and it will move into its own repository when a second game needs it.',
-    stepsLabel: 'The pipeline, step by step',
-    steps: [
-      { title: 'Direct', text: 'A human sets the direction and chooses between rendered options.' },
-      { title: 'Build', text: 'A specialised role does the work, with its own instructions, tools and model.' },
-      { title: 'Review', text: 'A different role reviews it. Nothing merges on the builder’s say-so.' },
-      { title: 'Gate', text: 'A local merge gate checks the exact commit: tests, lint, privacy and offline checks.' },
-      { title: 'Sign off', text: 'A studio chief signs off. Visual work ships at 9 out of 10 against the image bank, or it doesn’t ship.' },
-      { title: 'Merge', text: 'One squash-merged pull request lands the change.' },
-    ],
-    stats: [
-      { value: '≈ 60', label: 'specialised roles' },
-      { value: '9/10', label: 'minimum visual score to ship' },
-      { value: '1', label: 'human who decides' },
-    ],
-    note: 'We keep it lean: short reviews that only look at what changed, a single judge until the score reaches 8, and token budgets tracked every day.',
-  },
-
-  contact: {
-    eyebrow: 'Find us',
-    title: 'Come and have a look.',
-    text: 'Everything TissByte makes lives on GitHub.',
-    mail: 'Want to get in touch? Write to',
-    cta: 'TissByte on GitHub',
   },
 
   footer: {
-    tagline: 'Hand-woven software. Built for fun.',
-    privacy: 'No cookies, no analytics, no third-party requests.',
     madeIn: 'Made in France',
     rights: '© {year} TissByte',
     top: 'Back to top',
