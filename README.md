@@ -14,6 +14,7 @@ Needs Node 20 or later. There's nothing to `npm install`.
 npm run dev        # build, serve on http://localhost:4173, rebuild on every change in src/
 npm run build      # build once into dist/
 npm run contrast   # WCAG 2.2 AAA contrast audit of the design tokens
+npm run standalone # one self-contained HTML file, images inlined as base64, in standalone/ (not deployed)
 ```
 
 ## Where things live
@@ -28,6 +29,7 @@ npm run contrast   # WCAG 2.2 AAA contrast audit of the design tokens
 | `src/assets/` | Optimised images (see below). |
 | `scripts/build.mjs` | `src/` to `dist/`, plus the consistency checks. |
 | `scripts/contrast.mjs` | The contrast audit CI runs. |
+| `scripts/standalone.mjs` | Exports the built page as a single HTML file with every image inlined, for sharing or previewing anywhere. |
 | `.github/workflows/pages.yml` | Build, audit, deploy. |
 
 ## Keeping it consistent
@@ -49,6 +51,8 @@ Anything shown in several places (project count, language list, the Dock's numbe
 - **Something for the glass to bend.** Slow-drifting halos in the banner's colours and the French tricolour (blue, red, brass), and a faint light that trails the pointer.
 - **The banner.** The organisation banner is shown whole, never cropped, and a slow highlight sweeps across the monogram from right to left.
 - **Navigation.** No bar, no logo: a centred menu (Home, Projects, Principles). The section you're reading turns champagne and a small light glides under its entry. A soft scrim fades in behind it as you scroll so it stays readable.
+- **Contact.** "Contact us" opens a small menu: write an email, copy the address (with a confirmation) or open it in Gmail. The address is never written in the HTML: `data.mjs` holds it, the page splits it into two attributes and `main.js` joins them, so address harvesters find nothing. Without JavaScript a plain "name [at] domain [dot] com" line takes over.
+- **Portable by design.** Every URL in the page is relative, so `dist/` works from any folder, from a `file://` path and under a sub-path, with no image repository or CDN involved. All images live in this repository, copied from the projects' own repos (including private ones) at authoring time, so the site never depends on those repos being reachable. A base64-inlined single file exists as an export (`npm run standalone`) but not as the live format: inlined images can't be cached or loaded in parallel and make the page about a third heavier.
 - **Screenshots.** A project's detail sheet can carry the screenshots from its own README (Claude AI Supervisor has eight, MacOS Dock its two-display illustration). They're lazy-loaded thumbnails; click one to see it full size. Add them under `gallery` in `data.mjs` and put one caption each in `copy.mjs` (the build checks the counts match).
 - **Section surfaces.** Each section has its own texture so you always know where you are: a drafting grid for the projects and engraved rings for the closing strip, each with a tint and a hairline with a lit node at the top. Pure CSS, kept inside the contrast budget.
 - **Motion with a purpose.** Words rise into the headline one after another, the banner recedes as you scroll, cards tilt a few degrees toward the pointer, and a project's artwork flies from its card into the detail sheet (View Transitions) and back.

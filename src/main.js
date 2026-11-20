@@ -182,6 +182,100 @@
     root.classList.remove('js'); // very old browsers: details show inline, as in the no-JS version
   }
 
+  /* ---------------------------------------------------------- contact: write, copy, or open in Gmail
+     The address is never in the HTML; it is joined here from two data attributes (nothing for harvesters to find). */
+  const contact = $('[data-contact]');
+  if (contact) {
+    const addr = `${contact.dataset.u}@${contact.dataset.d}`;
+    const L = JSON.parse(contact.dataset.labels);
+    const btn = $('.contact__btn', contact);
+    const NS = 'http://www.w3.org/2000/svg';
+    const ICON = {
+      mail: '<rect x="3" y="5" width="18" height="14" rx="2.6"/><path d="m4 8 8 5.8L20 8"/>',
+      copy: '<rect x="8" y="8" width="12" height="12" rx="2.4"/><path d="M16 8V6.6A2.6 2.6 0 0 0 13.4 4H6.6A2.6 2.6 0 0 0 4 6.6v6.8A2.6 2.6 0 0 0 6.6 16H8"/>',
+      check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+      out: '<path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/>',
+    };
+    const icon = (name) => {
+      const s = document.createElementNS(NS, 'svg');
+      s.setAttribute('viewBox', '0 0 24 24');
+      s.setAttribute('class', 'icon');
+      s.setAttribute('fill', 'none');
+      s.setAttribute('stroke', 'currentColor');
+      s.setAttribute('stroke-width', '1.7');
+      s.setAttribute('stroke-linecap', 'round');
+      s.setAttribute('stroke-linejoin', 'round');
+      s.setAttribute('aria-hidden', 'true');
+      s.innerHTML = ICON[name];
+      return s;
+    };
+    const action = (tag, name, label) => {
+      const el = document.createElement(tag);
+      el.className = 'contact__act';
+      el.append(icon(name), Object.assign(document.createElement('span'), { textContent: label }));
+      return el;
+    };
+
+    const panel = $('#contact-panel', contact); // an empty, hidden container from the HTML; filled here
+
+    const shown = Object.assign(document.createElement('p'), { className: 'contact__addr', textContent: addr });
+    const write = action('a', 'mail', L.write);
+    write.href = `mailto:${addr}?subject=${encodeURIComponent(L.subject)}`;
+    const copy = action('button', 'copy', L.copy);
+    copy.type = 'button';
+    const gmail = action('a', 'out', L.gmail);
+    gmail.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(addr)}&su=${encodeURIComponent(L.subject)}`;
+    gmail.target = '_blank';
+    gmail.rel = 'noopener noreferrer';
+    const status = Object.assign(document.createElement('p'), { className: 'sr-only' });
+    status.setAttribute('role', 'status');
+    panel.append(shown, write, copy, gmail, status);
+
+    const setOpen = (open) => {
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', () => setOpen(panel.hidden));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        btn.focus();
+      }
+    });
+    document.addEventListener('pointerdown', (e) => {
+      if (!panel.hidden && !contact.contains(e.target)) setOpen(false);
+    });
+    contact.addEventListener('focusout', (e) => {
+      if (!panel.hidden && e.relatedTarget && !contact.contains(e.relatedTarget)) setOpen(false);
+    });
+
+    const flash = () => {
+      const label = copy.querySelector('span');
+      copy.querySelector('svg').replaceWith(icon('check'));
+      label.textContent = L.copied;
+      status.textContent = L.copied;
+      setTimeout(() => {
+        copy.querySelector('svg').replaceWith(icon('copy'));
+        label.textContent = L.copy;
+        status.textContent = '';
+      }, 2200);
+    };
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(addr);
+      } catch {
+        // older browsers / insecure context: select the address so Cmd/Ctrl+C works
+        const r = document.createRange();
+        r.selectNodeContents(shown);
+        const sel = getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+        try { document.execCommand('copy'); } catch { /* the address stays selected */ }
+      }
+      flash();
+    });
+  }
+
   /* ---------------------------------------------------------- liquid light: edge + spotlight follow the pointer, cards tilt */
   if (finePointer.matches && !reduceMotion.matches) {
     let target = null;

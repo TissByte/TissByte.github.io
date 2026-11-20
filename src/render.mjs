@@ -13,7 +13,7 @@ export function fmt(str, vars) {
   });
 }
 
-const A = '/assets/';
+const A = 'assets/'; // relative on purpose: the page works from any folder, from a file:// path, or under a sub-path
 
 const ICONS = {
   arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
@@ -175,24 +175,39 @@ function gallery(p, c, t) {
           </section>`;
 }
 
+/**
+ * The contact entry. The address is NOT written in the HTML: it is split in two data attributes and joined by
+ * main.js, so address harvesters find nothing. The button opens a small menu (write, copy, open in Gmail).
+ * Without JavaScript a plain "name [at] domain [dot] com" line takes its place.
+ */
+function contactMenu(c) {
+  const [user, domain] = site.email.split('@');
+  const L = c.contact;
+  const labels = { label: L.label, write: L.write, copy: L.copy, copied: L.copied, gmail: L.gmail, subject: L.subject };
+  return `<span class="contact" data-contact data-u="${user}" data-d="${domain}" data-labels="${esc(JSON.stringify(labels))}">
+          <button class="btn btn--glass contact__btn" type="button" data-lens aria-expanded="false" aria-controls="contact-panel" aria-haspopup="true">${icon('mail')}<span>${c.hero.ctaContact}</span></button>
+          <span class="contact__plain">${L.plain} ${user} [at] ${domain.replace(/\./g, ' [dot] ')}</span>
+          <div class="contact__panel glass glass--strong" id="contact-panel" role="group" aria-label="${esc(L.label)}" hidden></div>
+        </span>`;
+}
+
 // ---------------------------------------------------------------- page
 export function renderPage(c, hashes) {
   const lang = c.lang;
   const vars = { ...derived };
   const canonical = site.url + '/';
   const studioTitles = c.projects.items.studio.pipeline; // labels of the studio's pipeline diagram
-  const ogImage = `${site.url}${A}og-image.jpg`;
+  const ogImage = `${site.url}/assets/og-image.jpg`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: site.org,
     url: site.url + '/',
-    logo: `${site.url}${A}icon-192.png`,
+    logo: `${site.url}/assets/icon-192.png`,
     slogan: `${c.hero.title1} ${c.hero.title2}`,
     description: c.meta.description,
     sameAs: [site.orgUrl],
-    email: site.email,
     address: { '@type': 'PostalAddress', addressCountry: 'FR' },
     inLanguage: lang,
   };
@@ -224,7 +239,7 @@ export function renderPage(c, hashes) {
 <link rel="icon" type="image/png" sizes="32x32" href="${A}favicon-32.png">
 <link rel="apple-touch-icon" href="${A}apple-touch-icon.png">
 <link rel="preload" as="image" href="${A}banner-1800.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="/styles.css?v=${hashes.css}">
+<link rel="stylesheet" href="styles.css?v=${hashes.css}">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
@@ -264,7 +279,7 @@ export function renderPage(c, hashes) {
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
         <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
-        <a class="btn btn--glass" data-lens href="mailto:${site.email}" title="${site.email}">${icon('mail')}<span>${c.hero.ctaContact}</span></a>
+        ${contactMenu(c)}
       </div>
     </div>
     <div class="container">
@@ -319,7 +334,7 @@ export function renderPage(c, hashes) {
   </div>
 </footer>
 
-<script src="/main.js?v=${hashes.js}" defer></script>
+<script src="main.js?v=${hashes.js}" defer></script>
 </body>
 </html>
 `;
@@ -335,14 +350,14 @@ export function renderNotFound(c, hashes) {
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0f0e0c">
-<link rel="icon" type="image/png" sizes="32x32" href="${A}favicon-32.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">
 </head>
 <body>
 <div class="backdrop" aria-hidden="true"><span class="orb orb--navy"></span><span class="orb orb--red"></span><span class="orb orb--brass"></span><span class="grain"></span></div>
 <main class="lost" id="main">
   <div class="lost__panel glass glass--strong">
-    <img src="${A}mark-480.webp" width="240" height="160" alt="">
+    <img src="/assets/mark-480.webp" width="240" height="160" alt="">
     <h1>${c.notFound.heading}</h1>
     <p>${c.notFound.text}</p>
     <a class="btn btn--metal" href="/">${c.notFound.cta}</a>

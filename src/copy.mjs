@@ -177,6 +177,17 @@ export default {
     },
   },
 
+  // The contact menu behind the "Contact us" button.
+  contact: {
+    label: 'Contact options',
+    write: 'Write an email',
+    copy: 'Copy the address',
+    copied: 'Address copied',
+    gmail: 'Open in Gmail',
+    subject: 'Hello TissByte',
+    plain: 'Contact us:',
+  },
+
   // The closing strip: what you can count on. Privacy first, on purpose.
   promises: {
     title: 'How our software behaves',
