@@ -115,6 +115,12 @@ const onTintButton = (b) => {
 };
 add('ink on the tinted button', T.ink, onTintButton, 7);
 
+// the EN | FR switch: a dark pill (.78 over the page), the current language on a champagne wash (.14)
+const onLangPill = (b) => over([15, 14, 12], 0.78, b);
+const onLangCurrent = (b) => over([247, 226, 180], 0.14, onLangPill(b));
+add('ink-2 on the language pill', T.ink2, onLangPill, 7);
+add('champagne on the current language', T.champagne, onLangCurrent, 7);
+
 add('ink on page', T.ink, onPage, 7);
 add('ink-2 on page', T.ink2, onPage, 7);
 add('champagne (eyebrows, links) on page', T.champagne, onPage, 7);

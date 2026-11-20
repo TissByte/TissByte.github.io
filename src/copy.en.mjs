@@ -1,4 +1,4 @@
-// All the words on the site (English only). Values are trusted HTML written here: only <abbr>, <code>, <em>, <strong>, &amp; are used.
+// English copy. Values are trusted HTML written here: only <abbr>, <code>, <em>, <strong>, &amp; are used.
 // Placeholders: {projects} {languages} {languageList} {dockLanguages} {year} {version} {name}
 // Facts (versions, counts, platforms) come from data.mjs; never retype them here.
 //
@@ -6,7 +6,6 @@
 
 export default {
   lang: 'en',
-  locale: 'en_US',
 
   meta: {
     title: 'TissByte — Hand-woven software. Built for fun.',
@@ -19,6 +18,7 @@ export default {
     skip: 'Skip to content',
     mainNav: 'Main navigation',
     close: 'Close',
+    language: 'Language',
     details: 'More about {name}',
   },
 

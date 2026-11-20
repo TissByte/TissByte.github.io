@@ -22,7 +22,8 @@ npm run standalone # one self-contained HTML file, images inlined as base64, in 
 | Path | What it is |
 |---|---|
 | `src/data.mjs` | Every fact: versions, repo names, statuses, counts. The single source of truth. |
-| `src/copy.mjs` | All the words. Facts are pulled in with `{placeholders}` (`{version}`, `{projects}`, `{dockLanguages}`…), never retyped. |
+| `src/copy.en.mjs`, `src/copy.fr.mjs` | All the words, one file per language. Facts are pulled in with `{placeholders}` (`{version}`, `{projects}`, `{dockLanguages}`…), never retyped. |
+| `src/langs.mjs` | The list of languages (English at the root, French in `/fr/`) and the French typography pass. |
 | `src/render.mjs` | The HTML. |
 | `src/styles.css` | The design system ("Chrome & Glass"), tokens at the top. |
 | `src/main.js` | Progressive enhancement only: reveal, nav, project sheets, pointer light, refraction. The page works without it. |
@@ -34,7 +35,7 @@ npm run standalone # one self-contained HTML file, images inlined as base64, in 
 
 ## Keeping it consistent
 
-The build fails if a project has no copy, a `{placeholder}` is unknown, an image or `#anchor` or `aria-*` reference points nowhere, an `id` is duplicated, or the page doesn't have exactly one `<h1>`. It warns about unused images. CI also runs the contrast audit.
+The build fails if a project has no copy, a `{placeholder}` is unknown, an image or `#anchor` or `aria-*` reference points nowhere, an `id` is duplicated, or a page doesn't have exactly one `<h1>`. It also compares every language with English: a missing or extra key, a list of a different length, different `{placeholders}`, an empty string or a long paragraph left untranslated all fail the build. It warns about unused images. CI also runs the contrast audit.
 
 Anything shown in several places (project count, language list, the Dock's number of languages, every version) is derived from `data.mjs`, so a card, a sheet, a stat and the meta tags can't disagree.
 
@@ -42,8 +43,9 @@ Anything shown in several places (project count, language list, the Dock's numbe
 
 - **A new release** (say Claude AI Supervisor 0.3.0): change `version` in `src/data.mjs`. Chips, sheet and specs follow.
 - **A repository goes private again**: set `public: false` on its project in `src/data.mjs`. The "View on GitHub" link becomes a "Private repository" label.
-- **A new project**: add it to `projects` in `data.mjs`, add its image(s) to `src/assets/`, and add its entry under `projects.items` in `copy.mjs`.
-- **Wording**: edit `copy.mjs`. Keep the voice plain and specific, and skip the slogans.
+- **A new project**: add it to `projects` in `data.mjs`, add its image(s) to `src/assets/`, and add its entry under `projects.items` in **both** `copy.en.mjs` and `copy.fr.mjs`.
+- **Wording**: edit `copy.en.mjs` and `copy.fr.mjs`. Keep the voice plain and specific, and skip the slogans. In the French file, write ordinary spaces before `: ; ! ? %` and around `« »`: the build turns them into non-breaking spaces.
+- **A new language**: add it to `src/langs.mjs`, write `src/copy.<code>.mjs` with the same structure as the English file, and build. The switch, the `hreflang` links and the sitemap follow.
 
 ## Design
 
@@ -51,9 +53,10 @@ Anything shown in several places (project count, language list, the Dock's numbe
 - **Something for the glass to bend.** Slow-drifting halos in the banner's colours and the French tricolour (blue, red, brass), and a faint light that trails the pointer.
 - **The banner.** The organisation banner is shown whole, never cropped, and a slow highlight sweeps across the monogram from right to left.
 - **Navigation.** No bar, no logo: a centred menu (Home, Projects, Principles). The section you're reading turns champagne and a small light glides under its entry. A soft scrim fades in behind it as you scroll so it stays readable.
+- **Languages.** English at `/`, French at `/fr/`, switched with a small `EN | FR` pill at the top right of the menu. They're plain links between real pages: there's no automatic redirect, no cookie and no stored choice (the site keeps its "nothing stored" promise), and the link keeps the section you were reading. Each page declares `hreflang` alternates, and the sitemap lists both. The 404 page speaks both languages, since the visitor's is unknown.
 - **Contact.** "Contact us" opens a small menu: write an email, copy the address (with a confirmation) or open it in Gmail. The address is never written in the HTML: `data.mjs` holds it, the page splits it into two attributes and `main.js` joins them, so address harvesters find nothing. Without JavaScript a plain "name [at] domain [dot] com" line takes over.
 - **Portable by design.** Every URL in the page is relative, so `dist/` works from any folder, from a `file://` path and under a sub-path, with no image repository or CDN involved. All images live in this repository, copied from the projects' own repos (including private ones) at authoring time, so the site never depends on those repos being reachable. A base64-inlined single file exists as an export (`npm run standalone`) but not as the live format: inlined images can't be cached or loaded in parallel and make the page about a third heavier.
-- **Screenshots.** A project's detail sheet can carry the screenshots from its own README (Claude AI Supervisor has eight, MacOS Dock its two-display illustration). They're lazy-loaded thumbnails; click one to see it full size. Add them under `gallery` in `data.mjs` and put one caption each in `copy.mjs` (the build checks the counts match).
+- **Screenshots.** A project's detail sheet can carry the screenshots from its own README (Claude AI Supervisor has eight, MacOS Dock its two-display illustration). They're lazy-loaded thumbnails; click one to see it full size. Add them under `gallery` in `data.mjs` and put one caption each in every copy file (the build checks the counts match).
 - **Section surfaces.** Each section has its own texture so you always know where you are: a drafting grid for the projects and engraved rings for the closing strip, each with a tint and a hairline with a lit node at the top. Pure CSS, kept inside the contrast budget.
 - **Motion with a purpose.** Words rise into the headline one after another, the banner recedes as you scroll, cards tilt a few degrees toward the pointer, and a project's artwork flies from its card into the detail sheet (View Transitions) and back.
 - **Palette** sampled from the banner: warm black `#0f0e0c`, chrome `#e9e4d6`, champagne `#f7e2b4`, brass `#c69339`, plus the navy `#0a1f5c` and red `#c8102e` of the organisation profile.
@@ -89,7 +92,7 @@ Pushing to `main` deploys. The repository is `TissByte/TissByte.github.io` (that
 
 ## Image sources
 
-All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. The CastleBomb picture is the one in that project's README. MacOS Dock and MobiMount have no screenshots in their repositories, so their sheets carry **illustrations** (labelled as such): the Dock bar and the MobiMount flow are drawn for this site as SVG, and the two-display schematic is the Dock project's own. Real screenshots can replace them: add the files to `src/assets/gallery/`, list them under `gallery` in `data.mjs` and give each a caption in `copy.mjs`.
+All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. The CastleBomb picture is the one in that project's README. MacOS Dock and MobiMount have no screenshots in their repositories, so their sheets carry **illustrations** (labelled as such): the Dock bar and the MobiMount flow are drawn for this site as SVG, and the two-display schematic is the Dock project's own. Real screenshots can replace them: add the files to `src/assets/gallery/`, list them under `gallery` in `data.mjs` and give each a caption in each copy file.
 
 Project facts were checked against each repository, its release tags and its changelog. Where a README lags behind, the tag and the changelog win.
 

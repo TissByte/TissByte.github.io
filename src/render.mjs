@@ -1,6 +1,7 @@
 // HTML rendering. Pure functions: (copy, data, asset hashes) -> string.
 import { createHash } from 'node:crypto';
 import { site, projects, derived } from './data.mjs';
+import { languages, defaultLanguage } from './langs.mjs';
 
 // ---------------------------------------------------------------- helpers
 const esc = (s) =>
@@ -33,7 +34,9 @@ const csp = (inlineScripts = []) =>
     'upgrade-insecure-requests',
   ].join('; ');
 
-const A = 'assets/'; // relative on purpose: the page works from any folder, from a file:// path, or under a sub-path
+// Relative on purpose: the page works from any folder, from a file:// path, or under a sub-path.
+// Pages of other languages sit one folder down ("fr/"), so renderPage() points this at "../assets/" for them.
+let A = 'assets/';
 
 const ICONS = {
   arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
@@ -213,10 +216,25 @@ function contactMenu(c) {
 }
 
 // ---------------------------------------------------------------- page
+/** The EN | FR switch. Plain links between real pages: no script, no cookie, no stored choice. */
+function languageSwitch(c, here, up) {
+  const items = languages
+    .map((l) => {
+      const href = l === here ? './' : `${up}${l.path}` || './';
+      const current = l === here ? ' aria-current="page"' : '';
+      return `<a href="${href}" lang="${l.code}" hreflang="${l.code}" aria-label="${esc(l.native)} (${l.short})"${current}><span aria-hidden="true">${l.short}</span></a>`;
+    })
+    .join('');
+  return `<div class="lang" role="group" aria-label="${esc(c.a11y.language)}" data-lang>${items}</div>`;
+}
+
 export function renderPage(c, hashes) {
   const lang = c.lang;
+  const here = languages.find((l) => l.code === lang);
+  const up = '../'.repeat(here.path.split('/').filter(Boolean).length); // how far this page is from the site root
+  A = `${up}assets/`;
   const vars = { ...derived };
-  const canonical = site.url + '/';
+  const canonical = `${site.url}/${here.path}`;
   const studioTitles = c.projects.items.studio.pipeline; // labels of the studio's pipeline diagram
   const ogImage = `${site.url}/assets/og-image.jpg`;
 
@@ -230,7 +248,7 @@ export function renderPage(c, hashes) {
     description: c.meta.description,
     sameAs: [site.orgUrl],
     address: { '@type': 'PostalAddress', addressCountry: 'FR' },
-    inLanguage: lang,
+    knowsLanguage: languages.map((l) => l.code),
   };
 
   const cardsHtml = projects.map((p) => card(p, c, studioTitles)).join('');
@@ -249,12 +267,15 @@ export function renderPage(c, hashes) {
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#0f0e0c">
 <link rel="canonical" href="${canonical}">
+${languages.map((l) => `<link rel="alternate" hreflang="${l.code}" href="${site.url}/${l.path}">`).join('\n')}
+<link rel="alternate" hreflang="x-default" href="${site.url}/${defaultLanguage.path}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.org}">
 <meta property="og:title" content="${esc(c.meta.title)}">
 <meta property="og:description" content="${esc(c.meta.description)}">
 <meta property="og:url" content="${canonical}">
-<meta property="og:locale" content="${c.locale}">
+<meta property="og:locale" content="${here.locale}">
+${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alternate" content="${l.locale}">`).join('\n')}
 <meta property="og:image" content="${ogImage}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -263,7 +284,7 @@ export function renderPage(c, hashes) {
 <link rel="icon" type="image/png" sizes="32x32" href="${A}favicon-32.png">
 <link rel="apple-touch-icon" href="${A}apple-touch-icon.png">
 <link rel="preload" as="image" href="${A}banner-1800.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="styles.css?v=${hashes.css}">
+<link rel="stylesheet" href="${up}styles.css?v=${hashes.css}">
 <script>${JS_FLAG}</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
@@ -282,6 +303,7 @@ export function renderPage(c, hashes) {
       <li><a href="#projects">${c.nav.projects}</a></li>
       <li><a href="#promises">${c.nav.principles}</a></li>
     </ul>
+    ${languageSwitch(c, here, up)}
     <span class="nav__dot" aria-hidden="true"></span>
   </nav>
 </header>
@@ -358,19 +380,31 @@ export function renderPage(c, hashes) {
   </div>
 </footer>
 
-<script src="main.js?v=${hashes.js}" defer></script>
+<script src="${up}main.js?v=${hashes.js}" defer></script>
 </body>
 </html>
 `;
 }
 
-export function renderNotFound(c, hashes) {
+/** The 404 page speaks every language of the site: the visitor's language is not known, and we keep no state to find out. */
+export function renderNotFound(copies, hashes) {
+  const [first] = copies;
+  const blocks = copies
+    .map((c) => {
+      const l = languages.find((x) => x.code === c.lang);
+      return `<section lang="${c.lang}"${c === first ? '' : ' class="lost__alt"'}>
+      ${c === first ? `<h1>${c.notFound.heading}</h1>` : `<h2>${c.notFound.heading}</h2>`}
+      <p>${c.notFound.text}</p>
+      <a class="btn ${c === first ? 'btn--metal' : 'btn--glass'}" href="/${l.path}">${c.notFound.cta}</a>
+    </section>`;
+    })
+    .join('\n    ');
   return `<!doctype html>
-<html lang="${c.lang}" dir="ltr">
+<html lang="${first.lang}" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(c.notFound.title)}</title>
+<title>${esc(copies.map((c) => c.notFound.title).join(' · '))}</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp()}">
@@ -384,9 +418,7 @@ export function renderNotFound(c, hashes) {
 <main class="lost" id="main">
   <div class="lost__panel glass glass--strong">
     <img src="/assets/mark-480.webp" width="240" height="160" alt="">
-    <h1>${c.notFound.heading}</h1>
-    <p>${c.notFound.text}</p>
-    <a class="btn btn--metal" href="/">${c.notFound.cta}</a>
+    ${blocks}
   </div>
 </main>
 </body>
