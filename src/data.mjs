@@ -1,5 +1,5 @@
 // Single source of truth for every FACT shown on the site.
-// Prose lives in copy.en.mjs / copy.fr.mjs and reads these values through {placeholders},
+// Prose lives in copy.mjs and reads these values through {placeholders},
 // so a version, a count or a link can never disagree between a card, a dialog, a stat and the meta tags.
 //
 // Versions were checked against release tags and changelogs on 2026-11-20 (tags win over READMEs).
@@ -9,14 +9,10 @@ export const site = {
   org: 'TissByte',
   orgUrl: 'https://github.com/TissByte',
   year: 2026,
-  defaultLang: 'en',
-  langs: ['en', 'fr'],
-  // Shown in the "find us" block. Turn off if you'd rather not mention that repos are private.
-  mentionPrivateRepos: true,
 };
 
 // accent = glow / dot colour only (never used for text, so contrast is unaffected)
-// public:true turns the "private repository" label into a real GitHub link.
+// public:true shows a "View on GitHub" link to https://github.com/TissByte/<repo>; false shows a "Private repository" label instead.
 export const projects = [
   {
     id: 'castlebomb',
@@ -24,12 +20,12 @@ export const projects = [
     status: 'development',
     version: '0.1.1',
     repo: 'CastleBomb',
-    public: false,
+    public: true,
     accent: '#ee8a3c',
     chips: ['Godot 4', 'GDScript', 'macOS'],
     code: ['GDScript'],
     layout: 'wide',
-    art: { kind: 'img', name: 'castlebomb', w: 1400, h: 933, small: 760, pos: '50% 34%', ratio: '16 / 9' },
+    art: { kind: 'img', name: 'castlebomb', w: 1920, h: 1080, small: 960, pos: '50% 50%', ratio: '16 / 9' },
   },
   {
     id: 'supervisor',
@@ -37,7 +33,7 @@ export const projects = [
     status: 'released',
     version: '0.2.0',
     repo: 'claude-ai-supervisor',
-    public: false,
+    public: true,
     accent: '#6fb0f2',
     chips: ['Python', 'macOS 14+', 'CLI + menu bar'],
     code: ['Python'],
@@ -50,7 +46,7 @@ export const projects = [
     status: 'released',
     version: '0.6.1',
     repo: 'MacOS-Dock',
-    public: false,
+    public: true,
     accent: '#e0b25e',
     chips: ['Swift 6', 'macOS 13+', 'Liquid Glass'],
     code: ['Swift'],
@@ -64,7 +60,7 @@ export const projects = [
     status: 'personal',
     version: null,
     repo: 'MobiMount',
-    public: false,
+    public: true,
     accent: '#4cc2ff',
     chips: ['Shell', 'macOS', 'Android'],
     code: ['Shell'],
@@ -77,7 +73,7 @@ export const projects = [
     status: 'lab',
     version: null,
     repo: 'tissbyte-gaming-studio',
-    public: false,
+    public: true,
     accent: '#a99dff',
     chips: ['AI agents', 'Claude Code', 'Godot'],
     code: [],

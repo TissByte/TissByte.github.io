@@ -28,13 +28,13 @@ const T = {
   metalText: hex('#1b1408'),
   metalFill: hex('#deb870'), // darkest stop of the metal button gradient (worst case for dark text)
   heroLow: hex('#cfc7b2'), // darkest stop of the headline gradient
-  heroEmLow: hex('#dcb878'),
+  heroEmLow: hex('#e8c88c'),
 };
 // halos: rgb + PEAK alpha (src/styles.css .orb--*)
 const ORBS = [
   { name: 'navy', c: [32, 78, 190], a: 0.66 },
   { name: 'red', c: [214, 24, 54], a: 0.42 },
-  { name: 'brass', c: [212, 156, 62], a: 0.32 },
+  { name: 'brass', c: [212, 156, 62], a: 0.28 },
   { name: 'ice', c: [120, 184, 246], a: 0.18 },
 ];
 const GLASS_BASE = { c: [19, 17, 14], a: 0.6 }; // --glass-fill dark layer
@@ -58,8 +58,15 @@ for (const o of ORBS) {
   }
 }
 
+// the soft light that trails the pointer (.cursor-light, alpha .06) can sit on top of ANY halo at full strength
+const LIGHT = { c: [247, 226, 180], a: 0.06 };
+for (const o of ORBS) {
+  backdrops.push({ name: `${o.name} peak + cursor light`, rgb: over(LIGHT.c, LIGHT.a, over(o.c, o.a, T.bg)) });
+}
+backdrops.push({ name: 'cursor light on bare page', rgb: over(LIGHT.c, LIGHT.a, T.bg) });
+
 const rows = [];
-const check = (label, fg, bg, target) => {
+const check =(label, fg, bg, target) => {
   const r = ratio(fg, bg);
   rows.push({ label, r, target, ok: r >= target });
 };
