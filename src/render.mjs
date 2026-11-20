@@ -244,6 +244,7 @@ export function renderPage(c, hashes) {
 <title>${esc(c.meta.title)}</title>
 <meta name="description" content="${esc(c.meta.description)}">
 <meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp([JS_FLAG])}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#0f0e0c">

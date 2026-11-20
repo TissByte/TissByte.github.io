@@ -27,8 +27,8 @@ const T = {
   champagne: hex('#f7e2b4'),
   metalText: hex('#1b1408'),
   metalFill: hex('#deb870'), // darkest stop of the metal button gradient (worst case for dark text)
-  heroLow: hex('#cfc7b2'), // darkest stop of the headline gradient
-  heroEmLow: hex('#e8c88c'),
+  heroLow: hex('#f6f1e4'), // the headline's solid colour
+  heroEmLow: hex('#f7e2b4'), // the italic line (champagne)
 };
 // halos: rgb + PEAK alpha (src/styles.css .orb--*)
 const ORBS = [
@@ -117,8 +117,8 @@ add('champagne on glass', T.champagne, onGlass, 7);
 add('ink on strong glass (dialog, scrolled nav)', T.ink, onGlassStrong, 7);
 add('ink-2 on strong glass', T.ink2, onGlassStrong, 7);
 add('champagne on strong glass', T.champagne, onGlassStrong, 7);
-add('headline (large) lowest gradient stop on page', T.heroLow, onPage, 4.5);
-add('headline italic (large) lowest gradient stop on page', T.heroEmLow, onPage, 4.5);
+add('headline (large) on page', T.heroLow, onPage, 4.5);
+add('headline italic (large) on page', T.heroEmLow, onPage, 4.5);
 check('metal button text on its darkest fill', T.metalText, T.metalFill, 7);
 check('focus ring (white) vs page bg', hex('#ffffff'), T.bg, 3);
 check('focus halo vs white ring (dark halo)', hex('#000000'), hex('#ffffff'), 3);
