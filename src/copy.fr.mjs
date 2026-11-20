@@ -143,9 +143,9 @@ export default {
       },
       mobimount: {
         name: 'MobiMount',
-        tagline: 'D’Android au Mac par glisser-déposer. Pas d’extension du noyau, pas de mot de passe administrateur, pas de sécurité abaissée.',
+        tagline: 'Utilisez un téléphone Android sur votre Mac comme une clé USB, ce que macOS ne propose pas. Pas d’extension du noyau, pas de mot de passe administrateur.',
         summary:
-          'macOS ne sait pas parler à un téléphone Android d’office. Les téléphones partagent leurs fichiers en MTP (un protocole de transfert de fichiers) plutôt que comme un simple disque, et en monter un dans le Finder demande normalement une extension du noyau FUSE, ce qui est un vrai compromis de sécurité. MobiMount s’en passe. Il installe OpenMTP, une app open source qui parle MTP dans l’espace utilisateur, et vous glissez les fichiers d’un volet à l’autre, un peu comme dans un petit Finder.',
+          'Branchez une clé USB sur un Mac et elle apparaît toute seule. Branchez un téléphone Android et rien ne se passe : macOS ne propose pas cette expérience. Les téléphones partagent leurs fichiers en MTP (un protocole de transfert de fichiers) plutôt que comme un simple disque, et en monter un dans le Finder demande normalement une extension du noyau FUSE, ce qui est un vrai compromis de sécurité. MobiMount s’en passe. Il installe OpenMTP, une app open source qui parle MTP dans l’espace utilisateur : le stockage du téléphone s’ouvre à côté des dossiers de votre Mac et vous glissez vos fichiers de l’un à l’autre, comme avec une clé USB.',
         artAlt: 'L’icône de MobiMount : un téléphone bleu relié par un câble à un dossier bleu portant un symbole de disque.',
         galleryLabel: 'Illustration',
         gallery: ['Comment ça marche : le téléphone parle MTP à OpenMTP, qui affiche le téléphone et votre Mac côte à côte. Glissez un fichier d’un volet à l’autre.'],
