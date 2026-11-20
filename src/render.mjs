@@ -1,4 +1,5 @@
 // HTML rendering. Pure functions: (copy, data, asset hashes) -> string.
+import { createHash } from 'node:crypto';
 import { site, projects, derived } from './data.mjs';
 
 // ---------------------------------------------------------------- helpers
@@ -12,6 +13,25 @@ export function fmt(str, vars) {
     return vars[k];
   });
 }
+
+// Content-Security-Policy, delivered as a <meta> because GitHub Pages cannot set response headers.
+// Nothing is allowed except: our own scripts and stylesheet, images from this site and data: URIs, inline style
+// attributes (the design passes its custom properties that way), and the one tiny inline script below, by hash.
+// No network requests (connect-src falls back to 'none'), no fonts, no frames, no plugins, no forms, no <base>.
+const JS_FLAG = "document.documentElement.classList.add('js')";
+const sha = (s) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`;
+const csp = (inlineScripts = []) =>
+  [
+    "default-src 'none'",
+    "img-src 'self' data:",
+    "style-src 'self'",
+    "style-src-attr 'unsafe-inline'",
+    `script-src 'self'${inlineScripts.map((s) => ` ${sha(s)}`).join('')}`,
+    "base-uri 'none'",
+    "form-action 'none'",
+    "object-src 'none'",
+    'upgrade-insecure-requests',
+  ].join('; ');
 
 const A = 'assets/'; // relative on purpose: the page works from any folder, from a file:// path, or under a sub-path
 
@@ -181,7 +201,8 @@ function gallery(p, c, t) {
  * Without JavaScript a plain "name [at] domain [dot] com" line takes its place.
  */
 function contactMenu(c) {
-  const [user, domain] = site.email.split('@');
+  const user = site.emailUser;
+  const domain = site.emailDomain;
   const L = c.contact;
   const labels = { label: L.label, write: L.write, copy: L.copy, copied: L.copied, gmail: L.gmail, subject: L.subject };
   return `<span class="contact" data-contact data-u="${user}" data-d="${domain}" data-labels="${esc(JSON.stringify(labels))}">
@@ -223,6 +244,8 @@ export function renderPage(c, hashes) {
 <title>${esc(c.meta.title)}</title>
 <meta name="description" content="${esc(c.meta.description)}">
 <meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="${csp([JS_FLAG])}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#0f0e0c">
 <link rel="canonical" href="${canonical}">
 <meta property="og:type" content="website">
@@ -240,7 +263,7 @@ export function renderPage(c, hashes) {
 <link rel="apple-touch-icon" href="${A}apple-touch-icon.png">
 <link rel="preload" as="image" href="${A}banner-1800.webp" type="image/webp" fetchpriority="high">
 <link rel="stylesheet" href="styles.css?v=${hashes.css}">
-<script>document.documentElement.classList.add('js')</script>
+<script>${JS_FLAG}</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
@@ -349,6 +372,8 @@ export function renderNotFound(c, hashes) {
 <title>${esc(c.notFound.title)}</title>
 <meta name="robots" content="noindex">
 <meta name="color-scheme" content="dark">
+<meta http-equiv="Content-Security-Policy" content="${csp()}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#0f0e0c">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">

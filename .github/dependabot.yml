@@ -1,0 +1,8 @@
+# Keeps the pinned GitHub Actions (commit SHAs in .github/workflows/pages.yml) up to date.
+# The site itself has no npm dependencies, so there is nothing else to update.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
