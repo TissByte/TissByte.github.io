@@ -77,7 +77,7 @@ export const projects = [
   {
     id: 'mobimount',
     kind: 'utility',
-    status: 'personal',
+    status: 'development',
     version: null,
     repo: 'MobiMount',
     public: true,
