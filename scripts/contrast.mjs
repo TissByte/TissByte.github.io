@@ -108,6 +108,13 @@ add('champagne on a textured section', T.champagne, onSection, 7);
 add('ink-2 on glass over a textured section', T.ink2, onSectionGlass, 7);
 add('headline (large) on a textured section', T.heroLow, onSection, 4.5);
 
+// the tinted "Contact us" button: dark base .92, then the champagne wash at its strongest (.30, the hover state at the top of the button)
+const onTintButton = (b) => {
+  const lifted = saturate(b.map((v) => v * BLUR_LIFT), SAT);
+  return over([247, 226, 180], 0.30, over([14, 12, 9], 0.92, lifted));
+};
+add('ink on the tinted button', T.ink, onTintButton, 7);
+
 add('ink on page', T.ink, onPage, 7);
 add('ink-2 on page', T.ink2, onPage, 7);
 add('champagne (eyebrows, links) on page', T.champagne, onPage, 7);
