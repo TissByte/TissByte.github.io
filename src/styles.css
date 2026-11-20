@@ -367,13 +367,16 @@ p, li { text-wrap: pretty; }
 .hero__line { display: block; text-wrap: balance; } /* one sentence per line; each wraps by itself on a phone */
 .hero__line--em { font-style: italic; font-weight: 500; }
 /* every word carries its own chrome gradient, so words can rise into place one after another */
+/* Plain colours on purpose. The headline used to be filled with a chrome gradient (background-clip: text), but some
+   mobile browsers (Samsung Internet's forced dark mode, for one) treat a gradient fill as an image and darken it,
+   which turned the words dark. A solid colour cannot be re-processed that way; the text-shadow keeps a lit-metal edge. */
 .hero__title .w {
   display: inline-block;
-  background: linear-gradient(180deg, #fffdf6 0%, #ebe5d4 46%, #cfc7b2 100%);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+  color: #f6f1e4;
+  text-shadow: 0 1px 0 rgb(255 255 255 / .38), 0 -1px 0 rgb(0 0 0 / .45), 0 12px 38px rgb(247 226 180 / .16);
   padding-bottom: .08em;
 }
-.hero__line--em .w { background-image: linear-gradient(180deg, #fff3d4 0%, #f7e2b4 50%, #e8c88c 100%); }
+.hero__line--em .w { color: var(--champagne); text-shadow: 0 1px 0 rgb(255 250 232 / .4), 0 -1px 0 rgb(0 0 0 / .4), 0 12px 38px rgb(247 226 180 / .26); }
 .js-reveal .hero__title.reveal { opacity: 1; translate: 0 0; scale: 1; }  /* the words animate, not the block */
 .js-reveal .hero__title .w {
   opacity: 0; translate: 0 .42em; filter: blur(12px);
