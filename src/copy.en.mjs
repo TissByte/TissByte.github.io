@@ -141,9 +141,9 @@ export default {
       },
       mobimount: {
         name: 'MobiMount',
-        tagline: 'Android to Mac by drag and drop. No kernel extension, no admin password, no lowered security.',
+        tagline: 'Use an Android phone on your Mac like a USB stick, which macOS doesn’t offer. No kernel extension, no admin password.',
         summary:
-          'macOS can’t talk to an Android phone out of the box. Phones share files over MTP (a file-transfer protocol) rather than as a plain disk, and mounting one in Finder normally takes a FUSE kernel extension, which is a real security trade-off. MobiMount skips that. It installs OpenMTP, an open-source app that speaks MTP in plain user space, and you drag files between two panes, a bit like a small Finder.',
+          'Plug a USB stick into a Mac and it just shows up. Plug in an Android phone and nothing happens: macOS doesn’t offer that experience. Phones share files over MTP (a file-transfer protocol) rather than as a plain disk, and mounting one in Finder normally takes a FUSE kernel extension, which is a real security trade-off. MobiMount skips that. It installs OpenMTP, an open-source app that speaks MTP in plain user space, so the phone’s storage opens next to your Mac’s folders and you drag files across, much like a USB stick.',
         artAlt: 'The MobiMount icon: a blue phone connected by a cable to a blue folder with a drive symbol.',
         galleryLabel: 'Illustration',
         gallery: ['How it works: the phone talks MTP to OpenMTP, which lists the phone and your Mac side by side. Drag a file from one pane to the other.'],
