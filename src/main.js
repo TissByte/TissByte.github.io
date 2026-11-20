@@ -97,6 +97,7 @@
   if (typeof HTMLDialogElement === 'function') {
     const canMorph = () => typeof document.startViewTransition === 'function' && !reduceMotion.matches;
     const cardOf = new Map();
+    const lightbox = $('#lightbox');
 
     const morph = (dlg, fromEl, toEl, change) => {
       if (!canMorph() || !fromEl || !toEl) {
@@ -150,6 +151,10 @@
         if (e.target === dlg) closeSheet(dlg); // the dimmed backdrop
       });
       dlg.addEventListener('cancel', (e) => {
+        if (lightbox?.open) {
+          e.preventDefault(); // Esc belongs to the enlarged screenshot on top; the sheet stays
+          return;
+        }
         if (canMorph()) {
           e.preventDefault(); // Esc: close through the morph instead
           closeSheet(dlg);
@@ -159,6 +164,20 @@
         if (dlg.open) $('.sheet__scroll', dlg).scrollTop = 0;
       });
     });
+
+    // enlarge a README screenshot: one shared viewer, closed by a click anywhere, Esc or its button
+    if (lightbox) {
+      const big = $('.lightbox__img', lightbox);
+      $$('.shot__open').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          big.src = btn.dataset.zoom;
+          big.alt = btn.dataset.zoomAlt || '';
+          lightbox.showModal();
+        }),
+      );
+      lightbox.addEventListener('click', () => lightbox.close());
+      lightbox.addEventListener('close', () => big.removeAttribute('src'));
+    }
   } else {
     root.classList.remove('js'); // very old browsers: details show inline, as in the no-JS version
   }
