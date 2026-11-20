@@ -8,6 +8,7 @@ export const site = {
   url: 'https://tissbyte.github.io',
   org: 'TissByte',
   orgUrl: 'https://github.com/TissByte',
+  email: 'tissbyte@gmail.com', // the public contact address (shown in the "Find us" block and in the page metadata)
   year: 2026,
 };
 

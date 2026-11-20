@@ -618,7 +618,9 @@ html:not(.js) .card__more { display: none; }
   padding: clamp(28px, 4vw, 52px);
 }
 .cta-panel__mark { width: clamp(110px, 16vw, 200px); height: auto; filter: drop-shadow(0 10px 26px rgb(0 0 0 / .55)); }
-.cta-panel__copy p:last-child { max-width: 58ch; margin-top: 14px; }
+.cta-panel__copy p:not(.eyebrow) { max-width: 58ch; margin-top: 14px; }
+.cta-panel__mail a { color: var(--champagne); text-decoration: underline; text-underline-offset: .25em; font-weight: 600; word-break: break-word; }
+.cta-panel__mail a:hover { color: #fff; }
 @media (max-width: 900px) { .cta-panel { grid-template-columns: 1fr; text-align: left; justify-items: start; } }
 
 .footer { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }

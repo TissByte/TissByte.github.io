@@ -228,6 +228,7 @@ export default {
     eyebrow: 'Find us',
     title: 'Come and have a look.',
     text: 'Everything TissByte makes lives on GitHub.',
+    mail: 'Want to get in touch? Write to',
     cta: 'TissByte on GitHub',
   },
 
