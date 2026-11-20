@@ -48,10 +48,11 @@ Anything shown in several places (project count, language list, the Dock's numbe
 - **Liquid glass, in layers.** Backdrop blur and saturation, a dark-tinted translucent fill (so text stays legible), a lit specular rim, an edge light that turns toward the pointer, and a soft spotlight that follows it. In Chromium the rim also **refracts** what's behind it: an SVG displacement map bends the backdrop like a convex lens. Elsewhere you get the blur and nothing breaks.
 - **Something for the glass to bend.** Slow-drifting halos in the banner's colours and the French tricolour (blue, red, brass), and a faint light that trails the pointer.
 - **The banner.** The organisation banner is shown whole. Its circuit traces are lifted into a separate layer, built from the exact same pixels, so they line up perfectly. They grow outward from the monogram, hold, withdraw and grow again, while a light runs along them from right to left.
-- **The wordmark.** "TissByte" is set in a calligraphic hand with a swash that draws itself in. It uses local script fonts only (Snell Roundhand or Apple Chancery on Apple devices, Segoe Script on Windows) and falls back to an italic serif elsewhere. Nothing is downloaded.
+- **The wordmark.** "TissByte" is set in Pinyon Script, a copperplate calligraphic face, with a swash that draws itself in. The font is self-hosted (`src/assets/fonts/`, 39 KB, SIL Open Font License, licence file alongside), so it looks the same on every device and still costs no third-party request.
+- **Navigation.** No bar and no container: the wordmark on the left and three shortcuts on the right. The section you're reading turns champagne and a small light glides under its shortcut. A soft scrim fades in behind them as you scroll so they stay readable.
 - **Motion with a purpose.** Words rise into the headline one after another, the banner recedes as you scroll, cards tilt a few degrees toward the pointer, and a project's artwork flies from its card into the detail sheet (View Transitions) and back.
 - **Palette** sampled from the banner: warm black `#0f0e0c`, chrome `#e9e4d6`, champagne `#f7e2b4`, brass `#c69339`, plus the navy `#0a1f5c` and red `#c8102e` of the organisation profile.
-- **Type**: system fonts (SF Pro and New York on Apple devices), so there's no font request.
+- **Type**: system fonts for everything (SF Pro and New York on Apple devices), plus the one self-hosted wordmark face.
 
 ## Accessibility
 
@@ -69,7 +70,7 @@ Pushing to `main` deploys. The repository is `TissByte/TissByte.github.io` (that
 
 ## Image sources
 
-All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. `banner-traces.webp` is the banner's circuit lines extracted into a transparent layer. The CastleBomb picture is the one in that project's README.
+All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. `banner-traces.webp` is the banner's circuit lines extracted into a transparent layer. The CastleBomb picture is the one in that project's README. The one outside asset is the wordmark font, [Pinyon Script](https://github.com/SorkinType/Pinyon) (SIL OFL 1.1), taken from the `@fontsource/pinyon-script` npm package.
 
 Project facts were checked against each repository, its release tags and its changelog. Where a README lags behind, the tag and the changelog win.
 

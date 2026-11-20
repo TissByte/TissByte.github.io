@@ -42,49 +42,52 @@
   /* ---------------------------------------------------------- navigation */
   const nav = $('[data-nav]');
   if (nav) {
-    const toggle = $('.nav__toggle', nav);
-    const setOpen = (open) => {
-      nav.toggleAttribute('data-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? toggle.dataset.labelClose : toggle.dataset.labelOpen);
-    };
-    toggle.addEventListener('click', () => setOpen(!nav.hasAttribute('data-open')));
-    $$('.nav__links a', nav).forEach((a) => a.addEventListener('click', () => setOpen(false)));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && nav.hasAttribute('data-open')) {
-        setOpen(false);
-        toggle.focus();
-      }
-    });
-    document.addEventListener('click', (e) => {
-      if (nav.hasAttribute('data-open') && !nav.contains(e.target)) setOpen(false);
-    });
+    const wrap = nav.closest('.nav-wrap');
+    const dot = $('.nav__dot', nav);
+    const links = new Map($$('.nav__links a[href^="#"]', nav).map((a) => [a.getAttribute('href').slice(1), a]));
+    let current = null;
 
-    const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 24);
+    // the little light glides under the shortcut of the section being read
+    const place = (link) => {
+      if (!dot) return;
+      if (!link) {
+        dot.classList.toggle('is-on', false);
+        return;
+      }
+      const l = link.getBoundingClientRect();
+      const n = nav.getBoundingClientRect();
+      dot.style.setProperty('--dx', `${(l.left - n.left + l.width / 2 - 2.5).toFixed(1)}px`);
+      dot.classList.toggle('is-on', true);
+    };
+    const setCurrent = (link) => {
+      if (link === current) return;
+      links.forEach((l) => l.toggleAttribute('aria-current', false));
+      if (link) link.setAttribute('aria-current', 'true');
+      current = link;
+      place(link);
+    };
+
+    // a soft scrim fades in behind the shortcuts as the page scrolls away from the hero
+    const onScroll = () => wrap?.style.setProperty('--scrim', clamp((scrollY - 120) / 260, 0, 1).toFixed(3));
     onScroll();
     addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', () => place(current), { passive: true });
 
-    // which section is on screen
-    const links = new Map($$('.nav__links a[href^="#"]', nav).map((a) => [a.getAttribute('href').slice(1), a]));
     if ('IntersectionObserver' in window) {
       const spy = new IntersectionObserver(
         (entries) => {
           for (const e of entries) {
             const link = links.get(e.target.id);
             if (!link) continue;
-            if (e.isIntersecting) {
-              links.forEach((l) => l.removeAttribute('aria-current'));
-              link.setAttribute('aria-current', 'true');
-            } else if (link.getAttribute('aria-current')) {
-              link.removeAttribute('aria-current');
-            }
+            if (e.isIntersecting) setCurrent(link);
+            else if (link === current) setCurrent(null);
           }
         },
         { rootMargin: '-45% 0px -50% 0px' },
       );
       links.forEach((_, id) => {
-        const s = document.getElementById(id);
-        if (s) spy.observe(s);
+        const section = document.getElementById(id);
+        if (section) spy.observe(section);
       });
     }
   }

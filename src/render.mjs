@@ -16,10 +16,6 @@ export function fmt(str, vars) {
 const A = '/assets/';
 
 const ICONS = {
-  weave: '<path d="M3 8c2.2-3.4 4.6-3.4 7 0s4.8 3.4 7 0 2.4-2.8 4-2.8M3 14c2.2-3.4 4.6-3.4 7 0s4.8 3.4 7 0 2.4-2.8 4-2.8M3 20c2.2-3.4 4.6-3.4 7 0s4.8 3.4 7 0 2.4-2.8 4-2.8"/>',
-  spark:
-    '<path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z"/><path d="m19 16.5.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7.7-1.8Z"/>',
-  flag: '<path d="M5 21V4"/><path d="M5 4h12l-2.2 4L17 12H5"/>',
   chip: '<rect x="7" y="7" width="10" height="10" rx="2.2"/><path d="M9.5 3v2.5M14.5 3v2.5M9.5 18.5V21M14.5 18.5V21M3 9.5h2.5M3 14.5h2.5M18.5 9.5H21M18.5 14.5H21"/>',
   lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.4"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/><path d="M12 14.5v2"/>',
   check: '<circle cx="12" cy="12" r="9"/><path d="m8.2 12.4 2.6 2.6 5-5.4"/>',
@@ -202,6 +198,7 @@ export function renderPage(c, hashes) {
 <link rel="icon" type="image/png" sizes="32x32" href="${A}favicon-32.png">
 <link rel="apple-touch-icon" href="${A}apple-touch-icon.png">
 <link rel="preload" as="image" href="${A}banner-1800.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="${A}fonts/pinyon-script-latin-400.woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">
 <script>document.documentElement.classList.add('js')</script>
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
@@ -215,20 +212,17 @@ export function renderPage(c, hashes) {
 </div>
 
 <header class="nav-wrap">
-  <nav class="nav glass" aria-label="${c.a11y.mainNav}" data-nav data-lens>
-    <a class="nav__brand" href="#top" aria-label="${esc(c.a11y.home)}">
-      <span class="wordmark" aria-hidden="true">
-        <span class="wordmark__text">${site.org}</span>
-        <svg class="wordmark__swash" viewBox="0 0 172 16" focusable="false"><defs><linearGradient id="tb-swash" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#dcb878" stop-opacity=".15"/><stop offset=".4" stop-color="#fff3d4"/><stop offset="1" stop-color="#f7e2b4" stop-opacity=".9"/></linearGradient></defs><path fill="url(#tb-swash)" d="M2 11C20 6 52 3.4 92 4.2c32 .6 56 2 76-2-18 7-44 8.2-76 8.4C54 10.8 24 12.6 2 11Z"/></svg>
-      </span>
+  <nav class="nav" aria-label="${c.a11y.mainNav}" data-nav>
+    <a class="wordmark" href="#top" aria-label="${esc(c.a11y.home)}">
+      <span class="wordmark__text" aria-hidden="true">${site.org}</span>
+      <svg class="wordmark__swash" viewBox="0 0 172 16" aria-hidden="true" focusable="false"><defs><linearGradient id="tb-swash" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#dcb878" stop-opacity=".15"/><stop offset=".4" stop-color="#fff3d4"/><stop offset="1" stop-color="#f7e2b4" stop-opacity=".9"/></linearGradient></defs><path fill="url(#tb-swash)" d="M2 11C20 6 52 3.4 92 4.2c32 .6 56 2 76-2-18 7-44 8.2-76 8.4C54 10.8 24 12.6 2 11Z"/></svg>
     </a>
-    <ul class="nav__links" id="nav-links">
+    <ul class="nav__links">
       <li><a href="#projects">${c.nav.projects}</a></li>
       <li><a href="#approach">${c.nav.approach}</a></li>
       <li><a href="#studio">${c.nav.studio}</a></li>
-      <li><a href="${site.orgUrl}" class="nav__ext">${GITHUB_MARK}<span>${c.nav.github}</span></a></li>
     </ul>
-    <button class="nav__toggle btn btn--icon" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="${c.a11y.menuOpen}" data-label-open="${esc(c.a11y.menuOpen)}" data-label-close="${esc(c.a11y.menuClose)}">${icon('menu')}</button>
+    <span class="nav__dot" aria-hidden="true"></span>
   </nav>
 </header>
 
@@ -259,27 +253,6 @@ export function renderPage(c, hashes) {
     <div class="container">
       <ul class="stats glass reveal" style="--d:240ms" data-lens>
         ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
-      </ul>
-    </div>
-  </section>
-
-  <section class="section" id="about" aria-labelledby="about-title">
-    <div class="container">
-      <header class="section-head reveal">
-        <p class="eyebrow">${c.about.eyebrow}</p>
-        <h2 id="about-title">${c.about.title}</h2>
-        <p class="section-intro">${c.about.intro}</p>
-      </header>
-      <ul class="pillars">
-        ${c.about.pillars
-          .map(
-            (p, i) => `<li class="pillar glass reveal" style="--d:${i * 90}ms">
-          <span class="roundel">${icon(p.icon)}</span>
-          <h3>${p.title}</h3>
-          <p>${fmt(p.text, vars)}</p>
-        </li>`,
-          )
-          .join('')}
       </ul>
     </div>
   </section>
