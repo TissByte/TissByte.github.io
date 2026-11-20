@@ -341,6 +341,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
         <p class="eyebrow">${c.projects.eyebrow}</p>
         <h2 id="projects-title">${c.projects.title}</h2>
         <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
+        ${site.reposPrivate ? `<p class="notice glass" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
       </header>
       <div class="bento">${cardsHtml}
       </div>

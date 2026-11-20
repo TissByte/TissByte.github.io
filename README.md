@@ -42,6 +42,7 @@ Anything shown in several places (project count, language list, the Dock's numbe
 ## Updating the content
 
 - **A new release** (say Claude AI Supervisor 0.3.0): change `version` in `src/data.mjs`. Chips, sheet and specs follow.
+- **The repositories are private for now**: a small notice above the project cards says the GitHub links won't work yet. Set `reposPrivate: false` in `src/data.mjs` once they're public and the notice disappears.
 - **A repository goes private again**: set `public: false` on its project in `src/data.mjs`. The "View on GitHub" link becomes a "Private repository" label.
 - **A new project**: add it to `projects` in `data.mjs`, add its image(s) to `src/assets/`, and add its entry under `projects.items` in **both** `copy.en.mjs` and `copy.fr.mjs`.
 - **Wording**: edit `copy.en.mjs` and `copy.fr.mjs`. Keep the voice plain and specific, and skip the slogans. In the French file, write ordinary spaces before `: ; ! ? %` and around `« »`: the build turns them into non-breaking spaces.

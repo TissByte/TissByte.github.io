@@ -8,6 +8,9 @@ export const site = {
   url: 'https://tissbyte.github.io',
   org: 'TissByte',
   orgUrl: 'https://github.com/TissByte',
+  // While the project repositories are private, their GitHub links answer "404" to visitors: a small notice above
+  // the cards says so. Set this to false the day the repositories are opened and the notice disappears.
+  reposPrivate: true,
   // The public contact address, kept in two halves on purpose: the page joins them in the browser, so neither the
   // generated HTML nor this file contains a ready-made "name@domain" string for address harvesters to match.
   emailUser: 'tissbyte',
