@@ -45,7 +45,7 @@ export default {
     eyebrow: 'Projets',
     title: 'Ce qu’il y a sur l’établi.',
     intro: 'Deux applications, un jeu, un petit utilitaire et une expérience. Tout part du Mac.',
-    notice: 'Nos dépôts sont privés pour l’instant. Les liens GitHub fonctionneront dès qu’ils seront publics.',
+    notice: 'Nos dépôts sont privés pour l’instant. Accès possible à des fins de débogage : contactez-nous.',
     more: 'Détails',
     highlights: 'Points forts',
     glance: 'En bref',

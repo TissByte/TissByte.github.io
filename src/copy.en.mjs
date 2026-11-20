@@ -43,7 +43,7 @@ export default {
     eyebrow: 'Projects',
     title: 'What’s on the bench.',
     intro: 'Two apps, a game, a small utility and an experiment. All of it starts from the Mac.',
-    notice: 'Our repositories are private for now. The GitHub links will work once they’re public.',
+    notice: 'Our repositories are private for now. We can provide access for debugging purposes: contact us.',
     more: 'More',
     highlights: 'Highlights',
     glance: 'At a glance',
