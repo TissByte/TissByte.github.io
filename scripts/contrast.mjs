@@ -121,6 +121,11 @@ const onLangCurrent = (b) => over([247, 226, 180], 0.14, onLangPill(b));
 add('ink-2 on the language pill', T.ink2, onLangPill, 7);
 add('champagne on the current language', T.champagne, onLangCurrent, 7);
 
+// the status chip ("Released", "In development", "In the lab"): glass, then the status colour at its strongest wash (.17)
+for (const [name, rgb] of [['released', [112, 224, 166]], ['development', [246, 185, 78]], ['lab', [169, 157, 255]]]) {
+  add(`ink on the "${name}" status chip`, T.ink, (b) => over(rgb, 0.17, onGlass(b)), 7);
+}
+
 add('ink on page', T.ink, onPage, 7);
 add('ink-2 on page', T.ink2, onPage, 7);
 add('champagne (eyebrows, links) on page', T.champagne, onPage, 7);

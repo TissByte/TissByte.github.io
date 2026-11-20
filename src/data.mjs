@@ -18,7 +18,8 @@ export const site = {
   year: 2026,
 };
 
-// accent = glow / dot colour only (never used for text, so contrast is unaffected)
+// accent = the card's glow and the little dots of its "at a glance" line (never used for text, so contrast is unaffected).
+// The status chip does not use it: its colour belongs to the status (released, development, lab), not to the project.
 // public:true shows a "View on GitHub" link to https://github.com/TissByte/<repo>; false shows a "Private repository" label instead.
 export const projects = [
   {
