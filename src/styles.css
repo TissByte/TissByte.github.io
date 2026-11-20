@@ -382,6 +382,29 @@ p, li { text-wrap: pretty; }
 .js-reveal .hero__title.is-in .w { opacity: 1; translate: 0 0; filter: blur(0); }
 .hero__lead { margin: clamp(20px, 3vw, 28px) auto 0; max-width: 46ch; text-wrap: balance; font-size: clamp(1.15rem, 1.06rem + .45vw, 1.4rem); line-height: 1.55; color: var(--ink-2); }
 .hero__cta { margin-top: clamp(28px, 4vw, 40px); display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.hero__copy { z-index: 5; } /* so the contact menu opens above the stats card */
+
+/* Contact: a small menu instead of a bare mailto (write, copy, open in Gmail). The address is joined by main.js. */
+.contact { position: relative; display: inline-block; }
+.contact__plain { display: none; align-items: center; min-height: 48px; font-size: .9375rem; color: var(--ink-2); }
+html:not(.js) .contact__plain { display: inline-flex; }
+html:not(.js) .contact__btn { display: none; }
+.contact__panel {
+  --r: var(--r-lg);
+  position: absolute; z-index: 30; top: calc(100% + 14px); left: 50%; translate: -50% 0;
+  width: min(340px, calc(100vw - 32px)); padding: 8px; text-align: left; transform-origin: 50% 0;
+}
+.contact__panel:not([hidden]) { display: grid; gap: 2px; animation: pop-in .42s var(--spring) both; }
+@keyframes pop-in { from { opacity: 0; transform: translateY(-8px) scale(.96); } }
+.contact__addr { padding: 12px 14px 10px; font-family: var(--font-mono); font-size: .9375rem; color: var(--ink); word-break: break-all; user-select: all; }
+.contact__act {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 0 14px;
+  border: 0; border-radius: 16px; background: none; color: var(--ink); font: inherit; font-weight: 600; text-align: left; text-decoration: none; cursor: pointer;
+  transition: background-color .25s var(--ease);
+}
+.contact__act:hover { background: rgb(255 255 255 / .1); }
+.contact__act .icon { color: var(--champagne); flex: none; }
+.contact__act + .contact__act { border-top-left-radius: 16px; }
 
 .stats {
   --r: var(--r-lg);

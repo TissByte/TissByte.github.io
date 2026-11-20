@@ -39,11 +39,11 @@ async function checkOutput(files) {
     for (const m of html.matchAll(/(?:src|href|srcset)="([^"]+)"/g)) {
       for (const part of m[1].split(',')) {
         const u = part.trim().split(/\s+/)[0];
-        if (u.startsWith('/') && !u.startsWith('//')) {
-          const file = u.split('?')[0].split('#')[0];
-          if (file === '/') continue;
-          if (!existsSync(dist(file))) errors.push(`${name}: missing file ${file}`);
-        }
+        if (!u || /^(https?:|data:|mailto:|#|\/\/)/.test(u)) continue;
+        // pages sit at the root of dist/, so a relative URL and a root-absolute one resolve to the same file
+        const file = u.split('?')[0].split('#')[0].replace(/^\//, '');
+        if (!file) continue;
+        if (!existsSync(dist(file))) errors.push(`${name}: missing file ${file}`);
       }
     }
     const idList = [...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
@@ -89,8 +89,8 @@ export async function build({ quiet = false } = {}) {
 
   // assets nobody references any more are dead weight: say so (does not fail the build)
   const used = new Set();
-  for (const text of [...Object.values(files), css, js]) for (const m of text.matchAll(/\/assets\/([\w.-]+)/g)) used.add(m[1]);
-  const all = await readdir(dist('assets'));
+  for (const text of [...Object.values(files), css, js]) for (const m of text.matchAll(/assets\/([\w./-]+)/g)) used.add(m[1]);
+  const all = (await readdir(dist('assets'), { recursive: true, withFileTypes: true })).filter((e) => e.isFile()).map((e) => path.relative(dist('assets'), path.join(e.parentPath, e.name)));
   const unused = all.filter((f) => !used.has(f));
 
   if (!quiet) {
