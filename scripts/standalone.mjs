@@ -14,6 +14,8 @@ const MIME = { '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg',
 let html = await readFile(dist('index.html'), 'utf8');
 // one image per <img>: drop the responsive candidates (each would be inlined again, and a file has no bandwidth to save)
 html = html.replace(/ srcset="[^"]*"/g, '').replace(/ sizes="[^"]*"/g, '');
+// a single file has no sibling pages to switch to: drop the language switch and the hreflang links
+html = html.replace(/<div class="lang"[^>]*>.*?<\/div>\n?/s, '').replace(/<link rel="alternate" hreflang="[^>]*>\n?/g, '');
 const css = await readFile(dist('styles.css'), 'utf8');
 const js = await readFile(dist('main.js'), 'utf8');
 

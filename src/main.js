@@ -59,12 +59,15 @@
       dot.style.setProperty('--dx', `${(l.left - n.left + l.width / 2 - 2.5).toFixed(1)}px`);
       dot.classList.toggle('is-on', true);
     };
+    // the language switch keeps you where you were: its links carry the section being read (#projects, ...)
+    const langLinks = $$('[data-lang] a', nav).map((a) => [a, a.getAttribute('href')]);
     const setCurrent = (link) => {
       if (link === current) return;
       links.forEach((l) => l.toggleAttribute('aria-current', false));
       if (link) link.setAttribute('aria-current', 'true');
       current = link;
       place(link);
+      for (const [a, href] of langLinks) a.setAttribute('href', link ? href + link.getAttribute('href') : href);
     };
 
     // a soft scrim fades in behind the shortcuts as the page scrolls away from the hero
