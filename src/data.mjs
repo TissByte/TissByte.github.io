@@ -68,7 +68,11 @@ export const projects = [
     interfaceLanguages: 7,
     layout: 'wide',
     art: { kind: 'img', name: 'dock-banner', w: 1400, h: 467, small: 760, pos: '50% 50%', ratio: '3 / 1' },
-    gallery: [{ name: 'dock-screens', kind: 'svg', w: 960, h: 410 }],
+    // illustrations: drawn for this site (dock-bar) and by the project itself (dock-screens, made for a light page)
+    gallery: [
+      { name: 'dock-bar', kind: 'svg', w: 960, h: 420 },
+      { name: 'dock-screens', kind: 'svg', light: true, w: 960, h: 410 },
+    ],
   },
   {
     id: 'mobimount',
@@ -82,6 +86,7 @@ export const projects = [
     code: ['Shell'],
     layout: 'narrow',
     art: { kind: 'icon', name: 'mobimount', w: 400, h: 400, ratio: '2 / 1' },
+    gallery: [{ name: 'mobimount-flow', kind: 'svg', w: 960, h: 400 }], // an illustration: the project has no screenshots
   },
   {
     id: 'studio',

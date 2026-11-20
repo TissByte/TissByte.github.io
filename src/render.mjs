@@ -175,7 +175,7 @@ function gallery(p, c, t) {
     .map((g, i) => {
       const caption = t.gallery[i];
       if (g.kind === 'svg') {
-        return `<figure class="shot shot--svg"><img src="${A}gallery/${g.name}.svg" width="${g.w}" height="${g.h}" alt="${esc(caption)}" loading="lazy" decoding="async"><figcaption>${caption}</figcaption></figure>`;
+        return `<figure class="shot shot--svg${g.light ? ' shot--light' : ''}"><img src="${A}gallery/${g.name}.svg" width="${g.w}" height="${g.h}" alt="${esc(caption)}" loading="lazy" decoding="async"><figcaption>${caption}</figcaption></figure>`;
       }
       const thumb = `${A}gallery/${g.name}-${g.thumb}.webp`;
       const full = `${A}gallery/${g.name}-${g.full}.webp`;
