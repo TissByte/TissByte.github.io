@@ -53,7 +53,6 @@ export default {
     statuses: {
       development: 'In development',
       released: 'Released',
-      personal: 'Personal project',
       lab: 'In the lab',
     },
     labels: { version: 'Version', status: 'Status' },
@@ -157,7 +156,7 @@ export default {
         specs: [
           ['Requires', 'macOS and Homebrew, plus a USB-C data cable'],
           ['Built with', 'Shell, around OpenMTP (third-party, open source)'],
-          ['Status', 'A personal project, provided as is'],
+          ['Note', 'A personal project, provided as is'],
         ],
       },
       studio: {
