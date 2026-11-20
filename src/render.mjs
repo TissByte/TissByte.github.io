@@ -1,4 +1,4 @@
-// HTML rendering for one language. Pure functions: (copy, data, asset hashes) -> string.
+// HTML rendering. Pure functions: (copy, data, asset hashes) -> string.
 import { site, projects, derived } from './data.mjs';
 
 // ---------------------------------------------------------------- helpers
@@ -11,21 +11,6 @@ export function fmt(str, vars) {
     if (!(k in vars)) throw new Error(`Unknown placeholder ${m} in: ${str.slice(0, 80)}`);
     return vars[k];
   });
-}
-
-/** French typography: no-break spaces before : ; ! ? » % and after «. Applied to copy text only. */
-export function frenchTypography(value) {
-  if (typeof value === 'string') {
-    return value
-      .replace(/ ([;!?])/g, ' $1')
-      .replace(/ ([:»%])/g, ' $1')
-      .replace(/« /g, '« ');
-  }
-  if (Array.isArray(value)) return value.map(frenchTypography);
-  if (value && typeof value === 'object') {
-    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, frenchTypography(v)]));
-  }
-  return value;
 }
 
 const A = '/assets/';
@@ -54,7 +39,10 @@ const icon = (name, cls = '') =>
 const GITHUB_MARK =
   '<svg class="icon" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.96c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>';
 
-const tricolor = '<span class="tricolor" aria-hidden="true"><i></i><i></i><i></i></span>';
+/** Wrap each word in a span (own chrome gradient, staggered entrance). Spaces stay real spaces, so lines wrap and screen readers read normally. */
+const words = (s, from = 0) => s.split(' ').map((w, i) => `<span class="w" style="--i:${from + i}">${w}</span>`).join(' ');
+
+const tricolor ='<span class="tricolor" aria-hidden="true"><i></i><i></i><i></i></span>';
 
 // ---------------------------------------------------------------- pieces
 function projectArt(p, t, { sizes, eager = false }) {
@@ -139,7 +127,7 @@ function dialog(p, c, studioStepTitles) {
       ? pipelineArt(t, studioStepTitles)
       : projectArt(p, t, { sizes: '(min-width: 1000px) 980px, 96vw' });
   return `
-    <dialog class="sheet" id="dlg-${p.id}" aria-labelledby="dlg-${p.id}-title" style="--accent:${p.accent};--ar:${p.art.ratio}">
+    <dialog class="sheet" id="dlg-${p.id}" aria-labelledby="dlg-${p.id}-title" style="--accent:${p.accent};--ar:${p.art.ratio};--arn:${(() => { const [a, b] = p.art.ratio.split('/').map(Number); return (a / b).toFixed(4); })()}">
       <div class="sheet__panel glass glass--strong">
         <button class="sheet__close btn btn--icon" type="button" data-close aria-label="${c.a11y.close}">${icon('close')}</button>
         <div class="sheet__scroll">
@@ -167,12 +155,10 @@ function dialog(p, c, studioStepTitles) {
 }
 
 // ---------------------------------------------------------------- page
-const urlFor = (lang) => (lang === site.defaultLang ? '/' : `/${lang}/`);
-
 export function renderPage(c, hashes) {
   const lang = c.lang;
   const vars = { ...derived };
-  const canonical = site.url + urlFor(lang);
+  const canonical = site.url + '/';
   const studioTitles = c.studio.steps.map((s) => s.title);
   const ogImage = `${site.url}${A}og-image.jpg`;
 
@@ -189,13 +175,6 @@ export function renderPage(c, hashes) {
     inLanguage: lang,
   };
 
-  const langLinks = site.langs
-    .map((l) => {
-      const current = l === lang;
-      return `<a href="${urlFor(l)}" hreflang="${l}" lang="${l}" title="${esc(c.a11y.langName[l])}"${current ? ' aria-current="page"' : ''}><span aria-hidden="true">${l.toUpperCase()}</span><span class="sr-only">${esc(c.a11y.langName[l])}</span></a>`;
-    })
-    .join('');
-
   const cardsHtml = projects.map((p) => card(p, c, studioTitles)).join('');
   const dialogsHtml = projects.map((p) => dialog(p, c, studioTitles)).join('');
 
@@ -209,8 +188,6 @@ export function renderPage(c, hashes) {
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0f0e0c">
 <link rel="canonical" href="${canonical}">
-${site.langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${site.url}${urlFor(l)}">`).join('\n')}
-<link rel="alternate" hreflang="x-default" href="${site.url}/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${site.org}">
 <meta property="og:title" content="${esc(c.meta.title)}">
@@ -234,14 +211,16 @@ ${site.langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${site.url}
 
 <div class="backdrop" aria-hidden="true">
   <span class="orb orb--navy"></span><span class="orb orb--red"></span><span class="orb orb--brass"></span><span class="orb orb--ice"></span>
-  <span class="grid-lines"></span><span class="grain"></span>
+  <span class="cursor-light"></span><span class="grid-lines"></span><span class="grain"></span>
 </div>
 
 <header class="nav-wrap">
-  <nav class="nav glass" aria-label="${c.a11y.mainNav}" data-nav>
+  <nav class="nav glass" aria-label="${c.a11y.mainNav}" data-nav data-lens>
     <a class="nav__brand" href="#top" aria-label="${esc(c.a11y.home)}">
-      <img src="${A}mark-160.webp" width="54" height="36" alt="" decoding="async">
-      <span class="nav__word">${site.org}</span>
+      <span class="wordmark" aria-hidden="true">
+        <span class="wordmark__text">${site.org}</span>
+        <svg class="wordmark__swash" viewBox="0 0 172 16" focusable="false"><defs><linearGradient id="tb-swash" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#dcb878" stop-opacity=".15"/><stop offset=".4" stop-color="#fff3d4"/><stop offset="1" stop-color="#f7e2b4" stop-opacity=".9"/></linearGradient></defs><path fill="url(#tb-swash)" d="M2 11C20 6 52 3.4 92 4.2c32 .6 56 2 76-2-18 7-44 8.2-76 8.4C54 10.8 24 12.6 2 11Z"/></svg>
+      </span>
     </a>
     <ul class="nav__links" id="nav-links">
       <li><a href="#projects">${c.nav.projects}</a></li>
@@ -249,7 +228,6 @@ ${site.langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${site.url}
       <li><a href="#studio">${c.nav.studio}</a></li>
       <li><a href="${site.orgUrl}" class="nav__ext">${GITHUB_MARK}<span>${c.nav.github}</span></a></li>
     </ul>
-    <div class="lang" role="group" aria-label="${c.a11y.language}">${langLinks}</div>
     <button class="nav__toggle btn btn--icon" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="${c.a11y.menuOpen}" data-label-open="${esc(c.a11y.menuOpen)}" data-label-close="${esc(c.a11y.menuClose)}">${icon('menu')}</button>
   </nav>
 </header>
@@ -259,21 +237,27 @@ ${site.langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${site.url}
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__stage">
       <div class="hero__banner" data-parallax>
-        <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
-        <span class="hero__sheen" aria-hidden="true"></span>
+        <div class="hero__art">
+          <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
+          <div class="hero__traces" aria-hidden="true">
+            <img src="${A}banner-traces.webp" width="1800" height="600" alt="" decoding="async">
+            <img class="pulse" src="${A}banner-traces.webp" width="1800" height="600" alt="" decoding="async">
+          </div>
+          <span class="hero__sheen" aria-hidden="true"></span>
+        </div>
       </div>
     </div>
     <div class="container hero__copy">
-      <p class="eyebrow-chip glass reveal">${tricolor}<span>${c.hero.eyebrow}</span></p>
-      <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${c.hero.title1}</span> <em class="hero__line hero__line--em">${c.hero.title2}</em></h1>
+      <p class="eyebrow-chip glass reveal" data-lens>${tricolor}<span>${c.hero.eyebrow}</span></p>
+      <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
         <a class="btn btn--metal" href="#projects"><span>${c.hero.ctaPrimary}</span>${icon('arrow')}</a>
-        <a class="btn btn--glass" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaSecondary}</span></a>
+        <a class="btn btn--glass" data-lens href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaSecondary}</span></a>
       </div>
     </div>
     <div class="container">
-      <ul class="stats glass reveal" style="--d:240ms">
+      <ul class="stats glass reveal" style="--d:240ms" data-lens>
         ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
       </ul>
     </div>
@@ -367,7 +351,7 @@ ${site.langs.map((l) => `<link rel="alternate" hreflang="${l}" href="${site.url}
         <div class="cta-panel__copy">
           <p class="eyebrow">${c.contact.eyebrow}</p>
           <h2 id="contact-title">${c.contact.title}</h2>
-          <p>${c.contact.text}${site.mentionPrivateRepos ? ` ${c.contact.privateNote}` : ''}</p>
+          <p>${c.contact.text}</p>
         </div>
         <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.contact.cta}</span>${icon('out', 'icon--sm')}</a>
       </div>

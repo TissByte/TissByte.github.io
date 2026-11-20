@@ -2,16 +2,16 @@
 
 The website of [TissByte](https://github.com/TissByte), served by GitHub Pages at **https://tissbyte.github.io**.
 
-*Hand-woven software. Built for fun.* · English at `/`, French at `/fr/`.
+*Hand-woven software. Built for fun.*
 
-A static site with **no dependencies and no runtime requests**: plain HTML, one CSS file, one small JS file, system fonts, local images. No cookies, no analytics, no third-party calls.
+It's a static site with no dependencies and no runtime requests: plain HTML, one CSS file, one small JS file, system fonts and local images. No cookies, no analytics, no third-party calls.
 
 ## Run it
 
-Needs Node 20+ (nothing to `npm install`).
+Needs Node 20 or later. There's nothing to `npm install`.
 
 ```bash
-npm run dev        # build, serve on http://localhost:4173 and rebuild on every change in src/
+npm run dev        # build, serve on http://localhost:4173, rebuild on every change in src/
 npm run build      # build once into dist/
 npm run contrast   # WCAG 2.2 AAA contrast audit of the design tokens
 ```
@@ -20,64 +20,57 @@ npm run contrast   # WCAG 2.2 AAA contrast audit of the design tokens
 
 | Path | What it is |
 |---|---|
-| `src/data.mjs` | **Every fact**: versions, repo names, statuses, public/private, counts. The single source of truth. |
-| `src/copy.en.mjs` · `src/copy.fr.mjs` | All the words. Facts are inserted with `{placeholders}` (`{version}`, `{projects}`, `{dockLanguages}`…), never retyped. |
-| `src/render.mjs` | HTML for one language. |
-| `src/styles.css` | The "Chrome & Glass" design system (tokens at the top). |
-| `src/main.js` | Progressive enhancement only (reveal, nav, dialogs, pointer light). The page works without it. |
-| `src/assets/` | Optimised images (see *Image sources*). |
-| `scripts/build.mjs` | `src/` → `dist/`, with the consistency checks below. |
-| `.github/workflows/pages.yml` | Build, audit and deploy to GitHub Pages. |
+| `src/data.mjs` | Every fact: versions, repo names, statuses, counts. The single source of truth. |
+| `src/copy.mjs` | All the words. Facts are pulled in with `{placeholders}` (`{version}`, `{projects}`, `{dockLanguages}`…), never retyped. |
+| `src/render.mjs` | The HTML. |
+| `src/styles.css` | The design system ("Chrome & Glass"), tokens at the top. |
+| `src/main.js` | Progressive enhancement only: reveal, nav, project sheets, pointer light, refraction. The page works without it. |
+| `src/assets/` | Optimised images (see below). |
+| `scripts/build.mjs` | `src/` to `dist/`, plus the consistency checks. |
+| `scripts/contrast.mjs` | The contrast audit CI runs. |
+| `.github/workflows/pages.yml` | Build, audit, deploy. |
 
-## Consistency guard rails
+## Keeping it consistent
 
-The build **fails** when:
+The build fails if a project has no copy, a `{placeholder}` is unknown, an image or `#anchor` or `aria-*` reference points nowhere, an `id` is duplicated, or the page doesn't have exactly one `<h1>`. It warns about unused images. CI also runs the contrast audit.
 
-- the English and French copy do not have exactly the same structure (same keys, same list lengths);
-- a `{placeholder}` is unknown, or a project in `data.mjs` has no copy in one language;
-- a referenced image is missing, an in-page `#anchor` or `aria-*` reference points nowhere, an `id` is duplicated, or a page has not exactly one `<h1>`.
+Anything shown in several places (project count, language list, the Dock's number of languages, every version) is derived from `data.mjs`, so a card, a sheet, a stat and the meta tags can't disagree.
 
-It warns about unused images. CI also runs `npm run contrast`.
+## Updating the content
 
-Figures shown in several places (project count, languages, Dock's 7 interface languages, versions) are **derived** from `data.mjs`, so a card, a dialog, a stat and the meta tags cannot disagree.
-
-## Updating content
-
-- **A new release** (say Claude AI Supervisor 0.3.0): change `version` in `src/data.mjs`. Done: chips, dialog and specs follow.
-- **A repository becomes public**: set `public: true` on the project in `src/data.mjs`. The "Private repository" label becomes a GitHub link.
-- **Stop mentioning private repositories** in the "Find us" block: `site.mentionPrivateRepos = false`.
-- **A new project**: add it to `projects` in `data.mjs`, add its image(s) to `src/assets/`, and add the same entry under `projects.items` in **both** copy files.
-- **Wording**: edit the copy files. French typography (no-break spaces before `: ; ! ?`, around `« »`) is applied automatically.
+- **A new release** (say Claude AI Supervisor 0.3.0): change `version` in `src/data.mjs`. Chips, sheet and specs follow.
+- **A repository goes private again**: set `public: false` on its project in `src/data.mjs`. The "View on GitHub" link becomes a "Private repository" label.
+- **A new project**: add it to `projects` in `data.mjs`, add its image(s) to `src/assets/`, and add its entry under `projects.items` in `copy.mjs`.
+- **Wording**: edit `copy.mjs`. Keep the voice plain and specific, and skip the slogans.
 
 ## Design
 
-- **Liquid glass**, in layers: backdrop blur and saturation, a dark-tinted translucent fill (keeps text legible), a lit specular rim, an edge light that turns toward the pointer, and a soft spotlight that follows it. Behind it, slow-drifting halos in the colours of the banner and the French tricolour (blue, red, brass) give the glass something to bend. Glass never nests (nested `backdrop-filter` can't see past its parent).
-- **Palette** sampled from the org banner: warm black `#0f0e0c`, chrome `#e9e4d6`, champagne `#f7e2b4`, brass `#c69339`, with navy `#0a1f5c` and red `#c8102e` from the org profile.
-- **Type**: system fonts only (SF Pro and New York on Apple devices), so there is no font request. Display headings use the serif to echo the monogram's italic.
+- **Liquid glass, in layers.** Backdrop blur and saturation, a dark-tinted translucent fill (so text stays legible), a lit specular rim, an edge light that turns toward the pointer, and a soft spotlight that follows it. In Chromium the rim also **refracts** what's behind it: an SVG displacement map bends the backdrop like a convex lens. Elsewhere you get the blur and nothing breaks.
+- **Something for the glass to bend.** Slow-drifting halos in the banner's colours and the French tricolour (blue, red, brass), and a faint light that trails the pointer.
+- **The banner.** The organisation banner is shown whole. Its circuit traces are lifted into a separate layer, built from the exact same pixels, so they line up perfectly. They grow outward from the monogram, hold, withdraw and grow again, while a light runs along them from right to left.
+- **The wordmark.** "TissByte" is set in a calligraphic hand with a swash that draws itself in. It uses local script fonts only (Snell Roundhand or Apple Chancery on Apple devices, Segoe Script on Windows) and falls back to an italic serif elsewhere. Nothing is downloaded.
+- **Motion with a purpose.** Words rise into the headline one after another, the banner recedes as you scroll, cards tilt a few degrees toward the pointer, and a project's artwork flies from its card into the detail sheet (View Transitions) and back.
+- **Palette** sampled from the banner: warm black `#0f0e0c`, chrome `#e9e4d6`, champagne `#f7e2b4`, brass `#c69339`, plus the navy `#0a1f5c` and red `#c8102e` of the organisation profile.
+- **Type**: system fonts (SF Pro and New York on Apple devices), so there's no font request.
 
-## Accessibility (WCAG 2.2 AAA target)
+## Accessibility
 
-- Text contrast ≥ 7:1 (large text ≥ 4.5:1) **on the worst-case backdrop**: the peak of every colour halo, with and without glass (`npm run contrast`).
-- 3px white focus ring with a dark halo, visible on glass, chrome and metal; interactive targets ≥ 44px; skip link; landmarks; one `<h1>`; native `<dialog>` for details (focus trap, Esc, focus return); `lang` on every page and language link; `hreflang` alternates.
-- Honours `prefers-reduced-motion`, `prefers-reduced-transparency` (opaque surfaces), `prefers-contrast: more` and `forced-colors`; prints cleanly.
-- Fully usable without JavaScript (details open inline) and without `backdrop-filter` (opaque fallback).
+The target is WCAG 2.2 AAA.
+
+- Text contrast is at least 7:1 (large text at least 4.5:1) **on the worst-case backdrop**: the peak of every colour halo, with the pointer light on top, with and without glass. `npm run contrast` proves it.
+- A 3px white focus ring with a dark halo, targets of at least 44px, a skip link, landmarks, one `<h1>`, and a native `<dialog>` for the details (focus trap, Esc, focus returns to where it came from).
+- It respects `prefers-reduced-motion` (no animation at all), `prefers-reduced-transparency` (opaque surfaces, no refraction), `prefers-contrast: more` and `forced-colors`.
+- It works without JavaScript (the details show inline) and without `backdrop-filter` (opaque fallback).
 - One theme on purpose: dark, like the banner.
 
 ## Deploy
 
-1. Create the repository **`TissByte/TissByte.github.io`** (the name is what makes it the organization site).
-2. Push this project to `main`.
-3. In the repository: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-4. The workflow builds and deploys; the site is live at https://tissbyte.github.io.
-
-A custom domain later: add a `src/CNAME` file, copy it in `scripts/build.mjs`, and set the domain in Settings → Pages.
+Pushing to `main` deploys. The repository is `TissByte/TissByte.github.io` (that name is what makes it the organisation site), with **Settings, Pages, Source: GitHub Actions**.
 
 ## Image sources
 
-All images are TissByte's own: the organization banner and avatar, the TB monogram, and the key art, screenshots and logos of its projects. They are re-encoded to WebP (originals untouched) into `src/assets/`.
+All images are TissByte's own: the organisation banner and avatar, the TB monogram, and the artwork, screenshots and logos of its projects, re-encoded to WebP into `src/assets/`. `banner-traces.webp` is the banner's circuit lines extracted into a transparent layer. The CastleBomb picture is the one in that project's README.
 
-## Content
-
-Project facts (versions, platforms, requirements) were checked against each project's own repository, release tags and changelog. Where a README lags behind (for instance a version number), the tag and changelog win. Only public-facing information is on the site: no internal planning, dates or work items.
+Project facts were checked against each repository, its release tags and its changelog. Where a README lags behind, the tag and the changelog win.
 
 © TissByte. Hand-woven software. Built for fun.
