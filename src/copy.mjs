@@ -18,11 +18,8 @@ export default {
   a11y: {
     skip: 'Skip to content',
     mainNav: 'Main navigation',
-    menuOpen: 'Open the menu',
-    menuClose: 'Close the menu',
     close: 'Close',
     home: 'TissByte, back to the top',
-    orgLink: 'TissByte on GitHub',
     details: 'More about {name}',
   },
 
@@ -40,30 +37,6 @@ export default {
       { value: '{projects}', label: 'projects on the bench' },
       { value: '{languages}', label: 'programming languages: {languageList}' },
       { value: '0', label: 'trackers or cookies on this site' },
-    ],
-  },
-
-  about: {
-    eyebrow: 'About',
-    title: 'Small on purpose.',
-    intro:
-      'TissByte is a small workshop in France. We build things for the Mac, and the odd game, when something bugs us enough or sounds like too much fun to skip. Most of it begins as an itch. A second screen with no Dock, say, or a phone that won’t talk to a Mac.',
-    pillars: [
-      {
-        icon: 'weave',
-        title: 'Hand-woven',
-        text: 'It’s our word for taking the slow route. We build a tool, use it, and keep tweaking until it feels right.',
-      },
-      {
-        icon: 'spark',
-        title: 'Built for fun',
-        text: 'If we’re not enjoying it, we’re doing it wrong. That goes for the games and the utilities.',
-      },
-      {
-        icon: 'flag',
-        title: 'Made in France',
-        text: 'A French team making English-speaking tools. MacOS Dock also comes in {dockLanguages} languages, French included.',
-      },
     ],
   },
 
