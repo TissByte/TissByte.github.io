@@ -320,7 +320,6 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       </div>
     </div>
     <div class="container hero__copy">
-      <p class="eyebrow-chip glass reveal" data-lens>${tricolor}<span>${c.hero.eyebrow}</span></p>
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">

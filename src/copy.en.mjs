@@ -25,7 +25,6 @@ export default {
   nav: { home: 'Home', projects: 'Projects', principles: 'Principles' },
 
   hero: {
-    eyebrow: 'A small software initiative',
     title1: 'Hand-woven software.',
     title2: 'Built for fun.',
     lead: 'We make Mac tools and games for the fun of it, and to make our own days a bit easier.',

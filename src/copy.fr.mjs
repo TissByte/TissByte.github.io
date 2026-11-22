@@ -27,7 +27,6 @@ export default {
   nav: { home: 'Accueil', projects: 'Projets', principles: 'Principes' },
 
   hero: {
-    eyebrow: 'Une petite initiative logicielle',
     title1: 'Des logiciels tissés main.',
     title2: 'Faits pour le plaisir.',
     lead: 'Nous faisons des outils et des jeux pour Mac, pour le plaisir, et pour nous simplifier un peu la vie.',
