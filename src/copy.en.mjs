@@ -10,7 +10,7 @@ export default {
   meta: {
     title: 'TissByte — Hand-woven software. Built for fun.',
     description:
-      'TissByte is a small software initiative from France. We make Mac tools and games: CastleBomb, Claude AI Supervisor, MacOS Dock and MobiMount.',
+      'TissByte is a small software initiative from France. We make Mac tools and games: CastleBomb, Claude AI Supervisor, MacOS Dock, TissByte Cleaning and MobiMount.',
     ogAlt: 'TissByte: a chrome italic “TB” monogram on a black background.',
   },
 
@@ -41,7 +41,7 @@ export default {
   projects: {
     eyebrow: 'Projects',
     title: 'What’s on the bench.',
-    intro: 'Two apps, a game, a small utility and an experiment. All of it starts from the Mac.',
+    intro: 'Three apps, a game, a small utility and an experiment. All of it starts from the Mac.',
     notice: 'Our repositories are private for now. We can provide access for debugging purposes: contact us.',
     more: 'More',
     highlights: 'Highlights',
@@ -137,6 +137,40 @@ export default {
           ['Tested on', 'macOS 26'],
           ['Built with', 'Swift 6 and the Command Line Tools, no Xcode'],
           ['Install', 'Build from source, download a release, or use Homebrew'],
+        ],
+      },
+      cleaning: {
+        name: 'TissByte Cleaning',
+        tagline: 'A Mac cleaner that knows what it knows, says where it doubts, and can always put things back.',
+        summary:
+          'TissByte Cleaning finds what your Mac no longer needs, tells you how sure it is and why, and only removes what it can put back. It’s a macOS app, with a command-line twin called <code>tbclean</code>, built on one idea: a cleaner is only worth trusting if it can say “I’m sure” and “I’m not sure” and mean both. It started from a real clean-up, a developer’s Mac at 92% full, 80 GB of it profiler traces in a temporary folder that no cleaner shows.',
+        artAlt:
+          'TissByte Cleaning: a navy app icon with a chrome ring half swept clean by a brush, beside the chrome name and the four confidence tiers: Sure, Probably, Not sure and Protected.',
+        galleryLabel: 'Screenshots (demo data)',
+        gallery: [
+          'Smart Scan: a ring, the four tiers and the list of what is sure to remove.',
+          'The menu-bar panel: free space, the disk-full forecast and a one-click quick scan.',
+          'The About window.',
+          'The Why inspector: the reasoning behind a confidence, and a serious doubt you can answer with Yes or No.',
+          'Not sure: each finding with its doubts. Nothing is ticked for you, and what the engine doesn’t know, it doesn’t propose.',
+          'The Safety Net: what is held, the expiry countdown, restore one item or a whole run.',
+          'Space Lens: a treemap of where the disk went.',
+          'Developer: projects, build folders and their git state.',
+          'Statistics: six tiles, free space over time with its forecast, and a marker at each clean.',
+        ],
+        highlights: [
+          ['Four tiers', 'Every finding lands in Sure, Probably, Not sure or Protected. Only “Sure” is ticked for the one-click clean, and what the engine can’t identify is never offered for removal.'],
+          ['It shows its reasoning', 'Each finding comes with the evidence behind its confidence (“its tool rebuilds it”, “not opened for 94 days”, “a script elsewhere mentions it”) and its named doubts. When a yes or a no can settle one, it asks, remembers and re-assesses on the spot.'],
+          ['Safe by construction', 'Nine gates, called the Guardian, decide when a finding is built and again, from scratch, at the instant of removal. Anything that isn’t strictly regenerable goes to the Safety Net: restorable for 30 days, with a one-click Undo.'],
+          ['Smart about developers', 'Build folders found by project marker, git-aware (uncommitted work protects a folder), stale worktrees, Xcode, package caches, Docker and every local AI model, with who still references it.'],
+          ['Where did the disk go?', 'A treemap of the whole disk, and real statistics: free space over time with a disk-full forecast, a health score, what’s growing and a 52-week activity heatmap.'],
+          ['Private', 'It reads files on your Mac and opens no network connection. No account, no analytics, and uninstalling removes everything it wrote.'],
+        ],
+        specs: [
+          ['Requires', 'macOS 14 or later (the Liquid Glass look needs macOS 26, older systems get a blur)'],
+          ['Built with', 'Swift and the Command Line Tools, no Xcode and no dependencies'],
+          ['First launch', 'Signed ad hoc, not notarized: right-click the app, then Open'],
+          ['Install', 'The app (DMG), a build from source, or the command line alone'],
         ],
       },
       mobimount: {

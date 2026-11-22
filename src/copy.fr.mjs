@@ -12,7 +12,7 @@ export default {
   meta: {
     title: 'TissByte — Des logiciels tissés main. Faits pour le plaisir.',
     description:
-      'TissByte est une petite initiative logicielle française. Nous faisons des outils et des jeux pour Mac : CastleBomb, Claude AI Supervisor, MacOS Dock et MobiMount.',
+      'TissByte est une petite initiative logicielle française. Nous faisons des outils et des jeux pour Mac : CastleBomb, Claude AI Supervisor, MacOS Dock, TissByte Cleaning et MobiMount.',
     ogAlt: 'TissByte : un monogramme « TB » chromé, en italique, sur fond noir.',
   },
 
@@ -43,7 +43,7 @@ export default {
   projects: {
     eyebrow: 'Projets',
     title: 'Ce qu’il y a sur l’établi.',
-    intro: 'Deux applications, un jeu, un petit utilitaire et une expérience. Tout part du Mac.',
+    intro: 'Trois applications, un jeu, un petit utilitaire et une expérience. Tout part du Mac.',
     notice: 'Nos dépôts sont privés pour l’instant. Accès possible à des fins de débogage : contactez-nous.',
     more: 'Détails',
     highlights: 'Points forts',
@@ -139,6 +139,40 @@ export default {
           ['Testé sur', 'macOS 26'],
           ['Compilé avec', 'Swift 6 et les Command Line Tools, sans Xcode'],
           ['Installation', 'Compilation depuis les sources, version à télécharger ou Homebrew'],
+        ],
+      },
+      cleaning: {
+        name: 'TissByte Cleaning',
+        tagline: 'Un nettoyeur de Mac qui sait ce qu’il sait, dit où il doute, et peut toujours tout remettre en place.',
+        summary:
+          'TissByte Cleaning trouve ce dont votre Mac n’a plus besoin, vous dit à quel point il en est sûr et pourquoi, et ne supprime que ce qu’il peut remettre en place. C’est une app macOS, avec un jumeau en ligne de commande appelé <code>tbclean</code>, construite sur une idée : un nettoyeur ne mérite la confiance que s’il sait dire « j’en suis sûr » et « je n’en suis pas sûr », et le pense dans les deux cas. Tout est parti d’un vrai grand ménage, le Mac d’un développeur rempli à 92 %, dont 80 Go de traces de profilage dans un dossier temporaire qu’aucun nettoyeur n’affiche.',
+        artAlt:
+          'TissByte Cleaning : une icône d’app bleu marine avec un anneau chromé à moitié balayé par une brosse, à côté du nom en chrome et des quatre niveaux de confiance : Sûr, Probable, Pas sûr et Protégé.',
+        galleryLabel: 'Captures d’écran (données de démonstration)',
+        gallery: [
+          'Smart Scan : un anneau, les quatre niveaux et la liste de ce qui est sûr à supprimer.',
+          'Le panneau de la barre des menus : l’espace libre, la prévision de disque plein et un scan rapide en un clic.',
+          'La fenêtre À propos.',
+          'L’inspecteur « Pourquoi » : le raisonnement derrière une confiance, et un doute sérieux auquel vous répondez par oui ou par non.',
+          'Pas sûr : chaque résultat avec ses doutes. Rien n’est coché pour vous, et ce que le moteur ne sait pas, il ne le propose pas.',
+          'Le Safety Net : ce qui est conservé, le compte à rebours avant expiration, la restauration d’un élément ou d’un nettoyage entier.',
+          'Space Lens : une carte de l’endroit où est passé le disque.',
+          'Développeur : les projets, les dossiers de build et leur état git.',
+          'Statistiques : six tuiles, l’espace libre dans le temps avec sa prévision, et un repère à chaque nettoyage.',
+        ],
+        highlights: [
+          ['Quatre niveaux', 'Chaque résultat tombe dans Sûr, Probable, Pas sûr ou Protégé. Seul « Sûr » est coché pour le nettoyage en un clic, et ce que le moteur ne sait pas identifier n’est jamais proposé à la suppression.'],
+          ['Il montre son raisonnement', 'Chaque résultat vient avec les indices derrière sa confiance (« son outil le régénère », « non ouvert depuis 94 jours », « un script ailleurs le mentionne ») et ses doutes nommés. Quand un oui ou un non peut en lever un, il pose la question, s’en souvient et réévalue sur-le-champ.'],
+          ['Sûr par construction', 'Neuf contrôles, le Guardian, décident quand un résultat est construit, puis de nouveau, de zéro, à l’instant de la suppression. Tout ce qui n’est pas strictement régénérable va dans le Safety Net : restaurable 30 jours, annulation en un clic.'],
+          ['Malin pour les développeurs', 'Dossiers de build repérés par leur fichier marqueur, conscient de git (le travail non commité protège un dossier), worktrees obsolètes, Xcode, caches de paquets, Docker et tous les modèles d’IA locaux, avec qui les référence encore.'],
+          ['Où est passé le disque ?', 'Une carte de tout le disque, et de vraies statistiques : l’espace libre dans le temps avec prévision de disque plein, un score de santé, ce qui grossit et une carte de chaleur d’activité sur 52 semaines.'],
+          ['Privé', 'Il lit des fichiers sur votre Mac et n’ouvre aucune connexion réseau. Pas de compte, pas de mesure d’audience, et la désinstallation retire tout ce qu’il a écrit.'],
+        ],
+        specs: [
+          ['Prérequis', 'macOS 14 ou plus récent (le rendu Liquid Glass demande macOS 26, les systèmes plus anciens ont un flou)'],
+          ['Compilé avec', 'Swift et les Command Line Tools, sans Xcode et sans dépendances'],
+          ['Premier lancement', 'Signée ad hoc, pas notarisée : clic droit sur l’app, puis Ouvrir'],
+          ['Installation', 'L’app (DMG), une compilation depuis les sources, ou la ligne de commande seule'],
         ],
       },
       mobimount: {

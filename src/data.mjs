@@ -2,7 +2,7 @@
 // Prose lives in copy.mjs and reads these values through {placeholders},
 // so a version, a count or a link can never disagree between a card, a dialog, a stat and the meta tags.
 //
-// Versions were checked against release tags and changelogs on 2026-11-20 (tags win over READMEs).
+// Versions were checked against release tags and changelogs on 2026-11-22 (tags win over READMEs).
 
 export const site = {
   url: 'https://tissbyte.github.io',
@@ -39,7 +39,7 @@ export const projects = [
     id: 'supervisor',
     kind: 'app',
     status: 'released',
-    version: '0.2.1',
+    version: '0.2.2',
     repo: 'claude-ai-supervisor',
     public: true,
     accent: '#6fb0f2',
@@ -60,6 +60,31 @@ export const projects = [
     ],
   },
   {
+    id: 'cleaning',
+    kind: 'app',
+    status: 'released',
+    version: '0.1.0',
+    repo: 'TissByte-MacOs-Cleaning',
+    public: true,
+    accent: '#5ad1c4',
+    chips: ['Swift', 'macOS 14+', 'App + CLI'],
+    code: ['Swift'],
+    layout: 'wide',
+    art: { kind: 'img', name: 'cleaning-banner', w: 1280, h: 426, small: 760, pos: '50% 50%', ratio: '3 / 1' },
+    // the screenshots from the project's README (all on its demo data); captions live in the copy files
+    gallery: [
+      { name: 'cln-smartscan', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-panel', kind: 'tall', thumb: 480, full: 928, w: 928, h: 1344 },
+      { name: 'cln-about', kind: 'tall', thumb: 480, full: 960, w: 960, h: 1316 },
+      { name: 'cln-why', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-tiers', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-safetynet', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-spacelens', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-developer', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+      { name: 'cln-stats', kind: 'wide', thumb: 900, full: 1600, w: 1600, h: 1041 },
+    ],
+  },
+  {
     id: 'dock',
     kind: 'app',
     status: 'released',
@@ -70,7 +95,7 @@ export const projects = [
     chips: ['Swift 6', 'macOS 13+', 'Liquid Glass'],
     code: ['Swift'],
     interfaceLanguages: 7,
-    layout: 'wide',
+    layout: 'narrow',
     art: { kind: 'img', name: 'dock-banner', w: 1400, h: 467, small: 760, pos: '50% 50%', ratio: '3 / 1' },
     // illustrations: drawn for this site (dock-bar) and by the project itself (dock-screens, made for a light page)
     gallery: [
@@ -102,7 +127,7 @@ export const projects = [
     accent: '#a99dff',
     chips: ['AI agents', 'Claude Code', 'Godot'],
     code: [],
-    layout: 'full',
+    layout: 'wide',
     art: { kind: 'pipeline', ratio: '3 / 1' },
   },
 ];
