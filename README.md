@@ -25,8 +25,8 @@ npm run standalone # one self-contained HTML file, images inlined as base64, in 
 | `src/copy.en.mjs`, `src/copy.fr.mjs` | All the words, one file per language. Facts are pulled in with `{placeholders}` (`{version}`, `{projects}`, `{dockLanguages}`…), never retyped. |
 | `src/langs.mjs` | The list of languages (English at the root, French in `/fr/`) and the French typography pass. |
 | `src/render.mjs` | The HTML. |
-| `src/styles.css` | The design system ("Chrome & Glass"), tokens at the top. |
-| `src/main.js` | Progressive enhancement only: reveal, nav, project sheets, pointer light, refraction. The page works without it. |
+| `src/styles.css` | The design system ("Soft Hardware"), tokens at the top. |
+| `src/main.js` | Progressive enhancement only: reveal, nav, project sheets, contact menu, the logo glint. The page works without it. |
 | `src/assets/` | Optimised images (see below). |
 | `scripts/build.mjs` | `src/` to `dist/`, plus the consistency checks. |
 | `scripts/contrast.mjs` | The contrast audit CI runs. |
@@ -50,27 +50,26 @@ Anything shown in several places (project count, language list, the Dock's numbe
 
 ## Design
 
-- **Liquid glass, in layers.** Backdrop blur and saturation, a dark-tinted translucent fill (so text stays legible), a lit specular rim, an edge light that turns toward the pointer, and a soft spotlight that follows it. In Chromium the rim also **refracts** what's behind it: an SVG displacement map bends the backdrop like a convex lens. Elsewhere you get the blur and nothing breaks.
-- **Something for the glass to bend.** Slow-drifting halos in the banner's colours and the French tricolour (blue, red, brass), and a faint light that trails the pointer.
-- **The banner.** The organisation banner is shown whole, never cropped, and a slow highlight sweeps across the monogram from right to left.
-- **Navigation.** No bar, no logo: a centred menu (Home, Projects, Principles). The section you're reading turns champagne and a small light glides under its entry. A soft scrim fades in behind it as you scroll so it stays readable.
+- **Soft hardware (neumorphism, made precise).** One warm graphite surface, lit from the top left. Whatever can be pressed stands out of it (plates, keys, round buttons); whatever holds information is cut into it (labels, displays, specs, screenshots). Every shadow falls the same way and every edge catches the same 1px light, so it reads as one object instead of blurry blobs. A fine static grain gives the surface a material feel. All of it is CSS custom properties (`--raise-*`, `--cut-*`, `--convex`, `--concave`) in `src/styles.css`.
+- **The banner.** The monogram sits in a recessed window with a warm backlight behind it. A slow sweep of light crosses the chrome, and a glint follows the pointer (fine pointers only; both are off with reduced motion).
+- **Navigation.** Two small floating plates: the menu (Home, Projects, Principles) and the language switch. The section you're reading is the key that's pushed in, with its LED lit.
+- **Status as an LED.** "Released" is a steady green LED; "In development" and "In the lab" send out a slow halo. The word is always there: colour never carries the meaning alone.
 - **Languages.** English at `/`, French at `/fr/`, switched with a small `EN | FR` pill at the top right of the menu. They're plain links between real pages: there's no automatic redirect, no cookie and no stored choice (the site keeps its "nothing stored" promise), and the link keeps the section you were reading. Each page declares `hreflang` alternates, and the sitemap lists both. The 404 page speaks both languages, since the visitor's is unknown.
 - **Contact.** "Contact us" opens a small menu: write an email, copy the address (with a confirmation) or open it in Gmail. The address is never written in the HTML: `data.mjs` holds it, the page splits it into two attributes and `main.js` joins them, so address harvesters find nothing. Without JavaScript a plain "name [at] domain [dot] com" line takes over.
 - **Portable by design.** Every URL in the page is relative, so `dist/` works from any folder, from a `file://` path and under a sub-path, with no image repository or CDN involved. All images live in this repository, copied from the projects' own repos (including private ones) at authoring time, so the site never depends on those repos being reachable. A base64-inlined single file exists as an export (`npm run standalone`) but not as the live format: inlined images can't be cached or loaded in parallel and make the page about a third heavier.
 - **Screenshots.** A project's detail sheet can carry the screenshots from its own README (Claude AI Supervisor has eight, TissByte Cleaning nine, MacOS Dock its two-display illustration). They're lazy-loaded thumbnails; click one to see it full size. Add them under `gallery` in `data.mjs` and put one caption each in every copy file (the build checks the counts match).
-- **Section surfaces.** Each section has its own texture so you always know where you are: a drafting grid for the projects and engraved rings for the closing strip, each with a tint and a hairline with a lit node at the top. Pure CSS, kept inside the contrast budget.
-- **Motion with a purpose.** Words rise into the headline one after another, the banner recedes as you scroll, cards tilt a few degrees toward the pointer, and a project's artwork flies from its card into the detail sheet (View Transitions) and back.
-- **Palette** sampled from the banner: warm black `#0f0e0c`, chrome `#e9e4d6`, champagne `#f7e2b4`, brass `#c69339`, plus the navy `#0a1f5c` and red `#c8102e` of the organisation profile.
+- **Motion with a purpose.** Words rise into the headline one after another, cards lift a few pixels on hover and keys sink when pressed, and a project's artwork flies from its card into the detail sheet (View Transitions) and back. Nothing bounces or flashes.
+- **Palette**: graphite `#26231f` for the surface, ink `#fbf8f0`, champagne `#f7e2b4` as the only accent, plus the blue, white and red of the tricolour inlay in the footer.
 - **Type**: system fonts only (SF Pro and New York on Apple devices), so there is no font request.
 
 ## Accessibility
 
 The target is WCAG 2.2 AAA.
 
-- Text contrast is at least 7:1 (large text at least 4.5:1) **on the worst-case backdrop**: the peak of every colour halo, with the pointer light on top, with and without glass. `npm run contrast` proves it.
-- A 3px white focus ring with a dark halo, targets of at least 44px, a skip link, landmarks, one `<h1>`, and a native `<dialog>` for the details (focus trap, Esc, focus returns to where it came from).
-- It respects `prefers-reduced-motion` (no animation at all), `prefers-reduced-transparency` (opaque surfaces, no refraction), `prefers-contrast: more` and `forced-colors`.
-- It works without JavaScript (the details show inline) and without `backdrop-filter` (opaque fallback).
+- Text contrast is at least 7:1 (large text at least 4.5:1) on the lightest plate and the darkest well, with the grain and the brightest highlight counted in. `npm run contrast` proves it. Controls are identified by their label or icon, never by a shadow alone, and every plate turns into an outlined shape under `prefers-contrast: more`.
+- A 3px white focus ring set off by a 3px gap, targets of at least 44px, a skip link, landmarks, one `<h1>`, and a native `<dialog>` for the details (focus trap, Esc, focus returns to where it came from).
+- It respects `prefers-reduced-motion` (no animation at all), `prefers-contrast: more` and `forced-colors`.
+- It works without JavaScript (the details show inline).
 - One theme on purpose: dark, like the banner.
 
 ## Security

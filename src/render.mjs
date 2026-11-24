@@ -107,7 +107,7 @@ function card(p, c, studioStepTitles) {
     p.layout === 'wide' ? '(min-width: 1000px) 640px, 92vw' : p.layout === 'full' ? '(min-width: 1000px) 520px, 92vw' : '(min-width: 1000px) 440px, 92vw';
   const art = p.art.kind === 'pipeline' ? pipelineArt(t, studioStepTitles) : projectArt(p, t, { sizes });
   return `
-      <article class="card card--${p.layout} glass reveal" style="--accent:${p.accent};--ar:${p.art.ratio}" data-project="${p.id}">
+      <article class="card card--${p.layout} plate reveal" style="--accent:${p.accent};--ar:${p.art.ratio}" data-project="${p.id}">
         <div class="card__art">${art}</div>
         <div class="card__body">
           ${chips(p, c, vars)}
@@ -116,7 +116,7 @@ function card(p, c, studioStepTitles) {
           <ul class="meta" aria-label="${esc(c.projects.glance)}">${p.chips.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>
           <div class="card__foot">
             ${repoNote(p, c)}
-            <button class="btn btn--glass btn--sm card__more" type="button" data-open="dlg-${p.id}" aria-haspopup="dialog" aria-label="${esc(fmt(c.a11y.details, vars))}">
+            <button class="btn btn--soft btn--sm card__more" type="button" data-open="dlg-${p.id}" aria-haspopup="dialog" aria-label="${esc(fmt(c.a11y.details, vars))}">
               <span aria-hidden="true">${c.projects.more}</span>${icon('arrow', 'icon--sm')}
             </button>
           </div>
@@ -143,7 +143,7 @@ function dialog(p, c, studioStepTitles) {
       : projectArt(p, t, { sizes: '(min-width: 1000px) 980px, 96vw' });
   return `
     <dialog class="sheet" id="dlg-${p.id}" aria-labelledby="dlg-${p.id}-title" style="--accent:${p.accent};--ar:${p.art.ratio};--arn:${(() => { const [a, b] = p.art.ratio.split('/').map(Number); return (a / b).toFixed(4); })()}">
-      <div class="sheet__panel glass glass--strong">
+      <div class="sheet__panel plate">
         <button class="sheet__close btn btn--icon" type="button" data-close aria-label="${c.a11y.close}">${icon('close')}</button>
         <div class="sheet__scroll">
         <div class="sheet__art art--${p.art.kind}">${art}</div>
@@ -159,7 +159,7 @@ function dialog(p, c, studioStepTitles) {
             </section>
             <aside aria-labelledby="dlg-${p.id}-gl">
               <h4 id="dlg-${p.id}-gl" class="sheet__h">${L.glance}</h4>
-              <dl class="specs">${specRows(p, c, t, vars)}</dl>
+              <dl class="specs well">${specRows(p, c, t, vars)}</dl>
               <p class="sheet__source"><span class="sheet__h sheet__h--inline">${L.sourceLabel}</span> ${repoNote(p, c)}</p>
             </aside>
           </div>
@@ -178,13 +178,13 @@ function gallery(p, c, t) {
     .map((g, i) => {
       const caption = t.gallery[i];
       if (g.kind === 'svg') {
-        return `<figure class="shot shot--svg${g.light ? ' shot--light' : ''}"><img src="${A}gallery/${g.name}.svg" width="${g.w}" height="${g.h}" alt="${esc(caption)}" loading="lazy" decoding="async"><figcaption>${caption}</figcaption></figure>`;
+        return `<figure class="shot shot--svg${g.light ? ' shot--light' : ''}"><span class="shot__frame"><img src="${A}gallery/${g.name}.svg" width="${g.w}" height="${g.h}" alt="${esc(caption)}" loading="lazy" decoding="async"></span><figcaption>${caption}</figcaption></figure>`;
       }
       const thumb = `${A}gallery/${g.name}-${g.thumb}.webp`;
       const full = `${A}gallery/${g.name}-${g.full}.webp`;
       const sizes = g.kind === 'wide' ? '(min-width: 820px) 460px, 92vw' : '(min-width: 820px) 220px, 46vw';
       return `<figure class="shot shot--${g.kind}">
-            <button class="shot__open" type="button" data-zoom="${full}" data-zoom-alt="${esc(caption)}" data-zoom-w="${g.w}" data-zoom-h="${g.h}" aria-haspopup="dialog" aria-label="${esc(caption)} (${L.enlarge})">
+            <button class="shot__open shot__frame" type="button" data-zoom="${full}" data-zoom-alt="${esc(caption)}" data-zoom-w="${g.w}" data-zoom-h="${g.h}" aria-haspopup="dialog" aria-label="${esc(caption)} (${L.enlarge})">
               <img src="${thumb}" srcset="${thumb} ${g.thumb}w, ${full} ${g.full}w" sizes="${sizes}" width="${g.w}" height="${g.h}" alt="" loading="lazy" decoding="async">
             </button>
             <figcaption aria-hidden="true">${caption}</figcaption>
@@ -209,9 +209,9 @@ function contactMenu(c) {
   const L = c.contact;
   const labels = { label: L.label, write: L.write, copy: L.copy, copied: L.copied, gmail: L.gmail, subject: L.subject };
   return `<span class="contact" data-contact data-u="${user}" data-d="${domain}" data-labels="${esc(JSON.stringify(labels))}">
-          <button class="btn btn--tint contact__btn" type="button" data-lens aria-expanded="false" aria-controls="contact-panel" aria-haspopup="true">${icon('mail')}<span>${c.hero.ctaContact}</span></button>
+          <button class="btn btn--soft contact__btn" type="button" aria-expanded="false" aria-controls="contact-panel" aria-haspopup="true">${icon('mail')}<span>${c.hero.ctaContact}</span></button>
           <span class="contact__plain">${L.plain} ${user} [at] ${domain.replace(/\./g, ' [dot] ')}</span>
-          <div class="contact__panel glass glass--strong" id="contact-panel" role="group" aria-label="${esc(L.label)}" hidden></div>
+          <div class="contact__panel plate" id="contact-panel" role="group" aria-label="${esc(L.label)}" hidden></div>
         </span>`;
 }
 
@@ -265,7 +265,7 @@ export function renderPage(c, hashes) {
 <meta name="supported-color-schemes" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp([JS_FLAG])}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#0f0e0c">
+<meta name="theme-color" content="#26231f">
 <link rel="canonical" href="${canonical}">
 ${languages.map((l) => `<link rel="alternate" hreflang="${l.code}" href="${site.url}/${l.path}">`).join('\n')}
 <link rel="alternate" hreflang="x-default" href="${site.url}/${defaultLanguage.path}">
@@ -291,11 +291,6 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 <body>
 <a class="skip" href="#main">${c.a11y.skip}</a>
 
-<div class="backdrop" aria-hidden="true">
-  <span class="orb orb--navy"></span><span class="orb orb--red"></span><span class="orb orb--brass"></span><span class="orb orb--ice"></span>
-  <span class="cursor-light"></span><span class="grid-lines"></span><span class="grain"></span>
-</div>
-
 <header class="nav-wrap">
   <nav class="nav" aria-label="${c.a11y.mainNav}" data-nav>
     <ul class="nav__links">
@@ -304,7 +299,6 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       <li><a href="#promises">${c.nav.principles}</a></li>
     </ul>
     ${languageSwitch(c, here, up)}
-    <span class="nav__dot" aria-hidden="true"></span>
   </nav>
 </header>
 
@@ -312,10 +306,11 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__stage">
-      <div class="hero__banner" data-parallax>
-        <div class="hero__art">
+      <div class="container">
+        <div class="hero__window well">
           <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
           <span class="hero__sheen" aria-hidden="true"></span>
+          <span class="hero__glint" aria-hidden="true"></span>
         </div>
       </div>
     </div>
@@ -328,7 +323,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       </div>
     </div>
     <div class="container">
-      <ul class="stats glass reveal" style="--d:240ms" data-lens>
+      <ul class="stats plate reveal" style="--d:240ms">
         ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
       </ul>
     </div>
@@ -340,7 +335,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
         <p class="eyebrow">${c.projects.eyebrow}</p>
         <h2 id="projects-title">${c.projects.title}</h2>
         <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
-        ${site.reposPrivate ? `<p class="notice glass" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
+        ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
       </header>
       <div class="bento">${cardsHtml}
       </div>
@@ -355,7 +350,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
   <section class="section section--last" id="promises" aria-labelledby="promises-title">
     <div class="container">
       <h2 id="promises-title" class="sr-only">${c.promises.title}</h2>
-      <ul class="promises glass reveal">
+      <ul class="promises plate reveal">
         ${c.promises.items
           .map(
             (it) => `<li>
@@ -395,7 +390,7 @@ export function renderNotFound(copies, hashes) {
       return `<section lang="${c.lang}"${c === first ? '' : ' class="lost__alt"'}>
       ${c === first ? `<h1>${c.notFound.heading}</h1>` : `<h2>${c.notFound.heading}</h2>`}
       <p>${c.notFound.text}</p>
-      <a class="btn ${c === first ? 'btn--metal' : 'btn--glass'}" href="/${l.path}">${c.notFound.cta}</a>
+      <a class="btn ${c === first ? 'btn--metal' : 'btn--soft'}" href="/${l.path}">${c.notFound.cta}</a>
     </section>`;
     })
     .join('\n    ');
@@ -409,14 +404,13 @@ export function renderNotFound(copies, hashes) {
 <meta name="color-scheme" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp()}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#0f0e0c">
+<meta name="theme-color" content="#26231f">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">
 </head>
 <body>
-<div class="backdrop" aria-hidden="true"><span class="orb orb--navy"></span><span class="orb orb--red"></span><span class="orb orb--brass"></span><span class="grain"></span></div>
 <main class="lost" id="main">
-  <div class="lost__panel glass glass--strong">
+  <div class="lost__panel plate">
     <img src="/assets/mark-480.webp" width="240" height="160" alt="">
     ${blocks}
   </div>
