@@ -327,6 +327,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       <div class="hero__cta reveal" style="--d:180ms">
         <a class="btn btn--metal" href="#projects"><span>${c.hero.ctaProjects}</span>${icon('down')}</a>
         ${contactMenu(c)}
+        <a class="btn btn--soft" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
       </div>
     </div>
   </section>

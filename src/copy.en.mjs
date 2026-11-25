@@ -29,6 +29,7 @@ export default {
     title2: 'Built for fun.',
     lead: 'We make Mac tools and games for the fun of it, and to make our own days a bit easier.',
     ctaProjects: 'See the projects',
+    ctaGithub: 'Find us on GitHub',
     ctaContact: 'Contact us',
     bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background.',
     stats: [
