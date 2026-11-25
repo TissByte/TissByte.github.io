@@ -24,8 +24,8 @@ const T = {
   plateLight: hex('#2c2925'), // lightest stop of --convex
   wellLight: hex('#24211d'), //  lightest stop of --concave
   ink: hex('#fbf8f0'),
-  ink2: hex('#e4dfd0'),
-  champagne: hex('#f7e2b4'),
+  ink2: hex('#f0ebdf'),
+  champagne: hex('#fbe9c0'),
   metalText: hex('#1b1408'),
   metalDark: hex('#efd69d'), // darkest stop of the champagne key
 };
@@ -40,9 +40,19 @@ const check = (label, fg, bg, target) => {
   rows.push({ label, r, target, ok: r >= target });
 };
 
-const onSurface = lift(T.surface, 0.07);
+// the colour in the air (body::after): blue .11, red .08, brass .09 at their peaks, counted as if all three overlapped here
+const AMBIENT = [[[70, 112, 235], 0.11], [[226, 54, 84], 0.08], [[222, 164, 70], 0.09]];
+const tinted = AMBIENT.reduce((base, [c, a]) => over(c, a, base), T.surface);
+const onSurface = lift(tinted, 0.07);
 const onPlate = lift(T.plateLight);
 const onWell = lift(T.wellLight);
+// a card's plate catches its project's colour: at most 7 % of the accent, in the bottom-left corner
+const ACCENTS = { castlebomb: '#ee8a3c', supervisor: '#6fb0f2', cleaning: '#5ad1c4', dock: '#e0b25e', mobimount: '#4cc2ff', studio: '#a99dff' };
+for (const [name, h] of Object.entries(ACCENTS)) {
+  const bg = lift(over(hex(h), 0.07, T.plateLight));
+  check(`ink-2 on the ${name} card (accent glow)`, T.ink2, bg, 7);
+  check(`champagne on the ${name} card (accent glow)`, T.champagne, bg, 7);
+}
 
 for (const [where, bg] of [['the page surface', onSurface], ['a plate (cards, sheet, menus)', onPlate], ['a well (labels, displays, specs)', onWell]]) {
   check(`ink on ${where}`, T.ink, bg, 7);

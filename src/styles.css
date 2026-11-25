@@ -19,10 +19,10 @@
 
   /* text: AAA (>= 7:1) on the lightest plate and the darkest well, see scripts/contrast.mjs */
   --ink: #fbf8f0;
-  --ink-2: #e4dfd0;
+  --ink-2: #f0ebdf;
 
   /* brand */
-  --champagne: #f7e2b4;
+  --champagne: #fbe9c0;
   --brass: #c69339;
   --red: #c8102e;
 
@@ -73,6 +73,15 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+}
+/* a little colour in the air: the blue, red and brass of the banner and the tricolour, very soft and fixed to the window,
+   so the surface is warm instead of grey (peak alphas are counted in scripts/contrast.mjs) */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background:
+    radial-gradient(70vmax 56vmax at 4% -6%, rgb(70 112 235 / .11), transparent 70%),
+    radial-gradient(60vmax 52vmax at 104% 38%, rgb(226 54 84 / .08), transparent 70%),
+    radial-gradient(76vmax 60vmax at 22% 108%, rgb(222 164 70 / .09), transparent 70%);
 }
 /* the surface is a material, not a flat fill: a fine, static grain (two percent of white at most; the audit counts it) */
 body::before {
@@ -132,6 +141,15 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
 .section::before {
   content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
   background: rgb(var(--shade) / .55); box-shadow: 0 1px 0 rgb(var(--lit) / .07); pointer-events: none;
+}
+.section::after { /* three small LEDs in a cut-in strip: blue, white, red */
+  content: ""; position: absolute; top: -8px; left: 50%; width: 54px; height: 18px; border-radius: 999px; transform: translateX(-50%); pointer-events: none;
+  background:
+    radial-gradient(circle at 15px 9px, #6f93ff 0 2.6px, rgb(111 147 255 / .35) 3.6px, transparent 8px),
+    radial-gradient(circle at 27px 9px, #f6f2ea 0 2.6px, rgb(246 242 234 / .3) 3.6px, transparent 8px),
+    radial-gradient(circle at 39px 9px, #ff5a72 0 2.6px, rgb(255 90 114 / .35) 3.6px, transparent 8px),
+    var(--concave);
+  box-shadow: var(--cut-xs);
 }
 .section-head { max-width: 760px; margin-bottom: clamp(36px, 5vw, 60px); }
 /* a little label under the intro (the repositories are not public yet); remove it with site.reposPrivate = false */
@@ -212,8 +230,8 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
    (main.js sets --scrim), so the page does not run into their shadows. */
 .nav-wrap { position: fixed; z-index: 50; top: 0; left: 0; right: 0; pointer-events: none; }
 .nav-wrap::before {
-  content: ""; position: absolute; inset: 0 0 auto 0; height: 104px; pointer-events: none;
-  background: linear-gradient(to bottom, rgb(38 35 31 / .96) 0, rgb(38 35 31 / .9) 55%, rgb(38 35 31 / 0) 100%);
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 112px; pointer-events: none;
+  background: linear-gradient(to bottom, rgb(38 35 31) 0, rgb(38 35 31 / .97) 58%, rgb(38 35 31 / 0) 100%);
   opacity: var(--scrim, 0);
 }
 .nav {
@@ -271,6 +289,8 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
 .hero__window {
   background:
     radial-gradient(30% 66% at 50% 50%, rgb(247 226 180 / .40), rgb(247 226 180 / .13) 52%, transparent 76%),
+    radial-gradient(34% 80% at 14% 60%, rgb(60 104 232 / .28), transparent 78%),
+    radial-gradient(34% 80% at 86% 60%, rgb(226 48 78 / .22), transparent 78%),
     radial-gradient(70% 90% at 50% 120%, rgb(247 226 180 / .07), transparent 70%),
     #0e0d0b;
 }
@@ -290,14 +310,6 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   box-shadow: inset 8px 8px 18px rgb(var(--shade) / .7), inset -6px -6px 14px rgb(var(--lit) / .05), inset 0 0 0 1px rgb(var(--shade) / .6);
 }
-/* a scale engraved under the monogram, like the dial of an instrument: decoration only */
-.hero__window::before {
-  content: ""; position: absolute; z-index: 2; left: 50%; bottom: clamp(12px, 2.4vw, 22px); width: min(44%, 400px); height: 8px; transform: translateX(-50%); pointer-events: none;
-  background:
-    repeating-linear-gradient(90deg, rgb(247 226 180 / .75) 0 1px, transparent 1px 50px) bottom / 100% 8px no-repeat,
-    repeating-linear-gradient(90deg, rgb(247 226 180 / .4) 0 1px, transparent 1px 10px) bottom / 100% 4px no-repeat;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
-}
 @keyframes window-on { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 700px) {
   /* on a phone the artwork is cropped to its centre so the monogram stays large */
@@ -312,7 +324,7 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
 .hero__line { display: block; text-wrap: balance; } /* one sentence per line; each wraps by itself on a phone */
 .hero__line--em { font-style: italic; font-weight: 500; }
 .hero__title .w { display: inline-block; color: var(--ink); padding-bottom: .08em; }
-.hero__line--em .w { color: var(--champagne); }
+.hero__line--em .w { color: var(--champagne); text-shadow: 0 -1px 0 rgb(var(--shade) / .5), 0 0 34px rgb(247 226 180 / .28); }
 .js-reveal .hero__title.reveal { opacity: 1; translate: 0 0; }  /* the words animate, not the block */
 .js-reveal .hero__title .w {
   opacity: 0; translate: 0 .32em;
@@ -363,13 +375,14 @@ html:not(.js) .contact__btn { display: none; }
   --r: var(--r-xl);
   display: flex; flex-direction: column;
   padding: 12px; /* the artwork is mounted in a recess of the plate */
+  background: radial-gradient(90% 60% at 0% 100%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%), var(--convex);
   cursor: pointer; /* the whole card opens its details (main.js); the button is the keyboard / screen-reader path */
   transition: transform .4s var(--settle), box-shadow .4s var(--ease);
 }
 .card--wide   { grid-column: span 7; }
 .card--narrow { grid-column: span 5; }
 .card--full   { grid-column: 1 / -1; flex-direction: row; align-items: stretch; }
-.card:hover { transform: translateY(-3px); box-shadow: var(--raise-hover); }
+.card:hover { transform: translateY(-3px); box-shadow: var(--raise-hover), 0 18px 46px -22px color-mix(in srgb, var(--accent) 38%, transparent); }
 .card__art {
   position: relative; overflow: hidden; border-radius: calc(var(--r-xl) - 12px);
   aspect-ratio: var(--ar);
@@ -391,9 +404,9 @@ html:not(.js) .contact__btn { display: none; }
 }
 .card__title { font-size: clamp(1.7rem, 1.4rem + 1vw, 2.15rem); line-height: 1.1; margin-top: 2px; }
 .card__tag { color: var(--ink-2); max-width: 52ch; }
-.meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .9375rem; color: var(--ink-2); }
-.meta li { position: relative; font-family: var(--font-mono); font-size: .875rem; }
-.meta li + li::before { content: ""; position: absolute; left: -10px; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: var(--accent); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: .9375rem; color: var(--ink-2); }
+.meta li { position: relative; padding-left: 13px; font-family: var(--font-mono); font-size: .875rem; }
+.meta li::before { content: ""; position: absolute; left: 0; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent); }
 .card__foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .repo-note { display: inline-flex; align-items: center; gap: 8px; font-size: .9375rem; color: var(--ink-2); }
 .repo-note--link { text-decoration: underline; text-underline-offset: .25em; color: var(--champagne); min-height: 48px; }
@@ -578,7 +591,7 @@ html:not(.js) .card__more { display: none; }
   .btn--metal { box-shadow: 0 0 0 2px #fff; }
   .btn--soft:active, .btn--icon:active, .footer__base a:active { box-shadow: inset 0 0 0 3px #fff; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--champagne); }
-  body::before { display: none; }
+  body::before, body::after, .section::after { display: none; }
 }
 @media (forced-colors: active) {
   .plate, .well, .btn, .chip, .specs, .stats li, .notice, .eyebrow, .shot__frame, .contact__addr, .nav__links, .lang, .roundel, .footer__base a { border: 1px solid CanvasText; forced-color-adjust: none; background: Canvas; color: CanvasText; box-shadow: none; }
@@ -586,7 +599,7 @@ html:not(.js) .card__more { display: none; }
   .hero__window img { mix-blend-mode: normal; }
   .hero__window, .hero__window::after, .card__art::after, .sheet__art::after { box-shadow: none; }
   .hero__window { border: 1px solid CanvasText; }
-  .nav-wrap::before, .section::before, body::before, .eyebrow::before, .hero__sheen, .hero__glint, .hero__window::before, .card__body::before, .promises li::before, .stats strong::after { display: none; }
+  .nav-wrap::before, .section::before, .section::after, body::before, body::after, .eyebrow::before, .hero__sheen, .hero__glint, .card__body::before, .promises li::before, .stats strong::after { display: none; }
   .nav__links a, .lang a { color: CanvasText; background: none; box-shadow: none; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { text-decoration: underline; }
   .nav__links a::after { display: none; }
@@ -597,7 +610,7 @@ html:not(.js) .card__more { display: none; }
   :focus-visible { outline-color: Highlight; }
 }
 @media print {
-  .nav-wrap, .section::before, body::before { display: none; }
+  .nav-wrap, .section::before, .section::after, body::before, body::after { display: none; }
   body { background: #fff; color: #000; }
   .plate, .well { box-shadow: none; background: none; border: 1px solid #999; }
   h1, h2, h3, h4, .hero__title .w, .stats strong { color: #000; text-shadow: none; }
