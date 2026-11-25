@@ -30,7 +30,6 @@ export default {
     title1: 'Des logiciels tissés main.',
     title2: 'Faits pour le plaisir.',
     lead: 'Nous faisons des outils et des jeux pour Mac, pour le plaisir, et pour nous simplifier un peu la vie.',
-    ctaProjects: 'Voir les projets',
     ctaGithub: 'Nous suivre sur GitHub',
     ctaContact: 'Nous contacter',
     bannerAlt: 'TissByte : un monogramme « TB » chromé, en italique, sur fond noir.',

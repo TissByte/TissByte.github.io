@@ -133,13 +133,15 @@ h1, h2, h3, .stats strong, .chip--mono, .meta { font-optical-sizing: auto; font-
 /* headings are pressed into the surface: a dark edge above, a lit edge below */
 h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px 0 rgb(var(--lit) / .07); }
 
-/* a label plate, cut into the surface */
+/* A section's name is written on its groove, in a small plate cut into the surface, with one champagne LED that breathes. */
 .eyebrow {
-  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 20px; padding: 6px 16px 6px 14px; border-radius: 999px;
+  position: absolute; z-index: 1; top: 1px; left: 50%; transform: translate(-50%, -50%); margin: 0; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 10px; padding: 7px 18px 7px 15px; border-radius: 999px;
   font-size: .875rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--champagne);
   background: var(--concave); box-shadow: var(--cut-xs);
 }
-.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--champagne); box-shadow: 0 0 7px 1px rgb(247 226 180 / .6); }
+.eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--champagne); box-shadow: 0 0 7px 1px rgb(247 226 180 / .6); animation: tag-led 3.2s var(--ease) infinite both; }
+@keyframes tag-led { 0%, 100% { opacity: .35; } 20%, 45% { opacity: 1; } }
 
 .section { position: relative; padding-block: var(--gap-section); }
 .section--last { padding-bottom: var(--gap-section); }
@@ -148,31 +150,11 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
   content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
   background: rgb(var(--shade) / .55); box-shadow: 0 1px 0 rgb(var(--lit) / .07); pointer-events: none;
 }
-/* the three LEDs are lit by three registered numbers, so they can be animated one after the other */
-@property --d1 { syntax: '<number>'; inherits: false; initial-value: .38; }
-@property --d2 { syntax: '<number>'; inherits: false; initial-value: .68; }
-@property --d3 { syntax: '<number>'; inherits: false; initial-value: 1; }
-.section::after { /* three small LEDs in a cut-in strip, champagne, each brighter than the last */
-  content: ""; position: absolute; top: -8px; left: 50%; width: 54px; height: 18px; border-radius: 999px; transform: translateX(-50%); pointer-events: none;
-  background:
-    radial-gradient(circle at 15px 9px, rgb(251 233 192 / var(--d1)) 0 2.6px, rgb(251 233 192 / calc(var(--d1) * .3)) 3.6px, transparent 8px),
-    radial-gradient(circle at 27px 9px, rgb(251 233 192 / var(--d2)) 0 2.6px, rgb(251 233 192 / calc(var(--d2) * .3)) 3.6px, transparent 8px),
-    radial-gradient(circle at 39px 9px, rgb(251 233 192 / var(--d3)) 0 2.6px, rgb(251 233 192 / calc(var(--d3) * .4)) 3.6px, transparent 9px),
-    var(--concave);
-  box-shadow: var(--cut-xs);
-}
-/* a light runs left to right, over and over: each LED rises and falls in turn, then they rest dim for a moment.
-   Without animation (reduced motion, old browsers) they simply stay lit, each brighter than the last. */
-.section::after { animation: led-1 3.2s var(--ease) infinite both, led-2 3.2s var(--ease) .32s infinite both, led-3 3.2s var(--ease) .64s infinite both; }
-@keyframes led-1 { 0%, 100% { --d1: .14; } 13% { --d1: 1; } 34% { --d1: .14; } }
-@keyframes led-2 { 0%, 100% { --d2: .14; } 13% { --d2: 1; } 34% { --d2: .14; } }
-@keyframes led-3 { 0%, 100% { --d3: .14; } 13% { --d3: 1; } 34% { --d3: .14; } }
-/* A section opens like a magazine page: a label, a big serif title across the full width with its last word in italic
+/* A section opens like a magazine page: its name on the groove above, a big serif title across the full width with its last word in italic
    champagne (the headline's voice), then the introduction and the notice side by side under it. One rhythm: 20px between
-   label, title and text. */
+   title and text. */
 .section-head { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(32px, 5vw, 80px); row-gap: 20px; align-items: start; margin-bottom: clamp(36px, 5vw, 64px); }
-.section-head .eyebrow, .section-head h2 { grid-column: 1 / -1; }
-.section-head .eyebrow { justify-self: start; }
+.section-head h2 { grid-column: 1 / -1; }
 .section-head h2 em { font-style: italic; color: var(--champagne); text-shadow: 0 -1px 0 rgb(var(--shade) / .5), 0 0 40px rgb(247 226 180 / .22); }
 .section-head .notice { margin-top: 0; justify-self: start; align-self: start; }
 .section-head--solo { grid-template-columns: 1fr; }
@@ -616,7 +598,7 @@ html:not(.js) .card__more { display: none; }
   .btn--metal { box-shadow: 0 0 0 2px #fff; }
   .btn--soft:active, .btn--icon:active, .footer__base a:active { box-shadow: inset 0 0 0 3px #fff; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--champagne); }
-  body::before, body::after, .section::after { display: none; }
+  body::before, body::after { display: none; }
 }
 @media (forced-colors: active) {
   .plate, .well, .btn, .chip, .specs, .stats li, .notice, .eyebrow, .shot__frame, .contact__addr, .nav__links, .lang, .roundel, .footer__base a { border: 1px solid CanvasText; forced-color-adjust: none; background: Canvas; color: CanvasText; box-shadow: none; }
@@ -624,7 +606,7 @@ html:not(.js) .card__more { display: none; }
   .hero__window img { mix-blend-mode: normal; }
   .hero__window, .hero__window::after, .card__art::after, .sheet__art::after { box-shadow: none; }
   .hero__window { border: 1px solid CanvasText; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
-  .nav-wrap::before, .section::before, .section::after, .footer::before, body::before, body::after, .eyebrow::before, .hero__sheen, .hero__glint, .card__body::before, .promises li::before, .stats strong::after { display: none; }
+  .nav-wrap::before, .section::before, .footer::before, body::before, body::after, .eyebrow::before, .hero__sheen, .hero__glint, .card__body::before, .promises li::before, .stats strong::after { display: none; }
   .nav__links a, .lang a { color: CanvasText; background: none; box-shadow: none; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { text-decoration: underline; }
   .nav__links a::after { display: none; }
@@ -634,7 +616,7 @@ html:not(.js) .card__more { display: none; }
   :focus-visible { outline-color: Highlight; }
 }
 @media print {
-  .nav-wrap, .section::before, .section::after, .footer::before, body::before, body::after { display: none; }
+  .nav-wrap, .section::before, .footer::before, body::before, body::after { display: none; }
   body { background: #fff; color: #000; }
   .plate, .well { box-shadow: none; background: none; border: 1px solid #999; }
   h1, h2, h3, h4, .hero__title .w, .stats strong { color: #000; text-shadow: none; }

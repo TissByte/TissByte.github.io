@@ -53,7 +53,6 @@ const ICONS = {
   flask: '<path d="M9.5 3h5M10.5 3v5.6L5 18.2A1.8 1.8 0 0 0 6.6 21h10.8a1.8 1.8 0 0 0 1.6-2.8l-5.5-9.6V3"/><path d="M7.8 15h8.4"/>',
   out: '<path d="M7 17 17 7"/><path d="M8.500 7H17v8.500"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
-  down: '<path d="M12 5v14"/><path d="m6 13 6 6 6-6"/>',
   lockSm: '<rect x="5" y="10.500" width="14" height="10" rx="2.400"/><path d="M8.500 10.500V8a3.500 3.500 0 0 1 7 0v2.500"/>',
 };
 const icon = (name, cls = '') =>
@@ -325,17 +324,16 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
-        <a class="btn btn--metal" href="#projects"><span>${c.hero.ctaProjects}</span>${icon('down')}</a>
+        <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
         ${contactMenu(c)}
-        <a class="btn btn--soft" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
       </div>
     </div>
   </section>
 
   <section class="section" id="projects" aria-labelledby="projects-title">
+    <p class="eyebrow">${c.projects.eyebrow}</p>
     <div class="container">
       <header class="section-head reveal">
-        <p class="eyebrow">${c.projects.eyebrow}</p>
         <h2 id="projects-title">${emph(c.projects.title)}</h2>
         <div class="section-head__aside">
           <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
@@ -356,9 +354,9 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
   </section>
 
   <section class="section section--last" id="promises" aria-labelledby="promises-title">
+    <p class="eyebrow">${c.nav.principles}</p>
     <div class="container">
       <header class="section-head section-head--solo reveal">
-        <p class="eyebrow">${c.nav.principles}</p>
         <h2 id="promises-title">${emph(c.promises.title)}</h2>
       </header>
       <ul class="promises plate reveal">
