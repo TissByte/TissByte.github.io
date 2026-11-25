@@ -146,15 +146,24 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
   content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
   background: rgb(var(--shade) / .55); box-shadow: 0 1px 0 rgb(var(--lit) / .07); pointer-events: none;
 }
+/* the three LEDs are lit by three registered numbers, so they can be animated one after the other */
+@property --d1 { syntax: '<number>'; inherits: false; initial-value: .38; }
+@property --d2 { syntax: '<number>'; inherits: false; initial-value: .68; }
+@property --d3 { syntax: '<number>'; inherits: false; initial-value: 1; }
 .section::after { /* three small LEDs in a cut-in strip, champagne, each brighter than the last */
   content: ""; position: absolute; top: -8px; left: 50%; width: 54px; height: 18px; border-radius: 999px; transform: translateX(-50%); pointer-events: none;
   background:
-    radial-gradient(circle at 15px 9px, rgb(251 233 192 / .38) 0 2.6px, transparent 3.4px),
-    radial-gradient(circle at 27px 9px, rgb(251 233 192 / .68) 0 2.6px, rgb(251 233 192 / .2) 3.6px, transparent 8px),
-    radial-gradient(circle at 39px 9px, #fbe9c0 0 2.6px, rgb(251 233 192 / .4) 3.6px, transparent 9px),
+    radial-gradient(circle at 15px 9px, rgb(251 233 192 / var(--d1)) 0 2.6px, rgb(251 233 192 / calc(var(--d1) * .3)) 3.6px, transparent 8px),
+    radial-gradient(circle at 27px 9px, rgb(251 233 192 / var(--d2)) 0 2.6px, rgb(251 233 192 / calc(var(--d2) * .3)) 3.6px, transparent 8px),
+    radial-gradient(circle at 39px 9px, rgb(251 233 192 / var(--d3)) 0 2.6px, rgb(251 233 192 / calc(var(--d3) * .4)) 3.6px, transparent 9px),
     var(--concave);
   box-shadow: var(--cut-xs);
 }
+/* once, when the section reaches the top of the screen (main.js adds .is-lit): a light runs left to right and settles */
+.section.is-lit::after { animation: led-1 1.5s var(--ease) both, led-2 1.5s var(--ease) .22s both, led-3 1.5s var(--ease) .44s both; }
+@keyframes led-1 { 0% { --d1: .08; } 35% { --d1: 1; } 100% { --d1: .38; } }
+@keyframes led-2 { 0% { --d2: .08; } 35% { --d2: 1; } 100% { --d2: .68; } }
+@keyframes led-3 { 0% { --d3: .08; } 35% { --d3: 1; } 100% { --d3: 1; } }
 .section-head { max-width: 760px; margin-bottom: clamp(36px, 5vw, 60px); }
 /* a little label under the intro (the repositories are not public yet); remove it with site.reposPrivate = false */
 .notice { --r: var(--r-md); display: flex; align-items: center; gap: 12px; width: fit-content; max-width: 100%; margin-top: 26px; padding: 13px 22px 13px 18px; color: var(--ink-2); font-size: .9375rem; line-height: 1.45; box-shadow: var(--cut-sm); }
