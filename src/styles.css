@@ -146,12 +146,12 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
   content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
   background: rgb(var(--shade) / .55); box-shadow: 0 1px 0 rgb(var(--lit) / .07); pointer-events: none;
 }
-.section::after { /* three small LEDs in a cut-in strip: blue, white, red */
+.section::after { /* three small LEDs in a cut-in strip, champagne, each brighter than the last */
   content: ""; position: absolute; top: -8px; left: 50%; width: 54px; height: 18px; border-radius: 999px; transform: translateX(-50%); pointer-events: none;
   background:
-    radial-gradient(circle at 15px 9px, #6f93ff 0 2.6px, rgb(111 147 255 / .35) 3.6px, transparent 8px),
-    radial-gradient(circle at 27px 9px, #f6f2ea 0 2.6px, rgb(246 242 234 / .3) 3.6px, transparent 8px),
-    radial-gradient(circle at 39px 9px, #ff5a72 0 2.6px, rgb(255 90 114 / .35) 3.6px, transparent 8px),
+    radial-gradient(circle at 15px 9px, rgb(251 233 192 / .38) 0 2.6px, transparent 3.4px),
+    radial-gradient(circle at 27px 9px, rgb(251 233 192 / .68) 0 2.6px, rgb(251 233 192 / .2) 3.6px, transparent 8px),
+    radial-gradient(circle at 39px 9px, #fbe9c0 0 2.6px, rgb(251 233 192 / .4) 3.6px, transparent 9px),
     var(--concave);
   box-shadow: var(--cut-xs);
 }
