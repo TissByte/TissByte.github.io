@@ -159,11 +159,12 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
     var(--concave);
   box-shadow: var(--cut-xs);
 }
-/* once, when the section reaches the top of the screen (main.js adds .is-lit): a light runs left to right and settles */
-.section.is-lit::after { animation: led-1 1.5s var(--ease) both, led-2 1.5s var(--ease) .22s both, led-3 1.5s var(--ease) .44s both; }
-@keyframes led-1 { 0% { --d1: .08; } 35% { --d1: 1; } 100% { --d1: .38; } }
-@keyframes led-2 { 0% { --d2: .08; } 35% { --d2: 1; } 100% { --d2: .68; } }
-@keyframes led-3 { 0% { --d3: .08; } 35% { --d3: 1; } 100% { --d3: 1; } }
+/* a light runs left to right, over and over: each LED rises and falls in turn, then they rest dim for a moment.
+   Without animation (reduced motion, old browsers) they simply stay lit, each brighter than the last. */
+.section::after { animation: led-1 3.2s var(--ease) infinite both, led-2 3.2s var(--ease) .32s infinite both, led-3 3.2s var(--ease) .64s infinite both; }
+@keyframes led-1 { 0%, 100% { --d1: .14; } 13% { --d1: 1; } 34% { --d1: .14; } }
+@keyframes led-2 { 0%, 100% { --d2: .14; } 13% { --d2: 1; } 34% { --d2: .14; } }
+@keyframes led-3 { 0%, 100% { --d3: .14; } 13% { --d3: 1; } 34% { --d3: .14; } }
 .section-head { max-width: 760px; margin-bottom: clamp(36px, 5vw, 60px); }
 /* a little label under the intro (the repositories are not public yet); remove it with site.reposPrivate = false */
 .notice { --r: var(--r-md); display: flex; align-items: center; gap: 12px; width: fit-content; max-width: 100%; margin-top: 26px; padding: 13px 22px 13px 18px; color: var(--ink-2); font-size: .9375rem; line-height: 1.45; box-shadow: var(--cut-sm); }

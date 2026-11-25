@@ -273,20 +273,4 @@
     }, { passive: true });
     win.addEventListener('pointerleave', () => win.style.setProperty('--glint', '0'));
   }
-
-  /* ---------------------------------------------------------- the three LEDs on a section's groove light up once, left to right */
-  if ('IntersectionObserver' in window && !reduceMotion.matches) {
-    const lamp = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            e.target.classList.add('is-lit');
-            lamp.unobserve(e.target);
-          }
-        }
-      },
-      { rootMargin: '0px 0px -55% 0px' },
-    );
-    $$('.section').forEach((el) => lamp.observe(el));
-  }
 })();
