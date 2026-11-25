@@ -74,19 +74,23 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-/* a little colour in the air: the blue, red and brass of the banner and the tricolour, very soft and fixed to the window,
-   so the surface is warm instead of grey (peak alphas are counted in scripts/contrast.mjs) */
+/* One light, from the top left, the same one that casts every shadow; it falls off toward the bottom right. */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
   background:
-    radial-gradient(70vmax 56vmax at 4% -6%, rgb(70 112 235 / .11), transparent 70%),
-    radial-gradient(60vmax 52vmax at 104% 38%, rgb(226 54 84 / .08), transparent 70%),
-    radial-gradient(76vmax 60vmax at 22% 108%, rgb(222 164 70 / .09), transparent 70%);
+    radial-gradient(130vmax 95vmax at 10% -12%, rgb(255 238 205 / .085), transparent 62%),
+    radial-gradient(90vmax 70vmax at 108% 112%, rgb(0 0 0 / .34), transparent 62%);
 }
-/* the surface is a material, not a flat fill: a fine, static grain (two percent of white at most; the audit counts it) */
+/* The surface is woven, like the name: fine threads one way and the other, a little uneven. Static and very quiet
+   (the strongest thread is under 3 percent white; the audit counts the whole texture at its brightest). */
 body::before {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgb(var(--lit) / .028) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / .13) 0 1px, transparent 1px 4px),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.012%200.7%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.05%27%2F%3E%3C%2Fsvg%3E"),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.7%200.012%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.05%27%2F%3E%3C%2Fsvg%3E");
+  background-size: 4px 4px, 4px 4px, 240px 240px, 240px 240px;
 }
 img, svg, picture { display: block; max-width: 100%; }
 img { height: auto; }

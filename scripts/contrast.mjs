@@ -30,9 +30,12 @@ const T = {
   metalDark: hex('#efd69d'), // darkest stop of the champagne key
 };
 const LIT = [255, 244, 226];
-const GRAIN = 0.045 * 0.5; // the grain: opacity .045, at most half of it is light on average; counted at full white to be safe
+// The woven texture (body::before) only shows on the bare page: plates and wells are opaque and cover it. Its brightest
+// pixel: a thread (.028 white) under both noise layers (.05 each, at 90 % brightness at the very most).
+const WEAVE = 0.028 + 2 * 0.05 * 0.9;
 const RIM = 0.1; // the brightest inner rim / hover highlight under or near text
-const lift = (base, a = RIM) => over([255, 255, 255], GRAIN, over(LIT, a, base));
+const lift = (base, a = RIM) => over(LIT, a, base); // plates and wells: the brightest rim or hover highlight
+const weave = (base) => over([255, 255, 255], WEAVE, base);
 
 const rows = [];
 const check = (label, fg, bg, target) => {
@@ -40,10 +43,9 @@ const check = (label, fg, bg, target) => {
   rows.push({ label, r, target, ok: r >= target });
 };
 
-// the colour in the air (body::after): blue .11, red .08, brass .09 at their peaks, counted as if all three overlapped here
-const AMBIENT = [[[70, 112, 235], 0.11], [[226, 54, 84], 0.08], [[222, 164, 70], 0.09]];
-const tinted = AMBIENT.reduce((base, [c, a]) => over(c, a, base), T.surface);
-const onSurface = lift(tinted, 0.07);
+// the light (body::after): a warm white at .085 at its brightest, top left; the rest of the page is darker than the surface
+const tinted = over([255, 238, 205], 0.085, T.surface);
+const onSurface = weave(tinted);
 const onPlate = lift(T.plateLight);
 const onWell = lift(T.wellLight);
 // a card's plate catches its project's colour: at most 7 % of the accent, in the bottom-left corner
