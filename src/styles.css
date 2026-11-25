@@ -305,19 +305,20 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
 /* ------------------------------------------------------------ hero */
 .hero { position: relative; padding-bottom: var(--gap-section); }
 .hero__stage { padding-top: calc(var(--nav-h) + 28px); }
-/* the banner lives in a recessed window: its black is the black of a display set into the surface */
+/* The banner is a display, not a framed picture: no border, no recess. The artwork's black melts into the woven surface
+   (lighten), its edges dissolve (mask), and the warm backlight pool is the only thing that glows. It develops on load like a
+   screen powering up (blur to sharp). */
 .hero__window {
-  --r: var(--r-xl); position: relative; overflow: hidden;
-  height: clamp(170px, min(26vw, 36vh), 330px);
-  animation: window-on 1.4s var(--ease) both;
-}
-/* the logo's finish: a warm backlight pool, a slow sweep of light across the chrome and a glint that follows the pointer.
-   The picture's black is blended away (lighten) so the light shows through it; only the metal stays opaque. */
-.hero__window {
+  position: relative; mix-blend-mode: lighten;
+  height: clamp(190px, min(28vw, 38vh), 420px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 84%, transparent 100%), linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 84%, transparent 100%), linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+  animation: display-on 1.9s var(--ease) both;
   background:
-    radial-gradient(30% 66% at 50% 50%, rgb(247 226 180 / .40), rgb(247 226 180 / .13) 52%, transparent 76%),
-    radial-gradient(70% 90% at 50% 120%, rgb(247 226 180 / .09), transparent 70%),
-    #0e0d0b;
+    radial-gradient(28% 62% at 50% 50%, rgb(247 226 180 / .36), rgb(247 226 180 / .11) 54%, transparent 78%),
+    radial-gradient(70% 90% at 50% 125%, rgb(247 226 180 / .08), transparent 70%);
 }
 .hero__window img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; mix-blend-mode: lighten; }
 .hero__sheen {
@@ -331,11 +332,7 @@ h1, h2, h3, .stats strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px
   position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; opacity: var(--glint, 0); transition: opacity .6s var(--ease);
   background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 40%), rgb(255 255 255 / .95), rgb(255 244 214 / .35) 45%, transparent 70%);
 }
-.hero__window::after { /* the recess, painted over the picture */
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  box-shadow: inset 8px 8px 18px rgb(var(--shade) / .7), inset -6px -6px 14px rgb(var(--lit) / .05), inset 0 0 0 1px rgb(var(--shade) / .6);
-}
-@keyframes window-on { from { opacity: 0; } to { opacity: 1; } }
+@keyframes display-on { from { opacity: 0; scale: 1.06; filter: blur(16px); } to { opacity: 1; scale: 1; filter: blur(0); } }
 @media (max-width: 700px) {
   /* on a phone the artwork is cropped to its centre so the monogram stays large */
   .hero__window { height: auto; aspect-ratio: 16 / 10; }
@@ -626,7 +623,7 @@ html:not(.js) .card__more { display: none; }
   .hero__window { background: #000; }
   .hero__window img { mix-blend-mode: normal; }
   .hero__window, .hero__window::after, .card__art::after, .sheet__art::after { box-shadow: none; }
-  .hero__window { border: 1px solid CanvasText; }
+  .hero__window { border: 1px solid CanvasText; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
   .nav-wrap::before, .section::before, .section::after, .footer::before, body::before, body::after, .eyebrow::before, .hero__sheen, .hero__glint, .card__body::before, .promises li::before, .stats strong::after { display: none; }
   .nav__links a, .lang a { color: CanvasText; background: none; box-shadow: none; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { text-decoration: underline; }

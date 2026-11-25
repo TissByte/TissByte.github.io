@@ -314,7 +314,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="hero__stage">
       <div class="container">
-        <div class="hero__window well">
+        <div class="hero__window">
           <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
           <span class="hero__sheen" aria-hidden="true"></span>
           <span class="hero__glint" aria-hidden="true"></span>
