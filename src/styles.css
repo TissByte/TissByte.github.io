@@ -75,12 +75,17 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-/* One light, from the top left, the same one that casts every shadow; it falls off toward the bottom right. */
+/* One light, from the top left, the same one that casts every shadow, and the colour it throws: an amber pool where it
+   comes in, a deep rose on the right, an indigo in the lower left, then a dark corner to hold it together. All dark
+   and saturated on purpose, so the page has colour without lifting the grey under the text. The audit
+   (scripts/contrast.mjs, GLOWS) walks these exact gradients and counts the brightest pixel they can make. */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
   background:
-    radial-gradient(130vmax 95vmax at 10% -12%, rgb(255 238 205 / .085), transparent 62%),
-    radial-gradient(90vmax 70vmax at 108% 112%, rgb(0 0 0 / .34), transparent 62%);
+    radial-gradient(70vmax 52vmax at 8% -6%, rgb(226 124 44 / .22), transparent 64%),
+    radial-gradient(60vmax 50vmax at 100% 30%, rgb(150 40 96 / .26), transparent 66%),
+    radial-gradient(70vmax 55vmax at 0% 105%, rgb(52 56 150 / .30), transparent 64%),
+    radial-gradient(90vmax 70vmax at 108% 118%, rgb(0 0 0 / .4), transparent 62%);
 }
 /* The surface is woven, like the name: fine threads one way and the other, a little uneven. Static and very quiet
    (the strongest thread is under 3 percent white; the audit counts the whole texture at its brightest). */
@@ -88,9 +93,9 @@ body::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background-image:
     repeating-linear-gradient(0deg, rgb(var(--lit) / .028) 0 1px, transparent 1px 4px),
-    repeating-linear-gradient(90deg, rgb(0 0 0 / .13) 0 1px, transparent 1px 4px),
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.012%200.7%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.05%27%2F%3E%3C%2Fsvg%3E"),
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.7%200.012%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.05%27%2F%3E%3C%2Fsvg%3E");
+    repeating-linear-gradient(90deg, rgb(0 0 0 / .09) 0 1px, transparent 1px 4px),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.012%200.7%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.04%27%2F%3E%3C%2Fsvg%3E"),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27300%27%20height%3D%27300%27%3E%3Cfilter%20id%3D%27n%27%20x%3D%270%27%20y%3D%270%27%20width%3D%27100%25%27%20height%3D%27100%25%27%3E%3CfeTurbulence%20type%3D%27fractalNoise%27%20baseFrequency%3D%270.7%200.012%27%20numOctaves%3D%272%27%20stitchTiles%3D%27stitch%27%2F%3E%3CfeColorMatrix%20type%3D%27saturate%27%20values%3D%270%27%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%27100%25%27%20height%3D%27100%25%27%20filter%3D%27url%28%23n%29%27%20opacity%3D%270.04%27%2F%3E%3C%2Fsvg%3E");
   background-size: 4px 4px, 4px 4px, 240px 240px, 240px 240px;
 }
 img, svg, picture { display: block; max-width: 100%; }

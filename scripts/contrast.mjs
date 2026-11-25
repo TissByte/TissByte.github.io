@@ -32,7 +32,7 @@ const T = {
 const LIT = [255, 244, 226];
 // The woven texture (body::before) only shows on the bare page: plates and wells are opaque and cover it. Its brightest
 // pixel: a thread (.028 white) under both noise layers (.05 each, at 90 % brightness at the very most).
-const WEAVE = 0.028 + 2 * 0.05 * 0.9;
+const WEAVE = 0.028 + 2 * 0.04 * 0.9;
 const RIM = 0.1; // the brightest inner rim / hover highlight under or near text
 const lift = (base, a = RIM) => over(LIT, a, base); // plates and wells: the brightest rim or hover highlight
 const weave = (base) => over([255, 255, 255], WEAVE, base);
@@ -43,8 +43,31 @@ const check = (label, fg, bg, target) => {
   rows.push({ label, r, target, ok: r >= target });
 };
 
-// the light (body::after): a warm white at .085 at its brightest, top left; the rest of the page is darker than the surface
-const tinted = over([255, 238, 205], 0.085, T.surface);
+// the light (body::after): three tinted glows, evaluated geometrically. Each is a radial gradient fixed to the viewport
+// (radii in vmax, centre in % of the viewport, linear fade to transparent at `stop`), so we walk a grid of points over
+// several viewport shapes, composite the glows exactly as the browser does (first listed on top) and keep the brightest
+// pixel. The dark corner only ever darkens, so it is left out (worst case). Keep in sync with body::after in styles.css.
+const GLOWS = [
+  { cx: 0.08, cy: -0.06, rx: 70, ry: 52, color: [226, 124, 44], a: 0.22, stop: 0.64 },  // amber, top left
+  { cx: 1.0, cy: 0.3, rx: 60, ry: 50, color: [150, 40, 96], a: 0.26, stop: 0.66 },    // rose, right
+  { cx: 0.0, cy: 1.05, rx: 70, ry: 55, color: [52, 56, 150], a: 0.30, stop: 0.64 },   // indigo, bottom left
+];
+const brightestLight = () => {
+  let best = T.surface;
+  for (const [W, H] of [[1440, 900], [1920, 1080], [2560, 1440], [390, 844], [820, 1180], [1024, 768]]) {
+    const vmax = Math.max(W, H) / 100;
+    for (let y = 0; y <= H; y += H / 60) for (let x = 0; x <= W; x += W / 60) {
+      let c = T.surface;
+      for (const g of [...GLOWS].reverse()) { // paint the bottom layer first
+        const r = Math.hypot((x - g.cx * W) / (g.rx * vmax), (y - g.cy * H) / (g.ry * vmax));
+        if (r < g.stop) c = over(g.color, g.a * (1 - r / g.stop), c);
+      }
+      if (lum(c) > lum(best)) best = c;
+    }
+  }
+  return best;
+};
+const tinted = brightestLight();
 const onSurface = weave(tinted);
 const onPlate = lift(T.plateLight);
 const onWell = lift(T.wellLight);
