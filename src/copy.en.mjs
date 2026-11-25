@@ -28,7 +28,7 @@ export default {
     title1: 'Hand-woven software.',
     title2: 'Built for fun.',
     lead: 'We make Mac tools and games for the fun of it, and to make our own days a bit easier.',
-    ctaGithub: 'Find us on GitHub',
+    ctaProjects: 'See the projects',
     ctaContact: 'Contact us',
     bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background.',
     stats: [
@@ -256,6 +256,7 @@ export default {
   footer: {
     madeIn: 'Made in France',
     rights: '© {year} TissByte',
+    github: 'Find us on GitHub',
     top: 'Back to top',
   },
 

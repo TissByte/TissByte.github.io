@@ -59,7 +59,7 @@ Anything shown in several places (project count, language list, the Dock's numbe
 - **Portable by design.** Every URL in the page is relative, so `dist/` works from any folder, from a `file://` path and under a sub-path, with no image repository or CDN involved. All images live in this repository, copied from the projects' own repos (including private ones) at authoring time, so the site never depends on those repos being reachable. A base64-inlined single file exists as an export (`npm run standalone`) but not as the live format: inlined images can't be cached or loaded in parallel and make the page about a third heavier.
 - **Screenshots.** A project's detail sheet can carry the screenshots from its own README (Claude AI Supervisor has eight, TissByte Cleaning nine, MacOS Dock its two-display illustration). They're lazy-loaded thumbnails; click one to see it full size. Add them under `gallery` in `data.mjs` and put one caption each in every copy file (the build checks the counts match).
 - **Motion with a purpose.** Words rise into the headline one after another, cards lift a few pixels on hover and keys sink when pressed, and a project's artwork flies from its card into the detail sheet (View Transitions) and back. Nothing bounces or flashes.
-- **Palette**: graphite `#26231f` for the surface, ink `#fbf8f0`, champagne `#f7e2b4` as the only accent, plus the blue, white and red of the tricolour inlay in the footer.
+- **Palette**: graphite `#26231f` for the surface, ink `#fbf8f0`, champagne `#f7e2b4` as the only accent. The only blue, white and red left is the small flag beside "Made in France".
 - **Type**: system fonts only (SF Pro and New York on Apple devices), so there is no font request.
 
 ## Accessibility

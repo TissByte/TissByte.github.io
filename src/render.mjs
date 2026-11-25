@@ -47,6 +47,7 @@ const ICONS = {
   flask: '<path d="M9.5 3h5M10.5 3v5.6L5 18.2A1.8 1.8 0 0 0 6.6 21h10.8a1.8 1.8 0 0 0 1.6-2.8l-5.5-9.6V3"/><path d="M7.8 15h8.4"/>',
   out: '<path d="M7 17 17 7"/><path d="M8.500 7H17v8.500"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
+  down: '<path d="M12 5v14"/><path d="m6 13 6 6 6-6"/>',
   lockSm: '<rect x="5" y="10.500" width="14" height="10" rx="2.400"/><path d="M8.500 10.500V8a3.500 3.500 0 0 1 7 0v2.500"/>',
 };
 const icon = (name, cls = '') =>
@@ -318,14 +319,9 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
-        <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
+        <a class="btn btn--metal" href="#projects"><span>${c.hero.ctaProjects}</span>${icon('down')}</a>
         ${contactMenu(c)}
       </div>
-    </div>
-    <div class="container">
-      <ul class="stats plate reveal" style="--d:240ms">
-        ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
-      </ul>
     </div>
   </section>
 
@@ -339,6 +335,9 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
       </header>
       <div class="bento">${cardsHtml}
       </div>
+      <ul class="stats plate reveal">
+        ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
+      </ul>
     </div>
     ${dialogsHtml}
     <dialog class="lightbox" id="lightbox" aria-label="${esc(c.projects.screenshots)}">
@@ -349,7 +348,10 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 
   <section class="section section--last" id="promises" aria-labelledby="promises-title">
     <div class="container">
-      <h2 id="promises-title" class="sr-only">${c.promises.title}</h2>
+      <header class="section-head reveal">
+        <p class="eyebrow">${c.nav.principles}</p>
+        <h2 id="promises-title">${c.promises.title}</h2>
+      </header>
       <ul class="promises plate reveal">
         ${c.promises.items
           .map(
@@ -367,11 +369,13 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 </main>
 
 <footer class="footer">
-  <div class="tricolor-line" aria-hidden="true"></div>
   <div class="container footer__base">
     <span class="footer__mark"><img src="${A}mark-160.webp" width="54" height="36" alt="" loading="lazy" decoding="async"><span>${fmt(c.footer.rights, vars)}</span></span>
     <span class="madein">${tricolor}<span>${c.footer.madeIn}</span></span>
-    <a href="#top">${c.footer.top}</a>
+    <span class="footer__links">
+      <a href="${site.orgUrl}">${GITHUB_MARK}<span>${c.footer.github}</span></a>
+      <a href="#top">${c.footer.top}</a>
+    </span>
   </div>
 </footer>
 
