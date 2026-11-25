@@ -338,8 +338,8 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
         <h2 id="projects-title">${emph(c.projects.title)}</h2>
         <div class="section-head__aside">
           <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
-          ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
         </div>
+        ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
       </header>
       <div class="bento">${cardsHtml}
       </div>
