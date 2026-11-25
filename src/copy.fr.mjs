@@ -10,7 +10,7 @@ export default {
   lang: 'fr',
 
   meta: {
-    title: 'TissByte — Des logiciels tissés main. Faits pour le plaisir.',
+    title: 'TissByte : Des logiciels tissés main. Faits pour le plaisir.',
     description:
       'TissByte est une petite initiative logicielle française. Nous faisons des outils et des jeux pour Mac : CastleBomb, Claude AI Supervisor, MacOS Dock, TissByte Cleaning et MobiMount.',
     ogAlt: 'TissByte : un monogramme « TB » chromé, en italique, sur fond noir.',
@@ -263,7 +263,7 @@ export default {
   },
 
   notFound: {
-    title: 'Page introuvable — TissByte',
+    title: 'Page introuvable | TissByte',
     heading: 'Ce fil ne mène nulle part.',
     text: 'La page que vous cherchiez n’existe pas, ou elle a été déplacée.',
     cta: 'Retour à l’accueil',

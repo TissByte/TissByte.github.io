@@ -8,7 +8,7 @@ export default {
   lang: 'en',
 
   meta: {
-    title: 'TissByte — Hand-woven software. Built for fun.',
+    title: 'TissByte: Hand-woven software. Built for fun.',
     description:
       'TissByte is a small software initiative from France. We make Mac tools and games: CastleBomb, Claude AI Supervisor, MacOS Dock, TissByte Cleaning and MobiMount.',
     ogAlt: 'TissByte: a chrome italic “TB” monogram on a black background.',
@@ -261,7 +261,7 @@ export default {
   },
 
   notFound: {
-    title: 'Page not found — TissByte',
+    title: 'Page not found | TissByte',
     heading: 'This thread leads nowhere.',
     text: 'The page you were looking for doesn’t exist, or it has moved.',
     cta: 'Back to the home page',
