@@ -7,6 +7,12 @@ import { languages, defaultLanguage } from './langs.mjs';
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** A section title with its last word in italic, like the headline ("What's on the bench." / "Built for fun."). */
+const emph = (s) => {
+  const m = s.match(/^([\s\S]*[\s  ])(\S+)$/);
+  return m ? `${m[1]}<em>${m[2]}</em>` : s;
+};
+
 /** Replace {placeholders}; an unknown placeholder is a build error, never a silent typo. */
 export function fmt(str, vars) {
   return str.replace(/\{(\w+)\}/g, (m, k) => {
@@ -329,9 +335,11 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
     <div class="container">
       <header class="section-head reveal">
         <p class="eyebrow">${c.projects.eyebrow}</p>
-        <h2 id="projects-title">${c.projects.title}</h2>
-        <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
-        ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
+        <h2 id="projects-title">${emph(c.projects.title)}</h2>
+        <div class="section-head__aside">
+          <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
+          ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
+        </div>
       </header>
       <div class="bento">${cardsHtml}
       </div>
@@ -348,9 +356,9 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 
   <section class="section section--last" id="promises" aria-labelledby="promises-title">
     <div class="container">
-      <header class="section-head reveal">
+      <header class="section-head section-head--solo reveal">
         <p class="eyebrow">${c.nav.principles}</p>
-        <h2 id="promises-title">${c.promises.title}</h2>
+        <h2 id="promises-title">${emph(c.promises.title)}</h2>
       </header>
       <ul class="promises plate reveal">
         ${c.promises.items
