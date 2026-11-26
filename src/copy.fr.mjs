@@ -33,19 +33,17 @@ export default {
     ctaGithub: 'Nous suivre sur GitHub',
     ctaContact: 'Nous contacter',
     bannerAlt: 'TissByte : un monogramme « TB » chromé, en italique, sur fond noir.',
-    stats: [
-      { value: '{projects}', label: 'projets sur l’établi' },
-      { value: '{languages}', label: 'langages de programmation : {languageList}' },
-      { value: '0', label: 'traceur ou cookie sur ce site' },
-    ],
   },
 
   projects: {
     eyebrow: 'Projets',
     title: 'Ce qu’il y a sur l’établi.',
     intro: 'Trois applications, un jeu, un petit utilitaire et une expérience. Tout part du Mac.',
+    figures: [
+      { value: '{projects}', label: 'projets sur l’établi' },
+      { value: '{languages}', label: 'langages de programmation : {languageList}' },
+    ],
     notice: 'Nos dépôts sont privés pour l’instant. Accès possible à des fins de débogage : contactez-nous.',
-    more: 'Détails',
     highlights: 'Points forts',
     glance: 'En bref',
     sourceLabel: 'Source',
@@ -258,8 +256,6 @@ export default {
   footer: {
     madeIn: 'Fait en France',
     rights: '© {year} TissByte',
-    github: 'Nous suivre sur GitHub',
-    top: 'Haut de page',
   },
 
   notFound: {

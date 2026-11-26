@@ -44,6 +44,20 @@
     const links = new Map($$('.nav__links a[href^="#"]', nav).map((a) => [a.getAttribute('href').slice(1), a]));
     let current = null;
 
+    // the lit key slides under the section being read
+    const list = $('.nav__links', nav);
+    const glide = () => {
+      if (!list) return;
+      list.style.setProperty('--on', current ? '1' : '0');
+      if (!current) return;
+      list.style.setProperty('--x', `${current.offsetLeft}px`);
+      list.style.setProperty('--w', `${current.offsetWidth}px`);
+      if (list.classList.contains('has-glider')) return;
+      list.classList.add('has-glider');
+      setTimeout(() => list.classList.add('is-live'), 60); // the first position is set without travelling to it
+    };
+    if (list && 'ResizeObserver' in window) new ResizeObserver(glide).observe(list);
+
     // the language switch keeps you where you were: its links carry the section being read (#projects, ...)
     const langLinks = $$('[data-lang] a', nav).map((a) => [a, a.getAttribute('href')]);
     const setCurrent = (link) => {
@@ -51,6 +65,7 @@
       links.forEach((l) => l.toggleAttribute('aria-current', false));
       if (link) link.setAttribute('aria-current', 'true');
       current = link;
+      glide();
       for (const [a, href] of langLinks) a.setAttribute('href', link ? href + link.getAttribute('href') : href);
     };
 
@@ -220,6 +235,8 @@
     const setOpen = (open) => {
       panel.hidden = !open;
       btn.setAttribute('aria-expanded', String(open));
+      // opened near the bottom of the window, the menu scrolls into view instead of hiding below it
+      if (open) panel.scrollIntoView({ block: 'nearest', behavior: reduceMotion.matches ? 'auto' : 'smooth' });
     };
     btn.addEventListener('click', () => setOpen(panel.hidden));
     document.addEventListener('keydown', (e) => {

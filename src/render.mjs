@@ -53,7 +53,6 @@ const ICONS = {
   flask: '<path d="M9.5 3h5M10.5 3v5.6L5 18.2A1.8 1.8 0 0 0 6.6 21h10.8a1.8 1.8 0 0 0 1.6-2.8l-5.5-9.6V3"/><path d="M7.8 15h8.4"/>',
   out: '<path d="M7 17 17 7"/><path d="M8.500 7H17v8.500"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
-  lockSm: '<rect x="5" y="10.500" width="14" height="10" rx="2.400"/><path d="M8.500 10.500V8a3.500 3.500 0 0 1 7 0v2.500"/>',
 };
 const icon = (name, cls = '') =>
   `<svg class="icon ${cls}" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
@@ -67,18 +66,23 @@ const words = (s, from = 0) => s.split(' ').map((w, i) => `<span class="w" style
 const tricolor ='<span class="tricolor" aria-hidden="true"><i></i><i></i><i></i></span>';
 
 // ---------------------------------------------------------------- pieces
-function projectArt(p, t, { sizes, eager = false }) {
+const ratioNumber = (ratio) => {
+  const [w, h] = ratio.split('/').map(Number);
+  return (w / h).toFixed(4);
+};
+
+function projectArt(p, t, sizes) {
   const a = p.art;
-  if (a.kind === 'img') {
-    return `<img src="${A}${a.name}-${a.w}.webp" srcset="${A}${a.name}-${a.small}.webp ${a.small}w, ${A}${a.name}-${a.w}.webp ${a.w}w" sizes="${sizes}" width="${a.w}" height="${a.h}" alt="${esc(t.artAlt)}" loading="${eager ? 'eager' : 'lazy'}" decoding="async" style="object-position:${a.pos}">`;
-  }
+  if (a.kind === 'pipeline') return pipelineArt(t);
   if (a.kind === 'icon') {
     return `<span class="art-tile" role="img" aria-label="${esc(t.artAlt)}"><img src="${A}${a.name}-${a.w}.webp" width="${a.w}" height="${a.h}" alt="" loading="lazy" decoding="async"></span>`;
   }
-  return pipelineArt(t);
+  return `<img src="${A}${a.name}-${a.w}.webp" srcset="${A}${a.name}-${a.small}.webp ${a.small}w, ${A}${a.name}-${a.w}.webp ${a.w}w" sizes="${sizes}" width="${a.w}" height="${a.h}" alt="${esc(t.artAlt)}" loading="lazy" decoding="async" style="object-position:${a.pos}">`;
 }
 
-function pipelineArt(t, labels = []) {
+/** The studio has no picture: its pipeline is drawn from the step names in the copy files. */
+function pipelineArt(t) {
+  const labels = t.pipeline;
   const n = 6;
   const xs = Array.from({ length: n }, (_, i) => 60 + (i * 480) / (n - 1));
   const nodes = xs
@@ -90,41 +94,44 @@ function pipelineArt(t, labels = []) {
   return `<svg class="pipeline-art" viewBox="0 0 600 168" role="img" aria-label="${esc(t.artAlt)}" focusable="false"><line class="pn-line" x1="60" y1="84" x2="540" y2="84"/><line class="pn-pulse" x1="60" y1="84" x2="540" y2="84" pathLength="100"/><g aria-hidden="true">${nodes}</g></svg>`;
 }
 
-function chips(p, c, vars) {
-  const L = c.projects;
-  const out = [`<span class="chip chip--status" data-status="${p.status}"><span class="dot" aria-hidden="true"></span>${L.statuses[p.status]}</span>`];
-  out.push(`<span class="chip">${L.kinds[p.kind]}</span>`);
-  if (p.version) out.push(`<span class="chip chip--mono">v${p.version}</span>`);
-  return `<div class="chips">${out.join('')}</div>`;
-}
+/** The line above a project's name, on its card and in its sheet: what it is, its version if it has one, and its status. */
+const labels = (p, c) =>
+  `<div class="labels">
+            <p class="kicker">${c.projects.kinds[p.kind]}${p.version ? ` <span>v${p.version}</span>` : ''}</p>
+            <p class="status" data-status="${p.status}"><span class="dot" aria-hidden="true"></span>${c.projects.statuses[p.status]}</p>
+          </div>`;
+
+const projectVars = (p, t) => ({ ...derived, version: p.version ?? '', name: t.name });
+
+const repoUrl = (p) => `${site.orgUrl}/${p.repo}`;
 
 function repoNote(p, c) {
   const L = c.projects;
   if (p.public) {
-    return `<a class="repo-note repo-note--link" href="${site.orgUrl}/${p.repo}">${GITHUB_MARK}<span>${L.viewRepo}</span></a>`;
+    return `<a class="repo-note repo-note--link" href="${repoUrl(p)}">${GITHUB_MARK}<span>${L.viewRepo}</span></a>`;
   }
-  return `<span class="repo-note">${icon('lockSm', 'icon--sm')}<span>${L.privateRepo}</span></span>`;
+  return `<span class="repo-note">${icon('lock', 'icon--sm')}<span>${L.privateRepo}</span></span>`;
 }
 
-function card(p, c, studioStepTitles) {
+function card(p, c) {
   const t = c.projects.items[p.id];
-  const vars = { ...derived, version: p.version ?? '', name: t.name };
-  const sizes =
-    p.layout === 'wide' ? '(min-width: 1000px) 640px, 92vw' : p.layout === 'full' ? '(min-width: 1000px) 520px, 92vw' : '(min-width: 1000px) 440px, 92vw';
-  const art = p.art.kind === 'pipeline' ? pipelineArt(t, studioStepTitles) : projectArt(p, t, { sizes });
+  const vars = projectVars(p, t);
+  const repoKey = p.public
+    ? `<a class="btn btn--icon" href="${repoUrl(p)}" aria-label="${esc(`${t.name}: ${c.projects.viewRepo}`)}">${GITHUB_MARK}</a>`
+    : '';
   return `
-      <article class="card card--${p.layout} plate reveal" style="--accent:${p.accent};--ar:${p.art.ratio}" data-project="${p.id}">
-        <div class="card__art">${art}</div>
+      <article class="card plate reveal" style="--accent:${p.accent}" data-project="${p.id}">
+        <div class="card__art">${projectArt(p, t, '(min-width: 821px) 580px, 92vw')}</div>
         <div class="card__body">
-          ${chips(p, c, vars)}
+          ${labels(p, c)}
           <h3 class="card__title">${esc(t.name)}</h3>
           <p class="card__tag">${fmt(t.tagline, vars)}</p>
-          <ul class="meta" aria-label="${esc(c.projects.glance)}">${p.chips.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>
           <div class="card__foot">
-            ${repoNote(p, c)}
-            <button class="btn btn--soft btn--sm card__more" type="button" data-open="dlg-${p.id}" aria-haspopup="dialog" aria-label="${esc(fmt(c.a11y.details, vars))}">
-              <span aria-hidden="true">${c.projects.more}</span>${icon('arrow', 'icon--sm')}
-            </button>
+            <ul class="stack" aria-label="${esc(c.projects.glance)}">${p.stack.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+            <div class="card__keys">
+              ${repoKey}
+              <button class="btn btn--icon card__more" type="button" data-open="dlg-${p.id}" aria-haspopup="dialog" aria-label="${esc(fmt(c.a11y.details, vars))}">${icon('arrow', 'icon--sm')}</button>
+            </div>
           </div>
         </div>
       </article>`;
@@ -132,29 +139,25 @@ function card(p, c, studioStepTitles) {
 
 function specRows(p, c, t, vars) {
   const L = c.projects;
-  // Status and version are already in the chips above the title: only repeat the version when it needs a note.
+  // The version already sits above the title: repeat it here only when it needs a note.
   const rows = [];
   if (p.version && t.versionNote) rows.push([t.versionLabel || L.labels.version, `v${p.version}, ${t.versionNote}`]);
   for (const [k, v] of t.specs) rows.push([k, fmt(v, vars)]);
   return rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
 }
 
-function dialog(p, c, studioStepTitles) {
+function dialog(p, c) {
   const t = c.projects.items[p.id];
   const L = c.projects;
-  const vars = { ...derived, version: p.version ?? '', name: t.name };
-  const art =
-    p.art.kind === 'pipeline'
-      ? pipelineArt(t, studioStepTitles)
-      : projectArt(p, t, { sizes: '(min-width: 1000px) 980px, 96vw' });
+  const vars = projectVars(p, t);
   return `
-    <dialog class="sheet" id="dlg-${p.id}" aria-labelledby="dlg-${p.id}-title" style="--accent:${p.accent};--ar:${p.art.ratio};--arn:${(() => { const [a, b] = p.art.ratio.split('/').map(Number); return (a / b).toFixed(4); })()}">
+    <dialog class="sheet" id="dlg-${p.id}" aria-labelledby="dlg-${p.id}-title" style="--accent:${p.accent};--ar:${ratioNumber(p.art.ratio)}">
       <div class="sheet__panel plate">
         <button class="sheet__close btn btn--icon" type="button" data-close aria-label="${c.a11y.close}">${icon('close')}</button>
         <div class="sheet__scroll">
-        <div class="sheet__art art--${p.art.kind}">${art}</div>
+        <div class="sheet__art">${projectArt(p, t, '(min-width: 1000px) 980px, 96vw')}</div>
         <div class="sheet__body">
-          ${chips(p, c, vars)}
+          ${labels(p, c)}
           <h3 id="dlg-${p.id}-title" class="sheet__title">${esc(t.name)}</h3>
           <p class="sheet__tag">${fmt(t.tagline, vars)}</p>
           <p class="sheet__summary">${fmt(t.summary, vars)}</p>
@@ -174,6 +177,84 @@ function dialog(p, c, studioStepTitles) {
         </div>
       </div>
     </dialog>`;
+}
+
+// The circuit traces of the organisation's GitHub banner, in the banner's own 1800 x 600 coordinates, so they line up
+// with the monogram at every size. Each one runs from outside the screen toward the monogram: [path, node x, node y, delay].
+// The right-hand side mirrors the left.
+const TRACES = [
+  ['M158 -40V73L269 183H398', 398, 183, 0.45],
+  ['M-1400 177H127L220 269H416L477 208H548', 548, 208, 0.3],
+  ['M-1400 433H224L299 358H450', 450, 358, 0.55],
+  ['M89 640V522L178 433', 178, 433, 0.75],
+];
+
+// The branches that turn the circuit into a network. Each one leaves a junction on a trace (or another branch) for a
+// node of its own: [path, junction x, y, node x, y, firing period, first firing, node radius]. Periods divide or sit
+// beside the trunks' 9s on purpose, so the activity never looks like one blinking pattern.
+const BRANCHES = [
+  ['M158 73L196 35H322', 158, 73, 322, 35, 4.5, 3.1, 3.2],
+  ['M269 183L322 130H452', 269, 183, 452, 130, 6, 4.4, 3.6],
+  ['M127 177L92 142V96L62 66H-60', 127, 177, -60, 66, 7.5, 3.8, 3],
+  ['M220 269L172 317H38', 220, 269, 38, 317, 4.5, 4.9, 3.4],
+  ['M299 358L338 397V420L362 444H458', 299, 358, 458, 444, 7.5, 5.8, 3],
+  ['M38 317L-6 361H-150L-196 315H-330', 38, 317, -330, 315, 9, 6.2, 3.2],
+  ['M-60 66L-112 118H-290', -60, 66, -290, 118, 7.5, 5.1, 2.8],
+  ['M-150 361L-205 416V480L-250 525H-420', -150, 361, -420, 525, 9, 7.4, 2.8],
+];
+
+// On a phone the monogram is a little narrower and the circuit is redrawn in the margins on both sides of it (680 x 475),
+// sparser than on a large screen to leave it room to breathe. The trunks start far outside, so they reach the screen edges.
+const PHONE_TRACES = [
+  ['M-400 96H18L48 126H88', 88, 126, 0.3],
+  ['M-400 238H70', 70, 238, 0.5],
+  ['M-400 380H22L52 350H90', 90, 350, 0.65],
+];
+const PHONE_BRANCHES = [
+  ['M18 96L40 74V40H82', 18, 96, 82, 40, 6, 3.1, 3.6],
+  ['M20 238L38 256V294H72', 20, 238, 72, 294, 4.5, 4.9, 3.6],
+  ['M22 380L44 402V438H84', 22, 380, 84, 438, 7.5, 4.2, 3.6],
+];
+
+// Two layouts of one circuit; CSS shows the one that fits the screen. box = viewBox, fit = how it fills its area,
+// mirror = the axis of symmetry times two, fade = the top and bottom of the soft edge mask (and where it reaches full strength), reach = the area the mask covers.
+const CIRCUITS = {
+  wide: { box: '0 0 1800 600', fit: 'slice', mirror: 1800, traces: TRACES, branches: BRANCHES, node: 4.5, fade: [-40, 640, 0.16, 0.74], reach: [-1400, -60, 4600, 720] },
+  phone: { box: '0 0 680 475', fit: 'meet', mirror: 680, traces: PHONE_TRACES, branches: PHONE_BRANCHES, node: 5.5, fade: [-10, 485, 0.06, 0.94], reach: [-420, -20, 1520, 520] },
+};
+
+/** Decorative, drawn and lit by CSS alone: a faint track, the line that lights up on load, then a pulse now and then. */
+function circuitTraces(name) {
+  const { box, fit, mirror, traces, branches, node, fade, reach } = CIRCUITS[name];
+  const [top, bottom, solidFrom, solidTo] = fade;
+  const [x0, y0, width, height] = reach;
+  const area = `x="${x0}" y="${y0}" width="${width}" height="${height}"`;
+  const line = (d) => `<path class="trace__track" d="${d}"/>
+              <path class="trace__lit" d="${d}" pathLength="1"/>
+              <path class="trace__pulse" d="${d}" pathLength="1"/>`;
+  const side = traces.map(([d, x, y, delay]) => `<g style="--t:${delay}s">
+              ${line(d)}
+              <circle class="trace__node" cx="${x}" cy="${y}" r="${node}"/>
+            </g>`).join('');
+  const net = branches.map(([d, jx, jy, x, y, period, first, r]) => `<g class="branch" style="--p:${period}s;--f:${first}s">
+              ${line(d)}
+              <circle class="trace__joint" cx="${jx}" cy="${jy}" r="2.4"/>
+              <circle class="trace__node" cx="${x}" cy="${y}" r="${r}"/>
+            </g>`).join('');
+  return `<svg class="hero__traces hero__traces--${name}" viewBox="${box}" preserveAspectRatio="xMidYMid ${fit}" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="fade-${name}" gradientUnits="userSpaceOnUse" x1="0" y1="${top}" x2="0" y2="${bottom}">
+            <stop offset="0" stop-color="#000"/><stop offset="${solidFrom}" stop-color="#fff"/><stop offset="${solidTo}" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
+          </linearGradient>
+          <mask id="mask-${name}" maskUnits="userSpaceOnUse" ${area}>
+            <rect ${area} fill="url(#fade-${name})"/>
+          </mask>
+        </defs>
+        <g mask="url(#mask-${name})">
+          <g>${net}${side}</g>
+          <g class="mirror" transform="matrix(-1 0 0 1 ${mirror} 0)">${net}${side}</g>
+        </g>
+      </svg>`;
 }
 
 /** The project's README screenshots. Thumbnails load lazily (a closed dialog is display:none, so nothing is fetched until it opens). */
@@ -241,7 +322,6 @@ export function renderPage(c, hashes) {
   A = `${up}assets/`;
   const vars = { ...derived };
   const canonical = `${site.url}/${here.path}`;
-  const studioTitles = c.projects.items.studio.pipeline; // labels of the studio's pipeline diagram
   const ogImage = `${site.url}/assets/og-image.jpg`;
 
   const jsonLd = {
@@ -257,8 +337,8 @@ export function renderPage(c, hashes) {
     knowsLanguage: languages.map((l) => l.code),
   };
 
-  const cardsHtml = projects.map((p) => card(p, c, studioTitles)).join('');
-  const dialogsHtml = projects.map((p) => dialog(p, c, studioTitles)).join('');
+  const cardsHtml = projects.map((p) => card(p, c)).join('');
+  const dialogsHtml = projects.map((p) => dialog(p, c)).join('');
 
   return `<!doctype html>
 <html lang="${lang}" dir="ltr">
@@ -271,7 +351,7 @@ export function renderPage(c, hashes) {
 <meta name="supported-color-schemes" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp([JS_FLAG])}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#26231f">
+<meta name="theme-color" content="#121110">
 <link rel="canonical" href="${canonical}">
 ${languages.map((l) => `<link rel="alternate" hreflang="${l.code}" href="${site.url}/${l.path}">`).join('\n')}
 <link rel="alternate" hreflang="x-default" href="${site.url}/${defaultLanguage.path}">
@@ -311,14 +391,14 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
 <main id="main">
 
   <section class="hero" id="top" aria-labelledby="hero-title">
-    <div class="hero__stage">
-      <div class="container">
-        <div class="hero__window">
-          <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
-          <span class="hero__sheen" aria-hidden="true"></span>
-          <span class="hero__glint" aria-hidden="true"></span>
-        </div>
+    <div class="container hero__display">
+      <div class="hero__window">
+        <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
+        <span class="hero__sheen" aria-hidden="true"></span>
+        <span class="hero__glint" aria-hidden="true"></span>
       </div>
+      ${circuitTraces('wide')}
+      ${circuitTraces('phone')}
     </div>
     <div class="container hero__copy">
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
@@ -335,16 +415,14 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
     <div class="container">
       <header class="section-head reveal">
         <h2 id="projects-title">${emph(c.projects.title)}</h2>
-        <div class="section-head__aside">
-          <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
-        </div>
-        ${site.reposPrivate ? `<p class="notice well" role="note">${icon('lockSm', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
+        <p class="section-intro">${fmt(c.projects.intro, vars)}</p>
+        <ul class="figures">
+          ${c.projects.figures.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
+        </ul>
+        ${site.reposPrivate ? `<p class="notice" role="note">${icon('lock', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
       </header>
-      <div class="bento">${cardsHtml}
+      <div class="cards">${cardsHtml}
       </div>
-      <ul class="stats plate reveal">
-        ${c.hero.stats.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
-      </ul>
     </div>
     ${dialogsHtml}
     <dialog class="lightbox" id="lightbox" aria-label="${esc(c.projects.screenshots)}">
@@ -379,10 +457,6 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
   <div class="container footer__base">
     <span class="footer__mark"><img src="${A}mark-160.webp" width="54" height="36" alt="" loading="lazy" decoding="async"><span>${fmt(c.footer.rights, vars)}</span></span>
     <span class="madein">${tricolor}<span>${c.footer.madeIn}</span></span>
-    <span class="footer__links">
-      <a href="${site.orgUrl}">${GITHUB_MARK}<span>${c.footer.github}</span></a>
-      <a href="#top">${c.footer.top}</a>
-    </span>
   </div>
 </footer>
 
@@ -415,7 +489,7 @@ export function renderNotFound(copies, hashes) {
 <meta name="color-scheme" content="dark">
 <meta http-equiv="Content-Security-Policy" content="${csp()}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#26231f">
+<meta name="theme-color" content="#121110">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
 <link rel="stylesheet" href="/styles.css?v=${hashes.css}">
 </head>

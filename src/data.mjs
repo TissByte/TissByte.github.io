@@ -18,8 +18,8 @@ export const site = {
   year: 2026,
 };
 
-// accent = the card's glow and the little dots of its "at a glance" line (never used for text, so contrast is unaffected).
-// The status chip does not use it: its colour belongs to the status (released, development, lab), not to the project.
+// accent = the card's glow (never used for text, so contrast is unaffected).
+// The status badge does not use it: its colour belongs to the status (released, development, lab), not to the project.
 // public:true shows a "View on GitHub" link to https://github.com/TissByte/<repo>; false shows a "Private repository" label instead.
 export const projects = [
   {
@@ -28,12 +28,11 @@ export const projects = [
     status: 'development',
     version: '0.1.1',
     repo: 'CastleBomb',
-    public: true,
+    public: false,
     accent: '#ee8a3c',
-    chips: ['Godot 4', 'GDScript', 'macOS'],
+    stack: ['Godot 4', 'GDScript', 'macOS'],
     code: ['GDScript'],
-    layout: 'wide',
-    art: { kind: 'img', name: 'castlebomb', w: 1920, h: 1080, small: 960, pos: '50% 50%', ratio: '16 / 9' },
+    art: { kind: 'img', name: 'castlebomb', w: 1920, h: 1080, small: 960, pos: '50% 0%', ratio: '16 / 9' },
   },
   {
     id: 'supervisor',
@@ -41,11 +40,10 @@ export const projects = [
     status: 'released',
     version: '0.2.2',
     repo: 'claude-ai-supervisor',
-    public: true,
+    public: false,
     accent: '#6fb0f2',
-    chips: ['Swift + Python', 'macOS 14+', 'Menu bar + CLI'], // the app's own About window credits Swift, SwiftUI and Python
+    stack: ['Swift + Python', 'macOS 14+', 'Menu bar + CLI'], // the app's own About window credits Swift, SwiftUI and Python
     code: ['Python', 'Swift'],
-    layout: 'narrow',
     art: { kind: 'img', name: 'supervisor-cockpit', w: 1400, h: 984, small: 760, pos: '0% 0%', ratio: '3 / 2' },
     // the screenshots from the project's README (wide = windows, tall = the menu-bar panel); captions live in copy.mjs
     gallery: [
@@ -65,11 +63,10 @@ export const projects = [
     status: 'released',
     version: '0.1.0',
     repo: 'TissByte-MacOs-Cleaning',
-    public: true,
+    public: false,
     accent: '#5ad1c4',
-    chips: ['Swift', 'macOS 14+', 'App + CLI'],
+    stack: ['Swift', 'macOS 14+', 'App + CLI'],
     code: ['Swift'],
-    layout: 'wide',
     art: { kind: 'img', name: 'cleaning-banner', w: 1280, h: 426, small: 760, pos: '50% 50%', ratio: '3 / 1' },
     // the screenshots from the project's README (all on its demo data); captions live in the copy files
     gallery: [
@@ -90,12 +87,11 @@ export const projects = [
     status: 'released',
     version: '0.6.1',
     repo: 'MacOS-Dock',
-    public: true,
+    public: false,
     accent: '#e0b25e',
-    chips: ['Swift 6', 'macOS 13+', 'Liquid Glass'],
+    stack: ['Swift 6', 'macOS 13+', 'Liquid Glass'],
     code: ['Swift'],
     interfaceLanguages: 7,
-    layout: 'narrow',
     art: { kind: 'img', name: 'dock-banner', w: 1400, h: 467, small: 760, pos: '50% 50%', ratio: '3 / 1' },
     // illustrations: drawn for this site (dock-bar) and by the project itself (dock-screens, made for a light page)
     gallery: [
@@ -109,11 +105,10 @@ export const projects = [
     status: 'development',
     version: null,
     repo: 'MobiMount',
-    public: true,
+    public: false,
     accent: '#4cc2ff',
-    chips: ['Shell', 'macOS', 'Android'],
+    stack: ['Shell', 'macOS', 'Android'],
     code: ['Shell'],
-    layout: 'narrow',
     art: { kind: 'icon', name: 'mobimount', w: 400, h: 400, ratio: '2 / 1' },
     gallery: [{ name: 'mobimount-flow', kind: 'svg', w: 960, h: 400 }], // an illustration: the project has no screenshots
   },
@@ -123,11 +118,10 @@ export const projects = [
     status: 'lab',
     version: null,
     repo: 'tissbyte-gaming-studio',
-    public: true,
+    public: false,
     accent: '#a99dff',
-    chips: ['AI agents', 'Claude Code', 'Godot'],
+    stack: ['AI agents', 'Claude Code', 'Godot'],
     code: [],
-    layout: 'wide',
     art: { kind: 'pipeline', ratio: '3 / 1' },
   },
 ];

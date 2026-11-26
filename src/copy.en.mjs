@@ -31,19 +31,17 @@ export default {
     ctaGithub: 'Find us on GitHub',
     ctaContact: 'Contact us',
     bannerAlt: 'TissByte: a chrome, italic “TB” monogram on a black background.',
-    stats: [
-      { value: '{projects}', label: 'projects on the bench' },
-      { value: '{languages}', label: 'programming languages: {languageList}' },
-      { value: '0', label: 'trackers or cookies on this site' },
-    ],
   },
 
   projects: {
     eyebrow: 'Projects',
     title: 'What’s on the bench.',
     intro: 'Three apps, a game, a small utility and an experiment. All of it starts from the Mac.',
+    figures: [
+      { value: '{projects}', label: 'projects on the bench' },
+      { value: '{languages}', label: 'programming languages: {languageList}' },
+    ],
     notice: 'Our repositories are private for now. We can provide access for debugging purposes: contact us.',
-    more: 'More',
     highlights: 'Highlights',
     glance: 'At a glance',
     sourceLabel: 'Source',
@@ -256,8 +254,6 @@ export default {
   footer: {
     madeIn: 'Made in France',
     rights: '© {year} TissByte',
-    github: 'Find us on GitHub',
-    top: 'Back to top',
   },
 
   notFound: {
