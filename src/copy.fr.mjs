@@ -228,27 +228,31 @@ export default {
 
   // La bande de clôture : ce sur quoi vous pouvez compter. La vie privée d’abord, exprès.
   promises: {
-    title: 'Comment se comportent nos logiciels',
+    title: 'Ce sur quoi vous pouvez compter',
     items: [
       {
         icon: 'lock',
-        title: 'Rien ne part sur le réseau',
-        text: 'Nos apps n’ouvrent jamais de connexion réseau. Si elles modifient quelque chose sur votre Mac, elles vous le disent d’abord, et la désinstallation retire tout.',
+        title: 'Rien ne quitte votre Mac',
+        text: 'Nos apps n’ouvrent aucune connexion réseau. Tout changement vous est annoncé avant d’être fait, et la désinstallation ne laisse rien.',
+        more: 'Ni compte ni statistiques d’usage. Dans TissByte Cleaning, ce qui ne se reconstruit pas à coup sûr attend 30 jours dans un Safety Net, à un clic du retour.',
       },
       {
         icon: 'chip',
-        title: 'Natives et légères',
-        text: 'Swift et AppKit, compilés avec les Command Line Tools d’Apple : pas de Xcode à installer. Quand un script suffit, c’est du Python pur, sans dépendances.',
+        title: 'Natives, par choix',
+        text: 'Du Swift et de l’AppKit, sans Xcode à installer. Quand un script suffit, du Python pur, sans aucune dépendance.',
+        more: 'macOS Dock est écrit en Swift 6. MobiMount ne demande ni extension du noyau ni mot de passe administrateur : rien ne touche votre téléphone sans vous.',
       },
       {
         icon: 'check',
-        title: 'Nous disons ce qui ne marche pas',
-        text: 'Chaque README a une section sur les limites. Nos builds sont signés ad hoc plutôt que notarisés, et nous le disons d’emblée, avec les étapes pour les ouvrir.',
+        title: 'Les limites, dites d’emblée',
+        text: 'Chaque README expose les siennes. Nos builds sont signés ad hoc, non notarisés : nous le disons, et montrons comment les ouvrir.',
+        more: 'Au premier lancement, macOS vous demande de confirmer. Chaque projet affiche aussi où il en est : disponible, en développement ou encore au labo.',
       },
       {
         icon: 'flask',
-        title: 'Testé avant d’être montré',
-        text: 'Les règles du jeu vivent dans un moteur déterministe, avec des tests unitaires et des parties d’équilibrage ordinateur contre ordinateur. Dans le code du jeu, un avertissement compte comme une erreur.',
+        title: 'Éprouvé avant d’être montré',
+        text: 'Les règles du jeu reposent sur un moteur déterministe, testé et équilibré machine contre machine. Dans son code, un avertissement vaut une erreur.',
+        more: 'Dans notre studio de jeux, une relecture indépendante et une validation précèdent toute fusion. Rien n’entre sur la seule parole de son auteur.',
       },
     ],
   },

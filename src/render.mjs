@@ -315,16 +315,17 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
   <section class="hero" id="top" aria-labelledby="hero-title">
     <div class="container hero__display">
       <div class="hero__window">
-        <img src="${A}banner-1800.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
+        <img src="${A}banner-1800.webp" data-mask="${A}monogram-mask.webp" data-relief="${A}monogram-relief.webp" width="1800" height="600" alt="${esc(c.hero.bannerAlt)}" fetchpriority="high" decoding="async">
         <span class="hero__sheen" aria-hidden="true"></span>
         <span class="hero__glint" aria-hidden="true"></span>
       </div>
+      <p class="hero__name reveal" style="--d:30ms">TissByte</p>
     </div>
     <div class="container hero__copy">
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>
       <p class="hero__lead reveal" style="--d:120ms">${c.hero.lead}</p>
       <div class="hero__cta reveal" style="--d:180ms">
-        <a class="btn btn--metal" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
+        <a class="btn btn--soft" href="${site.orgUrl}">${GITHUB_MARK}<span>${c.hero.ctaGithub}</span></a>
         ${contactMenu(c)}
       </div>
     </div>
@@ -339,7 +340,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
         <ul class="figures">
           ${c.projects.figures.map((s) => `<li><strong>${fmt(s.value, vars)}</strong><span>${fmt(s.label, vars)}</span></li>`).join('')}
         </ul>
-        ${site.reposPrivate ? `<p class="notice" role="note">${icon('lock', 'icon--sm')}<span>${c.projects.notice}</span></p>` : ''}
+        ${site.reposPrivate ? `<div class="notice" role="note"><span class="notice__seal">${icon('lock', 'icon--sm')}</span><p>${c.projects.notice}</p></div>` : ''}
       </header>
       <div class="cards">${cardsHtml}
       </div>
@@ -364,6 +365,7 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
           <span class="roundel">${icon(it.icon)}</span>
           <h3>${it.title}</h3>
           <p>${fmt(it.text, vars)}</p>
+          <p class="promises__more">${fmt(it.more, vars)}</p>
         </li>`,
           )
           .join('')}

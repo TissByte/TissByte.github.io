@@ -8,6 +8,10 @@
    ===================================================================== */
 
 :root {
+  --pass: 10s linear(0, .19, .32, .395, .45, .5, .55, .605, .68, .81, 1) .8s infinite backwards; /* the clock of the one light: it
+    crosses in 4s, braking over the monogram, then rests 6s. main.js (BRAKE) follows the same curve */
+  --line: linear-gradient(90deg, transparent 44%, rgb(255 248 230 / .95) 50%, transparent 56%) 100% 0 / 300% 100% no-repeat,
+    linear-gradient(90deg, transparent, rgb(247 226 180 / .5) 50%, transparent);
   --gap-section: clamp(52px, 6vw, 80px);  /* the space above and below every section line */
   color-scheme: dark;
 
@@ -73,12 +77,19 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-/* Black, like the banner, with one soft warm light behind the monogram. No tint and no page-wide texture: both read as dust.
-   The audit (scripts/contrast.mjs, GLOWS) walks this exact gradient and counts the brightest pixel it can make. */
+/* Black, like the banner. No tint, no page-wide texture (both read as dust) and nothing glowing behind the monogram.
+   Now and then, a light crosses the screen from left to right on one clock (--pass), and the cloth, the metal of
+   the monogram and the champagne lines answer it as it goes by, then it pauses before coming back. On the page
+   itself it travels low, under the monogram. The audit (scripts/contrast.mjs, GLOWS) counts its brightest pixel. */
 body::after {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(60vmax 34vmax at 50% -4%, rgb(247 226 180 / .075), transparent 70%);
+  content: ""; position: fixed; inset: 0 -40vw; /* wider than the screen: it never shows an edge as it moves */ z-index: -1; pointer-events: none;
+  background: radial-gradient(46vmax 30vmax at 50% 100%, rgb(247 226 180 / .1), rgb(247 226 180 / .035) 40%, transparent 70%);
+  opacity: 0; animation: light-pass var(--pass);
 }
+@keyframes light-pass { 0% { translate: -70vw 0; opacity: 0; } 9.6%, 30.4% { opacity: 1; } 40%, 100% { translate: 70vw 0; opacity: 0; } }
+/* a champagne line catches the light: a bright spot over its resting gradient, moving with it */
+.section::before, .hero__copy::before, .footer::before { animation: line-pass var(--pass); }
+@keyframes line-pass { 0% { background-position: 100% 0, 0 0; } 40%, 100% { background-position: 0% 0, 0 0; } }
 img, svg, picture { display: block; max-width: 100%; }
 img { height: auto; }
 h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
@@ -119,23 +130,37 @@ h1, h2, h3, .figures strong, .kicker span, .stack { font-optical-sizing: auto; f
 /* headings are pressed into the surface: a dark edge above, a lit edge below */
 h1, h2, h3, .figures strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1px 0 rgb(var(--lit) / .07); }
 
-/* A section's name sits on its line, in a small label cut into the surface, with one champagne LED that breathes. */
+/* The pill family: section names and the two keys of the first screen share one material, graphite inside a champagne
+   hairline. A section's name is set into its line like a stone: the rim is brightest where the line meets it, a second
+   fine ring surrounds it, and two small diamonds frame the word. */
+:root {
+  --pill: linear-gradient(180deg, #211e1a, #161412);
+}
 .eyebrow {
   position: absolute; z-index: 1; top: 1px; left: 50%; transform: translate(-50%, -50%); margin: 0; white-space: nowrap;
-  display: inline-flex; align-items: center; gap: 12px; min-height: 42px; padding: 0 28px 0 24px; border-radius: 999px;
-  font-size: 1rem; line-height: 1; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--champagne);
-  background: var(--concave); box-shadow: var(--cut-xs);
+  display: inline-flex; align-items: center; gap: 14px; min-height: 40px; padding: 0 22px;
+  border: 1px solid transparent; border-radius: 999px;
+  font-family: var(--font-serif); font-size: .875rem; line-height: 1; font-weight: 500; letter-spacing: .36em; text-transform: uppercase; color: var(--champagne);
+  background: var(--pill) padding-box, linear-gradient(90deg, rgb(251 233 192 / .85), rgb(251 233 192 / .22) 28% 72%, rgb(251 233 192 / .85)) border-box;
+  box-shadow: 0 0 0 5px var(--surface), 0 0 0 6px rgb(251 233 192 / .16), 0 0 0 0 rgb(251 233 192 / 0), inset 0 1px 0 rgb(var(--lit) / .06), inset 0 0 0 0 rgb(251 233 192 / 0);
+  animation: pill-glow var(--pass);
 }
-.eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--champagne); box-shadow: 0 0 7px 1px rgb(247 226 180 / .6); animation: tag-led 3.2s var(--ease) infinite both; }
-@keyframes tag-led { 0%, 100% { opacity: .35; } 20%, 45% { opacity: 1; } }
+/* as the light passes along the line, the pill lights up all around */
+@keyframes pill-glow {
+  8%, 34%, 100% { box-shadow: 0 0 0 5px var(--surface), 0 0 0 6px rgb(251 233 192 / .16), 0 0 0 0 rgb(251 233 192 / 0), inset 0 1px 0 rgb(var(--lit) / .06), inset 0 0 0 0 rgb(251 233 192 / 0); text-shadow: 0 0 0 transparent; }
+  20% { box-shadow: 0 0 0 5px var(--surface), 0 0 0 6px rgb(251 233 192 / .85), 0 0 28px 10px rgb(251 233 192 / .3), inset 0 1px 0 rgb(var(--lit) / .2), inset 0 0 16px 0 rgb(251 233 192 / .22); text-shadow: 0 0 10px rgb(255 240 204 / .75); }
+}
+.eyebrow::before, .eyebrow::after { content: ""; width: 5px; height: 5px; rotate: 45deg; background: var(--champagne); }
+.eyebrow::before { margin-right: 0; }
+.eyebrow::after { margin-left: -.36em; } /* the last letter's spacing counts toward the gap */
 
 .section { position: relative; padding-block: var(--gap-section); }
 .section--last { padding-bottom: var(--gap-section); }
 /* where a section starts: a lit line, like a thread of champagne */
 .section::before {
-  content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
-  background: linear-gradient(90deg, rgb(247 226 180 / .22), rgb(247 226 180 / .75) 50%, rgb(247 226 180 / .22));
-  box-shadow: 0 0 10px rgb(247 226 180 / .18); pointer-events: none;
+  content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 1px; transform: translateX(-50%);
+  background: var(--line);
+  pointer-events: none;
 }
 /* A section opens like a magazine page: its name on the line above, the serif title with its last word in italic champagne
    (the headline's voice), then the introduction facing two figures, and a quiet note before the content. */
@@ -148,8 +173,19 @@ h1, h2, h3, .figures strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1
 .figures li { display: flex; flex-direction: column; gap: 6px; padding-left: 18px; border-left: 1px solid rgb(247 226 180 / .34); font-size: .875rem; line-height: 1.45; color: var(--ink-2); }
 .figures strong { font-family: var(--font-serif); font-weight: 500; font-size: 2.25rem; line-height: 1; color: var(--champagne); }
 /* the repositories are not public yet; remove it with site.reposPrivate = false */
-.notice { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
-.notice .icon { color: var(--champagne); }
+.notice {
+  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; margin-top: 12px; padding: 16px 18px; border-radius: 26px;
+  font-size: 1rem; line-height: 1.55; color: var(--ink); border: 1px solid transparent;
+  background: var(--pill) padding-box, linear-gradient(180deg, rgb(251 233 192 / .75), rgb(251 233 192 / .24)) border-box;
+  box-shadow: 0 0 34px -10px rgb(251 233 192 / .24), 0 18px 34px -22px rgb(var(--shade));
+}
+.notice p { flex: 1 1 22ch; }
+.notice { position: relative; margin-bottom: 33px; }
+.notice::after { /* a short dash closes the introduction, before the projects */
+  content: ""; position: absolute; left: 50%; bottom: -34px; translate: -50% 0; width: 96px; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgb(251 233 192 / .85), transparent);
+}
+.notice__seal { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 50%; color: var(--champagne); border: 1px solid rgb(251 233 192 / .5); box-shadow: 0 0 0 4px #1b1916, 0 0 0 5px rgb(251 233 192 / .16); }
 @media (max-width: 820px) {
   .section-head { grid-template-columns: 1fr; }
 }
@@ -292,37 +328,37 @@ h1, h2, h3, .figures strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1
 /* ------------------------------------------------------------ hero */
 /* The first screen reads top to bottom: the monogram, the concept (headline), what we do (lead), the two actions. The eye
    sees the same space (--hero-gap) between the line and the top of the headline's letters as between the actions and what
-   sits on the next line, so the padding below also counts the half of the section label that rises above that line (20px),
+   sits on the next line, so the padding below also counts the half of the section pill that rises above that line, with its ring (34px with air),
    and the padding above discounts the room the headline keeps over its letters (2px). overflow-x: the cloth runs past
    the screen edges. */
-.hero { --hero-gap: clamp(28px, 3.8vh, 40px); position: relative; overflow-x: clip; padding-block: calc(var(--nav-h) + 14px) calc(var(--hero-gap) + 20px); }
+.hero { --hero-gap: clamp(28px, 3.8vh, 40px); position: relative; overflow-x: clip; padding-block: calc(var(--nav-h) + 14px) calc(var(--hero-gap) + 34px); }
 /* The banner is a display, not a framed picture: no border, no recess. The artwork's black melts into the black surface
-   (lighten), its edges dissolve (mask), and the warm backlight pool is the only thing that glows. It develops on load like a
+   (lighten), and its edges dissolve (mask). It develops on load like a
    screen powering up (blur to sharp). */
 /* Behind it, a woven cloth in the dark, since weaving is the idea behind the name (assets/weave.svg, repeated). It is
-   barely there until a slow raking light passes across it, and it stays clear of the monogram: --clear opens it around
+   barely there until the light passes across it, and it stays clear of the monogram: --clear opens it around
    the letters, in proportion to the display's height. --h: the monogram leads, and the next section still shows below. */
-@property --lx { syntax: "<percentage>"; inherits: false; initial-value: 24%; } /* where the light is, so it can glide */
+@property --lx { syntax: "<percentage>"; inherits: false; initial-value: -30%; } /* where the light is, so it can glide */
 .hero__display {
-  --h: clamp(260px, min(44vw, 52vh), 560px);
+  --h: clamp(250px, min(44vw, 49vh), 540px);
   --clear: radial-gradient(calc(var(--h) * .82) calc(var(--h) * .68) at 50% 50%, transparent 70%, #000);
   position: relative; overflow-y: clip; /* nothing reaches the menu above or the text below */
 }
 .hero__display::before, .hero__display::after {
-  content: ""; position: absolute; inset: 0 calc(50% - 50vw); pointer-events: none; background: url("assets/weave.svg");
+  content: ""; position: absolute; inset: 0 calc(50% - 50vw); pointer-events: none; background: url("assets/weave.svg") 0 0 / 14px 14px;
   -webkit-mask-composite: source-in; mask-composite: intersect;
 }
 .hero__display::before { /* the cloth at rest, dissolving at the top and bottom */
-  opacity: .12;
+  opacity: .09;
   -webkit-mask-image: var(--clear), linear-gradient(transparent, #000 30% 68%, transparent);
   mask-image: var(--clear), linear-gradient(transparent, #000 30% 68%, transparent);
 }
 .hero__display::after { /* the same cloth where the light falls */
-  opacity: .5; animation: raking 16s ease-in-out infinite alternate;
-  -webkit-mask-image: var(--clear), radial-gradient(30% 62% at var(--lx) 44%, #000, transparent 78%);
-  mask-image: var(--clear), radial-gradient(30% 62% at var(--lx) 44%, #000, transparent 78%);
+  opacity: .72; animation: raking var(--pass);
+  -webkit-mask-image: var(--clear), radial-gradient(34% 72% at var(--lx) 46%, #000 12%, transparent 80%);
+  mask-image: var(--clear), radial-gradient(34% 72% at var(--lx) 46%, #000 12%, transparent 80%);
 }
-@keyframes raking { from { --lx: 14%; } to { --lx: 86%; } }
+@keyframes raking { 0% { --lx: -30%; } 40%, 100% { --lx: 130%; } }
 .hero__window {
   position: relative; mix-blend-mode: lighten;
   height: var(--h);
@@ -331,37 +367,51 @@ h1, h2, h3, .figures strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1
   mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 92%, transparent 100%), linear-gradient(to right, transparent 0, #000 10%, #000 90%, transparent 100%);
   mask-composite: intersect;
   animation: display-on 1.9s var(--ease) both;
-  background:
-    radial-gradient(28% 62% at 50% 50%, rgb(247 226 180 / .36), rgb(247 226 180 / .11) 54%, transparent 78%),
-    radial-gradient(70% 90% at 50% 125%, rgb(247 226 180 / .08), transparent 70%);
 }
 .hero__window img { position: absolute; inset: 0; scale: 1.13; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; mix-blend-mode: lighten; }
-.hero__sheen {
-  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay;
-  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / .95) 49.5%, rgb(255 244 214 / .95) 50.5%, transparent 60%) 0 0 / 260% 100% no-repeat;
-  background-position: 170% 0;
-  animation: sheen 9s var(--ease) 2.2s infinite;
+/* The light touches the metal and nothing else: the sheen and the pointer's glint are cut to the monogram
+   (assets/monogram-mask.webp, the artwork's own bright parts), framed exactly like the artwork. */
+.hero__sheen, .hero__glint {
+  position: absolute; inset: 0; scale: 1.13; pointer-events: none;
+  -webkit-mask: url("assets/monogram-mask.webp") center / cover no-repeat; mask: url("assets/monogram-mask.webp") center / cover no-repeat;
 }
-@keyframes sheen { 0% { background-position: 170% 0; } 36%, 100% { background-position: -70% 0; } }
+.hero__sheen { /* a soft box of light with a sharp core, like a studio reflection travelling over chrome */
+  mix-blend-mode: screen;
+  background:
+    linear-gradient(105deg, transparent 45%, rgb(255 253 246 / .7) 48.6%, #fff 50%, rgb(255 253 246 / .7) 51.4%, transparent 55%) 0 0 / 260% 100% no-repeat,
+    linear-gradient(105deg, transparent 33%, rgb(255 232 184 / .6) 50%, transparent 67%) 0 0 / 260% 100% no-repeat;
+  background-position: 170% 0;
+  animation: sheen var(--pass);
+}
+@keyframes sheen { 0% { background-position: 170% 0; } 40%, 100% { background-position: -70% 0; } }
+.hero__liquid { position: absolute; inset: 0; width: 100%; height: 100%; scale: 1.13; pointer-events: none; } /* made by main.js */
+.has-liquid .hero__sheen { visibility: hidden; } /* it keeps running: it is the liquid metal's clock */
 .hero__glint {
-  position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay; opacity: var(--glint, 0); transition: opacity .6s var(--ease);
-  background: radial-gradient(260px circle at var(--gx, 50%) var(--gy, 40%), rgb(255 255 255 / .95), rgb(255 244 214 / .35) 45%, transparent 70%);
+  mix-blend-mode: screen; opacity: var(--glint, 0); transition: opacity .6s var(--ease);
+  background: radial-gradient(220px circle at var(--gx, 50%) var(--gy, 40%), rgb(255 246 224 / .75), rgb(255 236 196 / .2) 45%, transparent 70%);
 }
 @keyframes display-on { from { opacity: 0; scale: 1.06; filter: blur(16px); } to { opacity: 1; scale: 1; filter: blur(0); } }
 @media (max-width: 700px) {
   /* On a phone the artwork is cropped to its centre so the monogram stays large, with a margin of cloth on each side. */
   .hero { --hero-gap: 30px; }
-  .hero__display { --h: calc(min(76vw, 340px) * .75); --clear: radial-gradient(calc(var(--h) * .85) calc(var(--h) * .8) at 50% 50%, transparent 55%, #000); padding-block: 24px; }
-  .hero__display::before, .hero__display::after { background-size: 13px 13px; } /* a finer weave, so it reads as cloth up close */
-  .hero__display::before { opacity: .12; }
-  .hero__display::after { opacity: .32; }
+  .hero__display { --h: calc(min(76vw, 340px) * .75); --clear: radial-gradient(calc(var(--h) * .85) calc(var(--h) * .8) at 50% 50%, transparent 55%, #000); padding-block: 20px 8px; }
+  .hero__display::before, .hero__display::after { background-size: 12px 12px; } /* a finer weave, so it reads as cloth up close */
+  .hero__display::after { opacity: .55; }
   .hero__window { width: min(76vw, 340px); margin-inline: auto; }
 }
+.hero__name { /* the name, set small and wide under the monogram: it signs the first screen without competing with the letters */
+  position: relative; margin-top: calc(var(--h) * -.045); margin-bottom: clamp(10px, 1.8vh, 18px); text-align: center; padding-left: .5em; /* balances the trailing letter space */
+  font-family: var(--font-serif); font-size: clamp(.8125rem, .72rem + .3vw, 1rem); line-height: 1; letter-spacing: .5em; text-transform: uppercase; width: max-content; margin-inline: auto; color: transparent;
+  /* the letters are cut out of two layers: a quiet champagne, and the passing light over it */
+  background: linear-gradient(100deg, transparent 38%, #fff 47% 53%, transparent 62%) 133% 0 / 300% 100% no-repeat, linear-gradient(#cdbf9d, #cdbf9d);
+  -webkit-background-clip: text; background-clip: text; animation: name-shine var(--pass);
+}
+@keyframes name-shine { 0% { background-position: 133% 0, 0 0; } 7.5% { filter: drop-shadow(0 0 0 transparent); } 20% { filter: drop-shadow(0 0 7px rgb(255 240 204 / .55)); } 32.5% { filter: drop-shadow(0 0 0 transparent); } 40%, 100% { background-position: -33% 0, 0 0; } }
 .hero__copy { position: relative; z-index: 5; text-align: center; margin-top: clamp(8px, 1vw, 14px); padding-top: calc(var(--hero-gap) - 2px); } /* z-index: the contact menu opens above what follows */
 .hero__copy::before { /* the section line between the monogram and the headline, like the others */
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 2px;
-  background: linear-gradient(90deg, rgb(247 226 180 / .22), rgb(247 226 180 / .75) 50%, rgb(247 226 180 / .22));
-  box-shadow: 0 0 10px rgb(247 226 180 / .18); pointer-events: none;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--line);
+  pointer-events: none;
 }
 .hero__title {
   font-family: var(--font-serif); font-weight: 500;
@@ -379,11 +429,37 @@ h1, h2, h3, .figures strong { text-shadow: 0 -1px 0 rgb(var(--shade) / .55), 0 1
 }
 .js-reveal .hero__title.is-in .w { opacity: 1; translate: 0 0; }
 .hero__lead { margin: clamp(14px, 2vh, 22px) auto 0; max-width: 48ch; text-wrap: balance; font-size: clamp(1rem, .97rem + .15vw, 1.0625rem); line-height: 1.55; color: var(--ink-2); }
-.hero__cta { --cta-w: 218px; margin-top: clamp(20px, 3vh, 32px); display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.hero__cta { --cta-w: 224px; margin-top: clamp(20px, 3vh, 32px); display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
 /* both actions: one width, one height, one icon size, one rhythm */
 .hero__cta > .btn, .hero__cta > .contact { width: var(--cta-w); max-width: 100%; }
-.hero__cta .btn { min-height: 44px; padding: 0 14px; gap: 8px; font-size: .875rem; }
+.hero__cta .btn { min-height: 48px; padding: 0 20px; gap: 10px; font-size: .875rem; font-weight: 600; letter-spacing: .018em; }
 .hero__cta .btn .icon { width: 18px; height: 18px; }
+/* on the first screen the two keys are a pair in two tints: matte ivory for the main action, ink blue inside a fine
+   cool rim for the other. No halo: the passing light only glides over them, one after the other. */
+.hero__cta { --cta-w: 244px; }
+.hero__cta .btn {
+  min-height: 52px; font-size: .9375rem; border: 1px solid transparent;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .08), 0 14px 26px -16px rgb(var(--shade));
+  transition: transform .3s var(--settle), filter .2s var(--ease);
+}
+.hero__cta > .btn {
+  color: #161412;
+  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / .7) 50%, transparent 60%) 172% 0 / 300% 100% no-repeat, linear-gradient(180deg, #f1ede5, #ddd7cb) border-box;
+  box-shadow: inset 0 1px 0 #fff, 0 14px 26px -16px rgb(var(--shade));
+  animation: cta-first var(--pass);
+}
+.hero__cta .contact .btn {
+  color: #eef1f7;
+  background: linear-gradient(105deg, transparent 40%, rgb(206 218 248 / .14) 50%, transparent 60%) 222% 0 / 300% 100% no-repeat,
+    linear-gradient(180deg, #1a2030, #12161f) padding-box, linear-gradient(180deg, rgb(190 202 230 / .42), rgb(190 202 230 / .12)) border-box;
+  animation: cta-second var(--pass);
+}
+.hero__cta .btn .icon { color: inherit; }
+.hero__cta .btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.hero__cta .btn:active { transform: translateY(0); filter: brightness(.94); }
+.hero__cta .contact .btn[aria-expanded="true"] { filter: brightness(1.18); }
+@keyframes cta-first { 0% { background-position: 172% 0, 0 0; } 40%, 100% { background-position: -122% 0, 0 0; } }
+@keyframes cta-second { 0% { background-position: 222% 0, 0 0, 0 0; } 40%, 100% { background-position: -72% 0, 0 0, 0 0; } }
 
 /* Contact: a small menu instead of a bare mailto (write, copy, open in Gmail). The address is joined by main.js. */
 .contact { position: relative; display: inline-block; }
@@ -451,6 +527,16 @@ html:not(.js) .contact__btn { display: none; }
 .pn-dot { fill: #cbc3ff; }
 .pn-num { fill: #e4dfd0; font: 700 15px var(--font-mono); }
 .pn-label { fill: #f1ecdf; font: 600 15px var(--font-sans); }
+/* The studio's picture is a drawing three times wider than tall: it gets a frame of that shape, so it fills it. On two
+   columns it shares the last row with MobiMount, five parts to seven, with both frames at the same height. */
+.card[data-project="studio"] .card__art { aspect-ratio: 3 / 1; }
+@media (min-width: 821px) {
+  .cards { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .card { grid-column: span 6; }
+  .card[data-project="mobimount"] { grid-column: span 5; }
+  .card[data-project="mobimount"] .card__art { aspect-ratio: 2.07 / 1; }
+  .card[data-project="studio"] { grid-column: span 7; }
+}
 
 @media (max-width: 820px) {
   .cards { grid-template-columns: 1fr; }
@@ -546,33 +632,54 @@ html:not(.js) .card { cursor: auto; }
 html:not(.js) .card__more { display: none; }
 
 /* ------------------------------------------------------------ closing strip + footer */
-/* What you can count on: four short promises on one plate. Privacy comes first, on purpose. */
-.promises { --r: var(--r-lg); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; }
-.promises li { position: relative; padding: 28px 26px 30px; display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 10px; align-content: start; }  /* subgrid: the three rows (key, title, text) line up across the four columns, whatever the title's length */
-.promises .roundel { justify-self: start; }
-.promises li + li { border-left: 1px solid rgb(var(--shade) / .5); box-shadow: inset 1px 0 0 rgb(var(--lit) / .05); }
-.promises h3 { font-size: 1.3rem; }
-.promises p { max-width: 36ch; }
-.roundel { /* a round key with a champagne symbol */
-  display: grid; place-items: center; width: 54px; height: 54px; border-radius: 50%; color: var(--champagne); margin-bottom: 6px;
-  background: var(--convex); box-shadow: var(--raise-sm);
+/* What you can count on: four short promises on one plate, set like a colophon: centred, a fine champagne ring around
+   each symbol, a short thread between the title and the text. Privacy comes first, on purpose. */
+.promises {
+  --r: var(--r-lg); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px; border: 1px solid transparent;
+  background: var(--pill) padding-box, linear-gradient(180deg, rgb(251 233 192 / .34), rgb(251 233 192 / .08)) border-box;
 }
-.roundel .icon { width: 1.5rem; height: 1.5rem; }
+.promises li { --n: 0; position: relative; padding: 38px 26px 40px; display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 16px; align-content: start; justify-items: center; text-align: center; }  /* subgrid: the four rows (key, title, text, detail) line up across the four columns, whatever the title's length */
+.promises li:nth-child(2) { --n: 1; }
+.promises li:nth-child(3) { --n: 2; }
+.promises li:nth-child(4) { --n: 3; }
+/* between the promises, the champagne dash drawn long: upright between columns, flat between rows */
+.promises li + li::before, .promises li + li::after { position: absolute; border-radius: 2px; }
+.promises li + li::before { content: ""; left: -1px; top: 32px; bottom: 32px; width: 2px; background: linear-gradient(180deg, transparent, rgb(251 233 192 / .6), transparent); }
+.promises h3 { position: relative; padding-bottom: 20px; font-size: 1.25rem; font-weight: 500; letter-spacing: .005em; }
+.promises h3::after { content: ""; position: absolute; bottom: 0; left: 50%; translate: -50% 0; width: 96px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, transparent, rgb(251 233 192 / .85), transparent); } /* the same dash as under the notice */
+.promises p { max-width: 32ch; font-size: .9375rem; line-height: 1.75; }
+.promises .promises__more { position: relative; padding-top: 16px; font-size: .875rem; line-height: 1.7; color: #d9d3c5; } /* the example behind the promise, a step quieter */
+.promises__more::before { content: ""; position: absolute; top: 0; left: 50%; translate: -50% 0; width: 4px; height: 4px; rotate: 45deg; background: var(--champagne); opacity: .7; }
+/* the passing light reaches the four promises one after the other */
+.promises .roundel, .promises h3::after { animation: var(--pass); animation-delay: calc(.8s + var(--n) * .4s); }
+.promises .roundel { animation-name: promise-ring; }
+.promises h3::after { animation-name: promise-thread; }
+@keyframes promise-ring {
+  6%, 28%, 100% { box-shadow: 0 0 0 5px #1b1916, 0 0 0 6px rgb(251 233 192 / .14), 0 0 0 0 rgb(251 233 192 / 0); border-color: rgb(251 233 192 / .42); }
+  16% { box-shadow: 0 0 0 5px #1b1916, 0 0 0 6px rgb(251 233 192 / .6), 0 0 24px 8px rgb(251 233 192 / .22); border-color: rgb(251 233 192 / .95); }
+}
+@keyframes promise-thread { 6%, 28%, 100% { width: 96px; box-shadow: 0 0 0 0 rgb(251 233 192 / 0); } 16% { width: 136px; box-shadow: 0 0 12px 1px rgb(251 233 192 / .35); } }
+.roundel { /* a round setting for a champagne symbol */
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; color: var(--champagne); margin-block: 6px;
+  background: var(--pill); border: 1px solid rgb(251 233 192 / .42); box-shadow: 0 0 0 5px #1b1916, 0 0 0 6px rgb(251 233 192 / .14);
+}
+.roundel .icon { width: 1.375rem; height: 1.375rem; }
 @media (max-width: 1100px) {
   .promises { grid-template-columns: repeat(2, 1fr); }
-  .promises li:nth-child(odd) { border-left: 0; box-shadow: none; }
-  .promises li:nth-child(n + 3) { border-top: 1px solid rgb(var(--shade) / .5); box-shadow: inset 0 1px 0 rgb(var(--lit) / .05); }
+  .promises li:nth-child(odd)::before { display: none; }
+  .promises li:nth-child(n + 3)::after { content: ""; top: -1px; left: 12%; right: 12%; height: 2px; background: linear-gradient(90deg, transparent, rgb(251 233 192 / .6), transparent); }
 }
 @media (max-width: 640px) {
   .promises { grid-template-columns: 1fr; }
-  .promises li + li { border-left: 0; border-top: 1px solid rgb(var(--shade) / .5); box-shadow: inset 0 1px 0 rgb(var(--lit) / .05); }
+  .promises li + li::before { display: none; }
+  .promises li + li::after { content: ""; top: -1px; left: 12%; right: 12%; height: 2px; background: linear-gradient(90deg, transparent, rgb(251 233 192 / .6), transparent); }
 }
 
 .footer { position: relative; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
 .footer::before { /* the same lit line as above each section */
-  content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 2px; border-radius: 2px; transform: translateX(-50%);
-  background: linear-gradient(90deg, rgb(247 226 180 / .22), rgb(247 226 180 / .75) 50%, rgb(247 226 180 / .22));
-  box-shadow: 0 0 10px rgb(247 226 180 / .18); pointer-events: none;
+  content: ""; position: absolute; top: 0; left: 50%; width: min(100% - var(--gutter) * 2, var(--maxw)); height: 1px; transform: translateX(-50%);
+  background: var(--line);
+  pointer-events: none;
 }
 .footer__base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; padding-block: 34px 14px; font-size: .9375rem; }
 .footer__mark { display: inline-flex; align-items: center; gap: 14px; }
@@ -607,23 +714,28 @@ html:not(.js) .card__more { display: none; }
   :root { --ink-2: #fbf8f0; }
   /* the shadows give way to outlines: every object is drawn with a line */
   .plate, .nav__links, .lang, .btn--soft, .btn--icon, .roundel, .ticks li::before { box-shadow: 0 0 0 2px rgb(255 255 255 / .75); }
-  .well, .status, .eyebrow, .contact__addr, .specs, .shot__frame, code { box-shadow: inset 0 0 0 2px rgb(255 255 255 / .75); }
+  .well, .status, .contact__addr, .specs, .shot__frame, code { box-shadow: inset 0 0 0 2px rgb(255 255 255 / .75); }
   .hero__window::after, .card__art::after, .sheet__art::after { box-shadow: inset 0 0 0 2px rgb(255 255 255 / .75); }
-  .btn--metal { box-shadow: 0 0 0 2px #fff; }
-  .btn--soft:active, .btn--icon:active { box-shadow: inset 0 0 0 3px #fff; }
+  .btn--metal, .hero__cta > .btn, .hero__cta .contact .btn, .eyebrow, .notice { box-shadow: 0 0 0 2px #fff; }
+  .hero__cta > .btn, .hero__cta .contact .btn, .eyebrow, .promises .roundel { animation: none; }
+  .btn--soft:active, .btn--icon:active, .hero__cta .btn:active { box-shadow: inset 0 0 0 3px #fff; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--champagne); }
   body::after { display: none; }
   .nav__links::before, .nav__links::after, .lang::after { display: none; }
   .nav__links.has-glider a[aria-current="true"] { box-shadow: inset 0 0 0 2px var(--champagne); }
 }
 @media (forced-colors: active) {
-  .plate, .well, .btn, .status, .specs, .eyebrow, .shot__frame, .contact__addr, .nav__links, .lang, .roundel { border: 1px solid CanvasText; forced-color-adjust: none; background: Canvas; color: CanvasText; box-shadow: none; }
+  .plate, .well, .btn, .notice, .hero__cta .btn, .hero__cta > .btn, .hero__cta .contact .btn, .status, .specs, .eyebrow, .shot__frame, .contact__addr, .nav__links, .lang, .roundel { border: 1px solid CanvasText; forced-color-adjust: none; background: Canvas; color: CanvasText; box-shadow: none; }
   .hero__window { background: #000; }
   .hero__window img { mix-blend-mode: normal; }
   .hero__window, .hero__window::after, .card__art::after, .sheet__art::after { box-shadow: none; }
   .hero__window { border: 1px solid CanvasText; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
-  .nav-wrap::before, .nav__links::before, .nav__links::after, .lang::after, .section::before, .hero__copy::before, .footer::before, body::after, .eyebrow::before, .hero__sheen, .hero__glint, .hero__display::before, .hero__display::after, .card__foot::before { display: none; }
+  .nav-wrap::before, .nav__links::before, .nav__links::after, .lang::after, .section::before, .hero__copy::before, .footer::before, body::after, .notice::after, .eyebrow::before, .eyebrow::after, .promises h3::after, .promises__more::before, .promises li::before, .promises li::after, .hero__sheen, .hero__glint, .hero__liquid, .hero__display::before, .hero__display::after, .card__foot::before { display: none; }
   .nav__links a, .lang a { color: CanvasText; background: none; box-shadow: none; }
+  .promises li + li { border-top: 1px solid CanvasText; }
+  .hero__cta > .btn, .hero__cta .contact .btn, .eyebrow, .promises .roundel { animation: none; filter: none; }
+  .hero__cta .btn .icon { color: CanvasText; }
+  .hero__name { color: CanvasText; background: none; filter: none; }
   .nav__links a[aria-current="true"], .lang a[aria-current="page"] { text-decoration: underline; }
   .status .dot { background: Highlight; box-shadow: none; }
   .status .dot::after { display: none; }

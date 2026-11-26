@@ -43,7 +43,7 @@ const check = (label, fg, bg, target) => {
 // of the viewport, linear fade to transparent at `stop`), so we walk a grid of points over several viewport shapes and
 // keep the brightest pixel. Keep in sync with body::after in styles.css.
 const GLOWS = [
-  { cx: 0.5, cy: -0.04, rx: 60, ry: 34, color: [247, 226, 180], a: 0.075, stop: 0.7 },
+  { cx: 0.5, cy: 1, rx: 46, ry: 30, color: [247, 226, 180], a: 0.1, stop: 0.7 }, // it moves sideways: the peak is the same everywhere
 ];
 const brightestLight = () => {
   let best = T.surface;
@@ -87,6 +87,10 @@ check('champagne on the pushed-in menu key', T.champagne, onWell, 7);
 // the champagne key: dark text on its darkest stop, also while pressed (inner shadow at most .32 of a dark brown at the edge, .15 at the text)
 check('key text on the champagne key', T.metalText, T.metalDark, 7);
 check('key text on the pressed champagne key', T.metalText, over([130, 85, 10], 0.15, T.metalDark), 7);
+// the first screen's two keys, on the least contrasted stop of each gradient
+check('the quieter detail under each promise', hex('#d9d3c5'), onPlate, 7);
+check('ink on the ivory key', hex('#161412'), hex('#ddd7cb'), 7);
+check('text on the ink blue key', hex('#eef1f7'), hex('#1a2030'), 7);
 
 // the LED beside each status word is decoration (the word carries the meaning)
 for (const [name, rgb] of [['released', [112, 224, 166]], ['development', [246, 185, 78]], ['lab', [169, 157, 255]]]) {

@@ -226,27 +226,31 @@ export default {
 
   // The closing strip: what you can count on. Privacy first, on purpose.
   promises: {
-    title: 'How our software behaves',
+    title: 'What you can count on',
     items: [
       {
         icon: 'lock',
-        title: 'Nothing phones home',
-        text: 'Our apps never open a network connection. If they change something on your Mac they tell you first, and uninstalling removes everything.',
+        title: 'Nothing leaves your Mac',
+        text: 'Our apps open no network connection. Every change is announced before it is made, and uninstalling leaves nothing behind.',
+        more: 'No account and no analytics. In TissByte Cleaning, whatever can’t simply be rebuilt waits 30 days in a Safety Net, one click from coming back.',
       },
       {
         icon: 'chip',
-        title: 'Native, and light',
-        text: 'Swift and AppKit, built with Apple’s Command Line Tools, so there’s no Xcode to install. When a script will do, it’s plain Python with no dependencies.',
+        title: 'Native, by choice',
+        text: 'Swift and AppKit, with no Xcode to install. Where a script is enough, plain Python without a single dependency.',
+        more: 'macOS Dock is written in Swift 6. MobiMount asks for no kernel extension and no admin password: nothing touches your phone unless you do.',
       },
       {
         icon: 'check',
-        title: 'We say what doesn’t work',
-        text: 'Every README has a section on limits. Our builds are signed ad hoc rather than notarized, and we tell you so up front, with the steps to open them.',
+        title: 'Limits, stated up front',
+        text: 'Every README sets out its own. Our builds are signed ad hoc, not notarized: we say so, and show you how to open them.',
+        more: 'On first launch, macOS asks you to confirm. Each project also shows where it stands: available, in development or still in the lab.',
       },
       {
         icon: 'flask',
-        title: 'Tested before we show it',
-        text: 'The game’s rules sit in a deterministic engine with unit tests and computer-versus-computer balance runs. In the game’s code, a warning counts as an error.',
+        title: 'Proven before it is shown',
+        text: 'The game’s rules run on a deterministic engine, tested and balanced machine against machine. In its code, a warning is an error.',
+        more: 'In our game studio, an independent review and a sign-off come before any merge. Nothing goes in on its author’s word alone.',
       },
     ],
   },
