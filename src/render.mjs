@@ -179,84 +179,6 @@ function dialog(p, c) {
     </dialog>`;
 }
 
-// The circuit traces of the organisation's GitHub banner, in the banner's own 1800 x 600 coordinates, so they line up
-// with the monogram at every size. Each one runs from outside the screen toward the monogram: [path, node x, node y, delay].
-// The right-hand side mirrors the left.
-const TRACES = [
-  ['M158 -40V73L269 183H398', 398, 183, 0.45],
-  ['M-1400 177H127L220 269H416L477 208H548', 548, 208, 0.3],
-  ['M-1400 433H224L299 358H450', 450, 358, 0.55],
-  ['M89 640V522L178 433', 178, 433, 0.75],
-];
-
-// The branches that turn the circuit into a network. Each one leaves a junction on a trace (or another branch) for a
-// node of its own: [path, junction x, y, node x, y, firing period, first firing, node radius]. Periods divide or sit
-// beside the trunks' 9s on purpose, so the activity never looks like one blinking pattern.
-const BRANCHES = [
-  ['M158 73L196 35H322', 158, 73, 322, 35, 4.5, 3.1, 3.2],
-  ['M269 183L322 130H452', 269, 183, 452, 130, 6, 4.4, 3.6],
-  ['M127 177L92 142V96L62 66H-60', 127, 177, -60, 66, 7.5, 3.8, 3],
-  ['M220 269L172 317H38', 220, 269, 38, 317, 4.5, 4.9, 3.4],
-  ['M299 358L338 397V420L362 444H458', 299, 358, 458, 444, 7.5, 5.8, 3],
-  ['M38 317L-6 361H-150L-196 315H-330', 38, 317, -330, 315, 9, 6.2, 3.2],
-  ['M-60 66L-112 118H-290', -60, 66, -290, 118, 7.5, 5.1, 2.8],
-  ['M-150 361L-205 416V480L-250 525H-420', -150, 361, -420, 525, 9, 7.4, 2.8],
-];
-
-// On a phone the monogram is a little narrower and the circuit is redrawn in the margins on both sides of it (680 x 475),
-// sparser than on a large screen to leave it room to breathe. The trunks start far outside, so they reach the screen edges.
-const PHONE_TRACES = [
-  ['M-400 96H18L48 126H88', 88, 126, 0.3],
-  ['M-400 238H70', 70, 238, 0.5],
-  ['M-400 380H22L52 350H90', 90, 350, 0.65],
-];
-const PHONE_BRANCHES = [
-  ['M18 96L40 74V40H82', 18, 96, 82, 40, 6, 3.1, 3.6],
-  ['M20 238L38 256V294H72', 20, 238, 72, 294, 4.5, 4.9, 3.6],
-  ['M22 380L44 402V438H84', 22, 380, 84, 438, 7.5, 4.2, 3.6],
-];
-
-// Two layouts of one circuit; CSS shows the one that fits the screen. box = viewBox, fit = how it fills its area,
-// mirror = the axis of symmetry times two, fade = the top and bottom of the soft edge mask (and where it reaches full strength), reach = the area the mask covers.
-const CIRCUITS = {
-  wide: { box: '0 0 1800 600', fit: 'slice', mirror: 1800, traces: TRACES, branches: BRANCHES, node: 4.5, fade: [-40, 640, 0.16, 0.74], reach: [-1400, -60, 4600, 720] },
-  phone: { box: '0 0 680 475', fit: 'meet', mirror: 680, traces: PHONE_TRACES, branches: PHONE_BRANCHES, node: 5.5, fade: [-10, 485, 0.06, 0.94], reach: [-420, -20, 1520, 520] },
-};
-
-/** Decorative, drawn and lit by CSS alone: a faint track, the line that lights up on load, then a pulse now and then. */
-function circuitTraces(name) {
-  const { box, fit, mirror, traces, branches, node, fade, reach } = CIRCUITS[name];
-  const [top, bottom, solidFrom, solidTo] = fade;
-  const [x0, y0, width, height] = reach;
-  const area = `x="${x0}" y="${y0}" width="${width}" height="${height}"`;
-  const line = (d) => `<path class="trace__track" d="${d}"/>
-              <path class="trace__lit" d="${d}" pathLength="1"/>
-              <path class="trace__pulse" d="${d}" pathLength="1"/>`;
-  const side = traces.map(([d, x, y, delay]) => `<g style="--t:${delay}s">
-              ${line(d)}
-              <circle class="trace__node" cx="${x}" cy="${y}" r="${node}"/>
-            </g>`).join('');
-  const net = branches.map(([d, jx, jy, x, y, period, first, r]) => `<g class="branch" style="--p:${period}s;--f:${first}s">
-              ${line(d)}
-              <circle class="trace__joint" cx="${jx}" cy="${jy}" r="2.4"/>
-              <circle class="trace__node" cx="${x}" cy="${y}" r="${r}"/>
-            </g>`).join('');
-  return `<svg class="hero__traces hero__traces--${name}" viewBox="${box}" preserveAspectRatio="xMidYMid ${fit}" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="fade-${name}" gradientUnits="userSpaceOnUse" x1="0" y1="${top}" x2="0" y2="${bottom}">
-            <stop offset="0" stop-color="#000"/><stop offset="${solidFrom}" stop-color="#fff"/><stop offset="${solidTo}" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
-          </linearGradient>
-          <mask id="mask-${name}" maskUnits="userSpaceOnUse" ${area}>
-            <rect ${area} fill="url(#fade-${name})"/>
-          </mask>
-        </defs>
-        <g mask="url(#mask-${name})">
-          <g>${net}${side}</g>
-          <g class="mirror" transform="matrix(-1 0 0 1 ${mirror} 0)">${net}${side}</g>
-        </g>
-      </svg>`;
-}
-
 /** The project's README screenshots. Thumbnails load lazily (a closed dialog is display:none, so nothing is fetched until it opens). */
 function gallery(p, c, t) {
   if (!p.gallery?.length) return '';
@@ -397,8 +319,6 @@ ${languages.filter((l) => l !== here).map((l) => `<meta property="og:locale:alte
         <span class="hero__sheen" aria-hidden="true"></span>
         <span class="hero__glint" aria-hidden="true"></span>
       </div>
-      ${circuitTraces('wide')}
-      ${circuitTraces('phone')}
     </div>
     <div class="container hero__copy">
       <h1 id="hero-title" class="hero__title reveal" style="--d:60ms"><span class="hero__line">${words(c.hero.title1, 0)}</span> <em class="hero__line hero__line--em">${words(c.hero.title2, c.hero.title1.split(' ').length)}</em></h1>

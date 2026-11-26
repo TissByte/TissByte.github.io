@@ -19,10 +19,10 @@ html = html.replace(/<div class="lang"[^>]*>.*?<\/div>\n?/s, '').replace(/<link 
 const css = await readFile(dist('styles.css'), 'utf8');
 const js = await readFile(dist('main.js'), 'utf8');
 
-// every relative assets/... image reference (the lookbehind skips absolute URLs such as the og:image)
+// every relative assets/... image reference, in the page and in the stylesheet (the lookbehind skips absolute URLs such as the og:image)
 const IMG = /(?<![/\w])assets\/[\w./-]+\.(?:webp|png|jpe?g|svg)/g;
 const uris = new Map();
-for (const rel of new Set(html.match(IMG) ?? [])) {
+for (const rel of new Set(`${html}\n${css}`.match(IMG) ?? [])) {
   const buf = await readFile(dist(rel));
   uris.set(rel, `data:${MIME[path.extname(rel)]};base64,${buf.toString('base64')}`);
 }
@@ -31,7 +31,7 @@ html = html.replace(IMG, (rel) => uris.get(rel));
 html = html
   .replace(/<meta http-equiv="Content-Security-Policy"[^>]*>\n?/, '') // this copy is inline by design, so the site's policy cannot apply
   .replace(/<link rel="preload"[^>]*>\n?/g, '') // preloading a data URI is pointless
-  .replace(/<link rel="stylesheet" href="styles\.css[^"]*">/, () => `<style>${css}</style>`)
+  .replace(/<link rel="stylesheet" href="styles\.css[^"]*">/, () => `<style>${css.replace(IMG, (rel) => uris.get(rel))}</style>`)
   .replace(/<script src="main\.js[^"]*" defer><\/script>/, () => `<script>${js}</script>`);
 
 await mkdir(path.join(root, 'standalone'), { recursive: true });
